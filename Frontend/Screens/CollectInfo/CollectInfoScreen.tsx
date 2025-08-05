@@ -16,7 +16,7 @@ const CollectInfoScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Collect Information</Text>
+      <Text style={styles.title}>Tell me more about yourself</Text>
       <Input
         value={name}
         placeholder="Enter your name"
@@ -35,7 +35,7 @@ const CollectInfoScreen: React.FC = () => {
         onChangeText={setEmail}
         label="Email"
       />
-      <Button title="Submit" onPress={handleSubmit} />
+      <Button title="Next" onPress={handleSubmit} />
     </View>
   );
 };
