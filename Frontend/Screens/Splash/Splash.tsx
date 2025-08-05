@@ -1,9 +1,15 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../Types/navigation';
+
+type SplashScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Splash'>;
 
 const SplashScreen: React.FC = () => {
-  const fadeAnim = useRef(new Animated.Value(0)).current; // initial opacity
-  const scaleAnim = useRef(new Animated.Value(0.8)).current; // initial scale
+  const fadeAnim = useRef(new Animated.Value(0)).current; 
+  const scaleAnim = useRef(new Animated.Value(0.8)).current; 
+  const navigation = useNavigation<SplashScreenNavigationProp>();
 
   useEffect(() => {
     Animated.parallel([
@@ -17,8 +23,12 @@ const SplashScreen: React.FC = () => {
         friction: 4,
         useNativeDriver: true,
       }),
-    ]).start();
-  }, []);
+    ]).start (()=> {
+      setTimeout(() => {
+        navigation.navigate('CollectInfo')
+        }, 2000); 
+  })
+}, []);
 
   return (
     <View style={styles.container}>

@@ -1,20 +1,22 @@
-import { StyleSheet, Text, View, TextInput } from 'react-native'
-import React from 'react'
+// File: src/Components/Input/Input.tsx
+
+import React from 'react';
+import { StyleSheet, Text, View, TextInput } from 'react-native';
 
 interface InputProps {
-    value?: string;
-    placeholder?: string;
-    onChangeText?: (text: string) => void;
-    label?: string;
-    eaditable?: boolean;
+  value?: string;
+  placeholder?: string;
+  onChangeText?: (text: string) => void;
+  label?: string;
+  editable?: boolean;
 }
 
 const Input: React.FC<InputProps> = ({
-    value,
-    placeholder,
-    onChangeText,
-    label,
-    eaditable = true
+  value,
+  placeholder,
+  onChangeText,
+  label,
+  editable = true,
 }) => {
   return (
     <View style={styles.container}>
@@ -23,22 +25,21 @@ const Input: React.FC<InputProps> = ({
         value={value}
         placeholder={placeholder}
         onChangeText={onChangeText}
-        editable={eaditable}
+        editable={editable}
         placeholderTextColor="#B0B0B0"
       />
       {label && <Text style={styles.label}>{label}</Text>}
     </View>
-  )
-}
-
+  );
+};
 
 const styles = StyleSheet.create({
-    container: {
-        position: 'relative',
-        marginVertical: 10,
-    },
-    input: {
-        backgroundColor: '#fff',
+  container: {
+    position: 'relative',
+    marginVertical: 10,
+  },
+  input: {
+    backgroundColor: '#fff',
     borderRadius: 12,
     paddingVertical: 14,
     paddingHorizontal: 16,
@@ -50,13 +51,14 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
     elevation: 2,
-    },
-    label: {
-      position: 'absolute',
+  },
+  label: {
+    position: 'absolute',
     right: 16,
     top: 18,
     fontSize: 14,
     color: '#999',
-    },
-    })
-    export default Input
+  },
+});
+
+export default Input;

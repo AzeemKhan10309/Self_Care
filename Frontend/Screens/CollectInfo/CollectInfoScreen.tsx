@@ -1,8 +1,9 @@
-import React , { useState } from 'react';
+// File: src/screens/CollectInfoScreen.tsx
+
+import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Input from '../../Components/Input/Input';
 import Button from '../../Components/Button/Button';
-
 
 const CollectInfoScreen: React.FC = () => {
   const [name, setName] = useState('');
@@ -38,18 +39,20 @@ const CollectInfoScreen: React.FC = () => {
     </View>
   );
 };
-const styles=StyleSheet.create({
+
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 24,
     backgroundColor: '#F9F9F9',
     justifyContent: 'center',
   },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-        textAlign: 'center',
-    }
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
 });
-  export default CollectInfoScreen;
+
+export default CollectInfoScreen;
