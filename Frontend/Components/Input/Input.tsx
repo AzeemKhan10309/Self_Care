@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { StyleSheet, Text, View, TextInput } from 'react-native';
+import { StyleSheet, Text, View, TextInput, KeyboardTypeOptions } from 'react-native';
 
 interface InputProps {
   value?: string;
@@ -8,7 +7,8 @@ interface InputProps {
   onChangeText?: (text: string) => void;
   label?: string;
   editable?: boolean;
-   secureTextEntry?: boolean;
+  secureTextEntry?: boolean;
+  keyboardType?: KeyboardTypeOptions; 
 }
 
 const Input: React.FC<InputProps> = ({
@@ -17,6 +17,8 @@ const Input: React.FC<InputProps> = ({
   onChangeText,
   label,
   editable = true,
+  secureTextEntry,
+  keyboardType, 
 }) => {
   return (
     <View style={styles.container}>
@@ -26,6 +28,8 @@ const Input: React.FC<InputProps> = ({
         placeholder={placeholder}
         onChangeText={onChangeText}
         editable={editable}
+        secureTextEntry={secureTextEntry}
+        keyboardType={keyboardType} 
         placeholderTextColor="#B0B0B0"
       />
       {label && <Text style={styles.label}>{label}</Text>}
