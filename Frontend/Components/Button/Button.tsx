@@ -1,3 +1,5 @@
+// File: src/Components/Button/Button.tsx
+
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
@@ -32,11 +34,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#A0A0A0',
   },
   buttonText: {
-   color: '#fff',
+    color: '#fff',
     fontSize: 18,
     fontWeight: '600',
   },
 });
 
-export default Button
-
+export default Button;
