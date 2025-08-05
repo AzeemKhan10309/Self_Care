@@ -1,4 +1,3 @@
-// File: src/Components/Input/Input.tsx
 
 import React from 'react';
 import { StyleSheet, Text, View, TextInput } from 'react-native';
@@ -9,6 +8,7 @@ interface InputProps {
   onChangeText?: (text: string) => void;
   label?: string;
   editable?: boolean;
+   secureTextEntry?: boolean;
 }
 
 const Input: React.FC<InputProps> = ({

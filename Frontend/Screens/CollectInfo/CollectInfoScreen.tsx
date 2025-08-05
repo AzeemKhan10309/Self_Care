@@ -1,17 +1,25 @@
-// File: src/screens/CollectInfoScreen.tsx
 
 import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Input from '../../Components/Input/Input';
 import Button from '../../Components/Button/Button';
+import { useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '../../Types/navigation';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+type CollectInfoScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'CollectInfo'>;
+
 
 const CollectInfoScreen: React.FC = () => {
+
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
   const [email, setEmail] = useState('');
+   const navigation = useNavigation<CollectInfoScreenNavigationProp>();
 
   const handleSubmit = () => {
     console.log('Submitted:', { name, age, email });
+    navigation.navigate('Login'); 
   };
 
   return (
