@@ -1,0 +1,87 @@
+import {StyleSheet} from 'react-native';
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F9F9F9',
+    paddingHorizontal: 24,
+    paddingTop: 80,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: 30,
+  },
+  input: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    marginBottom: 16,
+    fontSize: 16,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+  },
+  forgotPassword: {
+    alignItems: 'flex-end',
+    marginBottom: 24,
+  },
+  forgotText: {
+    color: '#000',
+    fontSize: 14,
+  },
+  loginButton: {
+    backgroundColor: '#0B5FFF',
+    borderRadius: 30,
+    paddingVertical: 14,
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  loginText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  dividerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  line: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#D9D9D9',
+  },
+  orText: {
+    marginHorizontal: 12,
+    fontSize: 14,
+    color: '#333',
+  },
+  socialIcons: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    marginBottom: 40,
+  },
+  icon: {
+    width: 36,
+    height: 36,
+    resizeMode: 'contain',
+  },
+  signupContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  signupText: {
+    fontSize: 14,
+    color: '#000',
+  },
+  signupLink: {
+    fontSize: 14,
+    color: '#0B5FFF',
+    fontWeight: '600',
+  },
+});
+export default styles;

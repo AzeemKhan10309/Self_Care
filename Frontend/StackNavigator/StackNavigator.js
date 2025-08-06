@@ -4,7 +4,6 @@ import SplashScreen from "../Screens/Splash/Splash";
 import CollectInfoScreen from "../Screens/CollectInfo/CollectInfoScreen";
 import Login from "../Screens/Login/Login";
 import Dashboard from "../Screens/Dashoard/Dashboard";
-import Login from "../Screens/Login/Login"
 import Register from "../Screens/Register/Register";
 import ForgotPassword from "../Screens/ForgotPassword/ForgotPassword";
 import OTPCodeScreen from "../Screens/OTPCode/OTPCode";
@@ -38,6 +37,7 @@ function StackNavigator() {
                 component={Dashboard}
                 options={{ title: "Dashboard" }}
             />
+            <Stack.Screen
                 name="Register"
                 component={Register}
                 options={{ title: "Register" }}
