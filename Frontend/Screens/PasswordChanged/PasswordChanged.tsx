@@ -21,7 +21,7 @@ type PasswordChangedScreenNavigationProp = NativeStackNavigationProp<
 >;
 
 export default function PasswordChanged() {
-  const navigation = useNavigation<PasswordChangedScreenNavigationProp>();
+  const navigation = useNavigation<PasswordChangedScreenNavigationProp>(); 
 
   const handleBackToLogin = () => {
     navigation.navigate('Login');
@@ -35,7 +35,7 @@ export default function PasswordChanged() {
         resizeMode="contain"
       />
 
-      <Text style={styles.title}>Password Changed!</Text>
+      <Text style={styles.title}>Password Changed!!</Text>
       <Text style={styles.message}>
         Your password has been changed{'\n'}successfully.
       </Text>
