@@ -5,16 +5,15 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../Types/navigation";
 import Input from "../../Components/Input/Input";
 import Button from "../../Components/Button/Button";
-type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
-
+type DashboardNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 const LoginScreen: React.FC = () => {
-  const navigation = useNavigation<LoginScreenNavigationProp>();
+  const navigation = useNavigation<DashboardNavigationProp>();
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
 
   const handleLogin = () => {
     console.log('Logging in with:', { email, password });
-    navigation.navigate('CollectInfo');
+    navigation.navigate('Dashboard'); 
   };
 
   return (

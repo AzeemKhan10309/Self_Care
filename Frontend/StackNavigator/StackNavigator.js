@@ -2,7 +2,8 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SplashScreen from "../Screens/Splash/Splash";
 import CollectInfoScreen from "../Screens/CollectInfo/CollectInfoScreen";
-import Login from "../Screens/Login/Login"
+import Login from "../Screens/Login/Login";
+import Dashboard from "../Screens/Dashoard/Dashboard";
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +25,12 @@ function StackNavigator() {
                 name="Login"
                 component={Login}
                 options={{ title: "Login" }}
+            />
+
+            <Stack.Screen 
+                name="Dashboard"
+                component={Dashboard}
+                options={{ title: "Dashboard" }}
             />
         </Stack.Navigator>
     );
