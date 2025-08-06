@@ -11,16 +11,20 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../Types/navigation";
+import Input from "../../Components/Input/Input";
+import Button from "../../Components/Button/Button";
+type DashboardNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
 const LoginScreen: React.FC = () => {
-  const navigation = useNavigation<LoginScreenNavigationProp>();
+  const navigation = useNavigation<DashboardNavigationProp>();
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
 
   const handleLogin = () => {
     console.log('Logging in with:', { email, password });
+    navigation.navigate('Dashboard'); 
     navigation.navigate('Register');
   };
 

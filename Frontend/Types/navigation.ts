@@ -2,6 +2,7 @@ export type RootStackParamList = {
   Splash: undefined;
   CollectInfo: undefined;
   Login: undefined;
+  Dashboard: undefined;
   Register: undefined;
   ForgotPassword: undefined;
   OTPCode: undefined;

@@ -2,6 +2,8 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SplashScreen from "../Screens/Splash/Splash";
 import CollectInfoScreen from "../Screens/CollectInfo/CollectInfoScreen";
+import Login from "../Screens/Login/Login";
+import Dashboard from "../Screens/Dashoard/Dashboard";
 import Login from "../Screens/Login/Login"
 import Register from "../Screens/Register/Register";
 import ForgotPassword from "../Screens/ForgotPassword/ForgotPassword";
@@ -32,6 +34,10 @@ function StackNavigator() {
             />
 
             <Stack.Screen 
+                name="Dashboard"
+                component={Dashboard}
+                options={{ title: "Dashboard" }}
+            />
                 name="Register"
                 component={Register}
                 options={{ title: "Register" }}
