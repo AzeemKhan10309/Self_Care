@@ -9,7 +9,10 @@ interface InputProps {
   editable?: boolean;
   secureTextEntry?: boolean;
   keyboardType?: KeyboardTypeOptions; 
-}
+   placeholderTextColor?: string;
+autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
+ maxLength?: number;}
+
 
 const Input: React.FC<InputProps> = ({
   value,
@@ -19,6 +22,8 @@ const Input: React.FC<InputProps> = ({
   editable = true,
   secureTextEntry,
   keyboardType, 
+  placeholderTextColor = '#B0B0B0',
+
 }) => {
   return (
     <View style={styles.container}>

@@ -81,85 +81,60 @@ const CollectInfoScreen: React.FC = () => {
     </Modal>
   );
 
-  return (
+return (
+  <ScrollView contentContainerStyle={styles.scrollContainer}>
     <View style={styles.container}>
       <Text style={styles.title}>Tell me more about yourself</Text>
-      <Input
-        value={name}
-        placeholder="Enter your name"
-        onChangeText={setName}
-        label="Name"
-      />
-      <Input
-        value={age}
-        placeholder="Enter your age"
-        onChangeText={setAge}
-        label="Age"
-      />
-      <Input
-        value={email}
-        placeholder="Enter your email"
-        onChangeText={setEmail}
-        label="Email"
-      />
-      <Button title="Next" onPress={handleSubmit} />
-    </View>
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Tell me more about yourself</Text>
 
-        {/* Age Picker Trigger */}
-        <TouchableOpacity onPress={() => setAgePickerVisible(true)}>
-          <Input
-            value={age ? age.toString() : ''}
-            placeholder="Select your age"
-            onChangeText={() => {}}
-            label="Age"
-            editable={false}
-          />
-        </TouchableOpacity>
-
-        {/* Weight Input */}
+      <TouchableOpacity onPress={() => setAgePickerVisible(true)}>
         <Input
-          value={weight ? weight.toString() : ''}
-          placeholder="Enter your weight in kg"
-          onChangeText={(text) => setWeight(Number(text))}
-          label="Weight (kg)"
-          keyboardType="numeric"
+          value={age ? age.toString() : ''}
+          placeholder="Select your age"
+          onChangeText={() => {}}
+          label="Age"
+          editable={false}
         />
+      </TouchableOpacity>
 
-        {/* Gender Picker Trigger */}
-        <TouchableOpacity onPress={() => setGenderPickerVisible(true)}>
-          <Input
-            value={gender}
-            placeholder="Select your gender"
-            onChangeText={() => {}}
-            label="Gender"
-            editable={false}
-          />
-        </TouchableOpacity>
+      <Input
+        value={weight ? weight.toString() : ''}
+        placeholder="Enter your weight in kg"
+        onChangeText={(text) => setWeight(Number(text))}
+        label="Weight (kg)"
+        keyboardType="numeric"
+      />
 
-        <Button title="Next" onPress={handleSubmit} />
+      <TouchableOpacity onPress={() => setGenderPickerVisible(true)}>
+        <Input
+          value={gender}
+          placeholder="Select your gender"
+          onChangeText={() => {}}
+          label="Gender"
+          editable={false}
+        />
+      </TouchableOpacity>
 
-        {/* Modals */}
-        {renderPickerModal(
-          isAgePickerVisible,
-          ageOptions,
-          (selectedAge) => setAge(Number(selectedAge)),
-          () => setAgePickerVisible(false),
-          age
-        )}
+      <Button title="Next" onPress={handleSubmit} />
 
-        {renderPickerModal(
-          isGenderPickerVisible,
-          genderOptions,
-          setGender,
-          () => setGenderPickerVisible(false),
-          gender
-        )}
-      </View>
-    </ScrollView>
-  );
+      {renderPickerModal(
+        isAgePickerVisible,
+        ageOptions,
+        (selectedAge) => setAge(Number(selectedAge)),
+        () => setAgePickerVisible(false),
+        age
+      )}
+
+      {renderPickerModal(
+        isGenderPickerVisible,
+        genderOptions,
+        setGender,
+        () => setGenderPickerVisible(false),
+        gender
+      )}
+    </View>
+  </ScrollView>
+);
+
 };
 
 const styles = StyleSheet.create({
