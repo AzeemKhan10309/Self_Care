@@ -82,6 +82,28 @@ const CollectInfoScreen: React.FC = () => {
   );
 
   return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Tell me more about yourself</Text>
+      <Input
+        value={name}
+        placeholder="Enter your name"
+        onChangeText={setName}
+        label="Name"
+      />
+      <Input
+        value={age}
+        placeholder="Enter your age"
+        onChangeText={setAge}
+        label="Age"
+      />
+      <Input
+        value={email}
+        placeholder="Enter your email"
+        onChangeText={setEmail}
+        label="Email"
+      />
+      <Button title="Next" onPress={handleSubmit} />
+    </View>
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.container}>
         <Text style={styles.title}>Tell me more about yourself</Text>
