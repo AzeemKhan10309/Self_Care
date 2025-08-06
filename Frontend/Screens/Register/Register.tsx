@@ -11,35 +11,38 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../Types/navigation";
-import Input from "../../Components/Input/Input";
-import Button from "../../Components/Button/Button";
-type DashboardNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
+type RegisterScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Register'>;
 
-const LoginScreen: React.FC = () => {
-  const navigation = useNavigation<DashboardNavigationProp>();
+const RegisterScreen: React.FC = () => {
+  const navigation = useNavigation<RegisterScreenNavigationProp>();
+  const [username, setUsername] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
 
-  const handleLogin = () => {
-    console.log('Logging in with:', { email, password });
-    navigation.navigate('Dashboard'); 
-    navigation.navigate('Register');
+  const handleRegister = () => {
+    console.log('Registering:', { username, email, password });
+    navigation.navigate('CollectInfo');
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login your account</Text>
+      <Text style={styles.title}>Create an account</Text>
 
       <TextInput
         style={styles.input}
-        placeholder="Username/Email"
+        placeholder="Username"
+        placeholderTextColor="#B0B0B0"
+        value={username}
+        onChangeText={setUsername}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="E-mail"
         placeholderTextColor="#B0B0B0"
         value={email}
         onChangeText={setEmail}
       />
-
       <TextInput
         style={styles.input}
         placeholder="Password"
@@ -49,33 +52,26 @@ const LoginScreen: React.FC = () => {
         onChangeText={setPassword}
       />
 
-      <TouchableOpacity
-        style={styles.forgotPassword}
-        onPress={() => navigation.navigate('ForgotPassword')}
-      >
-        <Text style={styles.forgotText}>Forgot Password?</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-        <Text style={styles.loginText}>Login</Text>
+      <TouchableOpacity style={styles.signUpButton} onPress={handleRegister}>
+        <Text style={styles.signUpText}>Sign Up</Text>
       </TouchableOpacity>
 
       <View style={styles.dividerContainer}>
         <View style={styles.line} />
-        <Text style={styles.orText}>Or Login with</Text>
+        <Text style={styles.orText}>Or Sign Up with</Text>
         <View style={styles.line} />
       </View>
 
       <View style={styles.socialIcons}>
-        <Image source={require('../../../Frontend/assets/apple.png')} style={styles.icon} />
-        <Image source={require('../../../Frontend/assets/google.png')} style={styles.icon} />
-        <Image source={require('../../../Frontend/assets/facebook.png')} style={styles.icon} />
+        <Image source={require('../../assets/apple.png')} style={styles.icon} />
+        <Image source={require('../../assets/google.png')} style={styles.icon} />
+        <Image source={require('../../assets/facebook.png')} style={styles.icon} />
       </View>
 
-      <View style={styles.signupContainer}>
-        <Text style={styles.signupText}>Don’t have an account?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-          <Text style={styles.signupLink}> Sign Up</Text>
+      <View style={styles.loginContainer}>
+        <Text style={styles.loginText}>Already have account?</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+          <Text style={styles.loginLink}> Login</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -108,22 +104,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
   },
-  forgotPassword: {
-    alignItems: 'flex-end',
-    marginBottom: 24,
-  },
-  forgotText: {
-    color: '#000',
-    fontSize: 14,
-  },
-  loginButton: {
+  signUpButton: {
     backgroundColor: '#0B5FFF',
     borderRadius: 30,
     paddingVertical: 14,
     alignItems: 'center',
     marginBottom: 30,
   },
-  loginText: {
+  signUpText: {
     color: '#FFF',
     fontSize: 16,
     fontWeight: '600',
@@ -153,19 +141,19 @@ const styles = StyleSheet.create({
     height: 36,
     resizeMode: 'contain',
   },
-  signupContainer: {
+  loginContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
   },
-  signupText: {
+  loginText: {
     fontSize: 14,
     color: '#000',
   },
-  signupLink: {
+  loginLink: {
     fontSize: 14,
     color: '#0B5FFF',
     fontWeight: '600',
   },
 });
 
-export default LoginScreen;
+export default RegisterScreen;
