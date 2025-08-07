@@ -3,8 +3,6 @@ import React from "react";
 import {
   View,
   Text,
-  StyleSheet,
-  TextInput,
   TouchableOpacity,
   Image,
 } from "react-native";
@@ -23,7 +21,7 @@ const RegisterScreen: React.FC = () => {
 
   const handleRegister = () => {
     console.log('Registering:', { username, email, password });
-    navigation.navigate('CollectInfo');
+    navigation.navigate('Login'); // Navigate to Login after registration
   };
 
   return (
