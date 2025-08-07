@@ -1,58 +1,46 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
 
-const styles = StyleSheet.create({
+export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     paddingHorizontal: 24,
-    justifyContent: 'center',
+    paddingTop: 150,
+    backgroundColor: '#F9F9F9',
   },
   title: {
-    fontSize: 24,
-    fontWeight: '700',
-    alignSelf: 'center',
+    fontSize: 22,
+    fontWeight: '600',
     marginBottom: 10,
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 14,
-    color: '#7e7e7e',
+    color: '#666',
     textAlign: 'center',
-    marginBottom: 40,
+    marginBottom: 30,
+    marginTop: 20,
   },
   otpContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 30,
+    marginBottom: 24,
   },
   otpInput: {
-    width: 48,
-    height: 58,
+    width: 45,
+    height: 55,
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 10,
+    borderRadius: 8,
     textAlign: 'center',
     fontSize: 20,
   },
-  button: {
-    backgroundColor: '#2563eb',
-    paddingVertical: 14,
-    borderRadius: 25,
-    marginBottom: 20,
-  },
-  buttonText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontSize: 16,
-    fontWeight: '600',
-  },
   resendText: {
-    fontSize: 14,
+    marginTop: 250,
     textAlign: 'center',
-    color: '#7e7e7e',
+    color: '#666',
   },
   resendLink: {
-    color: '#2563eb',
-    fontWeight: '600',
+    color: '#007bff',
+    fontWeight: 'bold',
   },
 });
-export default styles;

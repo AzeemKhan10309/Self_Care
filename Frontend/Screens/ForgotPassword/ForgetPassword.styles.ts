@@ -4,15 +4,16 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
     container: {
         flexGrow: 1,
-        justifyContent: 'center',
         padding: 20,
+        paddingTop: 100,
+        backgroundColor: '#F9F9F9',
     },
     innerContainer: {
         marginTop: 50,
     },
     title: {
-        fontSize: 26,
-        fontWeight: '700',
+        fontSize: 22,
+        fontWeight: '600',
         color: '#000',
         textAlign: 'center',
 
@@ -23,22 +24,18 @@ const styles = StyleSheet.create({
         color: '#8C8C8C',
         textAlign: 'center',
         marginBottom: 30,
+        marginTop: 20,
         paddingHorizontal: 10,
     },
-    button: {
-        backgroundColor: '#007bff',
-        padding: 15,
-        borderRadius: 10,
-        alignItems: 'center',
-        marginTop: 20,
-    },
+  
     buttonText: {
         color: '#fff',
         fontWeight: 'bold',
     },
     loginLink: {
+        
         alignSelf: 'center',
-        marginTop: 20,
+        marginTop: 260,
     },
     loginLabel: {
         color: '#666',

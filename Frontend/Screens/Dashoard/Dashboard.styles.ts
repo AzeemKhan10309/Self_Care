@@ -4,33 +4,42 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f7f7f7',
-    paddingTop: 20,
+    paddingTop: 0,
   },
   header: {
     paddingHorizontal: 20,
     paddingBottom: 20,
-    backgroundColor: '#ffffff',
-    borderBottomWidth: 1,
-    borderColor: '#e1e1e1',
+
+
   },
+
+
+  locationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  locationIcon: {
+    width: 16,
+    height: 16,
+    marginRight: 5,
+  },
+
   greeting: {
+    color: '#1F62E8',
+    paddingTop: 25,
     fontSize: 24,
     fontWeight: 'bold',
   },
   location: {
-    fontSize: 14,
-    color: '#A0A0A0',
-  },
-  feeling: {
+    fontWeight: "bold",
     fontSize: 20,
-    fontWeight: '600',
-    marginTop: 10,
+    color: '#000000ff',
   },
+
   upcomingDoseContainer: {
     padding: 20,
-    backgroundColor: '#ffffff',
-    marginTop: 20,
-    borderRadius: 10,
+    borderRadius: 0,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
@@ -46,7 +55,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1F62E8',
     padding: 20,
     borderRadius: 10,
-    marginBottom: 10,
+    marginBottom: 0,
   },
   doseName: {
     fontSize: 18,
@@ -88,11 +97,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   icon: {
-    height: 60,
-    width: 60,
+    height: 50,
+    width: 50,
     position: 'absolute',
     left: 30,
-    top: 23,
+    top: 18,
   },
   addButton: {
     backgroundColor: '#2f21f0ff',
@@ -109,7 +118,7 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
   todayReminderContainer: {
-    marginTop: 60,
+    marginTop: 0,
     paddingHorizontal: 20,
   },
   reminderTitle: {
@@ -128,6 +137,55 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
   },
+
+  headerContainer: {
+    position: 'relative',
+    height: 200,
+    marginTop: 0,
+  },
+
+  headerBackground: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+  },
+
+  profileRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12, // if using React Native >= 0.71, otherwise use margin
+    marginBottom: 8,
+  },
+
+
+
+  profileImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 25,
+    borderWidth: 2,
+    borderColor: '#fff',
+    marginTop: 25,
+
+    marginLeft: 25,
+
+  },
+
+  nameLocation: {
+    justifyContent: 'center',
+  },
+  feeling: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    marginTop: 10,
+    marginLeft: 25,
+    color: '#333',
+  },
+
+
+
 });
 
 export default styles;

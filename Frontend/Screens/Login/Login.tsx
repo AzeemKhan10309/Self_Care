@@ -32,7 +32,7 @@ const LoginScreen: React.FC = () => {
 
 <Input
   value={email}
-  placeholder="Username/Email"
+  placeholder="Username"
   onChangeText={setEmail}
 />
 

@@ -4,11 +4,37 @@ import MedicationReminder from '../../Components/MedicineReminder/MedicineRemind
 const Dashboard: React.FC = () => {
     return (
         <ScrollView style={styles.container}>
-            <View style={styles.header}>
-                <Text style={styles.greeting}>Hello, Qasim!</Text>
-                <Text style={styles.location}>Lahore</Text>
-                <Text style={styles.feeling}>How Are You Feeling Today?</Text>
+            <View style={styles.headerContainer}>
+                <Image
+                    source={require('../../assets/Home-bg.png')}
+                    style={styles.headerBackground}
+                    resizeMode="cover"
+                />
+                <View style={styles.profileRow}>
+                    <Image
+                        source={require('../../assets/Profile.png')}
+                        style={styles.profileImage}
+                    />
+                    <View style={styles.nameLocation}>
+                        <Text style={styles.greeting}>Hello, Qasim!</Text>
+                        <View style={styles.locationRow}>
+                            <Image
+                                source={require('../../assets/Location.png')}
+                                style={styles.locationIcon}
+                                resizeMode="contain"
+                            />
+                            <Text style={styles.location}>Lahore</Text>
+                        </View>
+
+                    </View>
+
+
+
+                </View>
+                <Text style={styles.feeling}>How are you feeling today?</Text>
+
             </View>
+
 
             <View style={styles.upcomingDoseContainer}>
                 <Text style={styles.upcomingDose}>Upcoming Dose</Text>
