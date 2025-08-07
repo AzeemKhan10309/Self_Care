@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -7,12 +7,12 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   TouchableOpacity,
-} from 'react-native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useNavigation } from '@react-navigation/native';
-import Input from '../../Components/Input/Input';
-import Button from '../../Components/Button/Button';
-import styles from './ForgetPassword.styles';
+} from "react-native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useNavigation } from "@react-navigation/native";
+import Input from "../../Components/Input/Input";
+import Button from "../../Components/Button/Button";
+import styles from "./ForgetPassword.styles";
 
 type RootStackParamList = {
   Login: undefined;
@@ -21,25 +21,25 @@ type RootStackParamList = {
 
 type ForgotPasswordScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
-  'OTPCode'
+  "OTPCode"
 >;
 
 export default function ForgotPassword() {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const navigation = useNavigation<ForgotPasswordScreenNavigationProp>();
 
   const handleSendCode = () => {
     console.log("Send code to:", email);
-    navigation.navigate('OTPCode');
+    navigation.navigate("OTPCode");
   };
 
   const handleLogin = () => {
-    navigation.navigate('Login');
+    navigation.navigate("Login");
   };
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
       style={{ flex: 1 }}
       keyboardVerticalOffset={60}
     >
@@ -48,7 +48,8 @@ export default function ForgotPassword() {
           <View style={styles.innerContainer}>
             <Text style={styles.title}>Forgot Password?</Text>
             <Text style={styles.subtitle}>
-              Don't worry! It occurs. Please enter the email address linked with your account.
+              Don't worry! It occurs. Please enter the email address linked with
+              your account.
             </Text>
 
             <Input

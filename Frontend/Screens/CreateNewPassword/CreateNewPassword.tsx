@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -10,11 +10,11 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   Alert,
-} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import Input from '../../Components/Input/Input';
-import Button from '../../Components/Button/Button';
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import Input from "../../Components/Input/Input";
+import Button from "../../Components/Button/Button";
 type RootStackParamList = {
   Login: undefined;
   PasswordChanged: undefined;
@@ -22,57 +22,52 @@ type RootStackParamList = {
 
 type CreateNewPasswordScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
-  'PasswordChanged'
+  "PasswordChanged"
 >;
 
 export default function CreateNewPassword() {
   const navigation = useNavigation<CreateNewPasswordScreenNavigationProp>();
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleResetPassword = () => {
-   
-
- 
-
-    navigation.navigate('PasswordChanged');
+    navigation.navigate("PasswordChanged");
   };
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{ flex: 1 }}
       keyboardVerticalOffset={60}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+        <View style={styles.container}>
           <View style={styles.innerContainer}>
             <Text style={styles.title}>Create New Password</Text>
             <Text style={styles.subtitle}>
               Your new password must be unique from those previously used.
             </Text>
-</View>
-            <Input
-              placeholder="New Password"
-              placeholderTextColor="#999"
-              secureTextEntry
-              value={password}
-              onChangeText={setPassword}
-            />
+          </View>
+          <Input
+            placeholder="New Password"
+            placeholderTextColor="#999"
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+          />
 
-            <Input
-              placeholder="Confirm Password"
-              placeholderTextColor="#999"
-              secureTextEntry
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-            />
+          <Input
+            placeholder="Confirm Password"
+            placeholderTextColor="#999"
+            secureTextEntry
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+          />
 
-              <Button title="Reset Password" onPress={handleResetPassword} />
-        </ScrollView>
+          <Button title="Reset Password" onPress={handleResetPassword} />
+        </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
 }
-import styles from './Reset.styles';
-
+import styles from "./Reset.styles";

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState } from "react";
 import {
   View,
   Text,
@@ -7,13 +7,13 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
-} from 'react-native';
-import Input from '../../Components/Input/Input';
-import Button from '../../Components/Button/Button';
+} from "react-native";
+import Input from "../../Components/Input/Input";
+import Button from "../../Components/Button/Button";
 
 const OTPCodeScreen = ({ navigation }: any) => {
   const numberOfDigits = 6;
-  const [otp, setOtp] = useState<string[]>(Array(numberOfDigits).fill(''));
+  const [otp, setOtp] = useState<string[]>(Array(numberOfDigits).fill(""));
   const inputs = useRef<Array<TextInput | null>>([]);
 
   const handleChange = (text: string, index: number) => {
@@ -27,15 +27,15 @@ const OTPCodeScreen = ({ navigation }: any) => {
   };
 
   const handleVerify = () => {
-    const code = otp.join('');
-    console.log('Entered OTP:', code);
-    navigation.navigate('CreateNewPassword');
+    const code = otp.join("");
+    console.log("Entered OTP:", code);
+    navigation.navigate("CreateNewPassword");
   };
 
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <Text style={styles.title}>OTP Verification</Text>
       <Text style={styles.subtitle}>
@@ -47,18 +47,17 @@ const OTPCodeScreen = ({ navigation }: any) => {
           <Input
             key={index}
             keyboardType="numeric"
-            placeholder='5'
+            placeholder="5"
             maxLength={1}
             value={digit}
             onChangeText={(text) => handleChange(text, index)}
-           
           />
         ))}
       </View>
 
-     <Button title="Verify" onPress={handleVerify} />
+      <Button title="Verify" onPress={handleVerify} />
 
-      <TouchableOpacity onPress={() => console.log('Resend Code')}>
+      <TouchableOpacity onPress={() => console.log("Resend Code")}>
         <Text style={styles.resendText}>
           Didn’t receive the code? <Text style={styles.resendLink}>Resend</Text>
         </Text>
@@ -69,4 +68,4 @@ const OTPCodeScreen = ({ navigation }: any) => {
 
 export default OTPCodeScreen;
 
-import styles from './Otp.styles';
+import styles from "./Otp.styles";

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -8,34 +8,34 @@ import {
   Modal,
   FlatList,
   Pressable,
-} from 'react-native';
-import Input from '../../Components/Input/Input';
-import Button from '../../Components/Button/Button';
-import { useNavigation } from '@react-navigation/native';
-import { RootStackParamList } from '../../Types/navigation';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+} from "react-native";
+import Input from "../../Components/Input/Input";
+import Button from "../../Components/Button/Button";
+import { useNavigation } from "@react-navigation/native";
+import { RootStackParamList } from "../../Types/navigation";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 type CollectInfoScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
-  'CollectInfo'
+  "CollectInfo"
 >;
 
 const CollectInfoScreen: React.FC = () => {
   const [age, setAge] = useState<number | null>(null);
-  const [gender, setGender] = useState('');
+  const [gender, setGender] = useState("");
   const [weight, setWeight] = useState<number | null>(null);
 
   const [isAgePickerVisible, setAgePickerVisible] = useState(false);
   const [isGenderPickerVisible, setGenderPickerVisible] = useState(false);
 
   const ageOptions = Array.from({ length: 84 }, (_, i) => (i + 7).toString());
-  const genderOptions = ['Male', 'Female', 'Other'];
+  const genderOptions = ["Male", "Female", "Other"];
 
   const navigation = useNavigation<CollectInfoScreenNavigationProp>();
 
   const handleSubmit = () => {
-    console.log('Submitted:', { age, gender, weight });
-    navigation.navigate('Login');
+    console.log("Submitted:", { age, gender, weight });
+    navigation.navigate("Login");
   };
 
   const renderPickerModal = (
@@ -43,7 +43,7 @@ const CollectInfoScreen: React.FC = () => {
     data: string[],
     onSelect: (item: string) => void,
     onClose: () => void,
-    selectedValue: string | number | null
+    selectedValue: string | number | null,
   ) => (
     <Modal visible={visible} transparent animationType="slide">
       <View style={styles.modalContainer}>
@@ -67,7 +67,8 @@ const CollectInfoScreen: React.FC = () => {
                 <Text
                   style={[
                     styles.pickerItemText,
-                    item === selectedValue?.toString() && styles.selectedItemText,
+                    item === selectedValue?.toString() &&
+                      styles.selectedItemText,
                   ]}
                 >
                   {item}
@@ -75,116 +76,113 @@ const CollectInfoScreen: React.FC = () => {
               </Pressable>
             )}
           />
-       
         </View>
       </View>
     </Modal>
   );
 
-return (
-  <ScrollView contentContainerStyle={styles.scrollContainer}>
-    <View style={styles.container}>
-      <Text style={styles.title}>Tell me more about yourself</Text>
+  return (
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Tell me more about yourself</Text>
 
-      <TouchableOpacity onPress={() => setAgePickerVisible(true)}>
+        <TouchableOpacity onPress={() => setAgePickerVisible(true)}>
+          <Input
+            value={age ? age.toString() : ""}
+            placeholder="Select your age"
+            onChangeText={() => {}}
+            label="Age"
+            editable={false}
+          />
+        </TouchableOpacity>
+
         <Input
-          value={age ? age.toString() : ''}
-          placeholder="Select your age"
-          onChangeText={() => {}}
-          label="Age"
-          editable={false}
+          value={weight ? weight.toString() : ""}
+          placeholder="Enter your weight in kg"
+          onChangeText={(text) => setWeight(Number(text))}
+          label="Weight (kg)"
+          keyboardType="numeric"
         />
-      </TouchableOpacity>
 
-      <Input
-        value={weight ? weight.toString() : ''}
-        placeholder="Enter your weight in kg"
-        onChangeText={(text) => setWeight(Number(text))}
-        label="Weight (kg)"
-        keyboardType="numeric"
-      />
+        <TouchableOpacity onPress={() => setGenderPickerVisible(true)}>
+          <Input
+            value={gender}
+            placeholder="Select your gender"
+            onChangeText={() => {}}
+            label="Gender"
+            editable={false}
+          />
+        </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => setGenderPickerVisible(true)}>
-        <Input
-          value={gender}
-          placeholder="Select your gender"
-          onChangeText={() => {}}
-          label="Gender"
-          editable={false}
-        />
-      </TouchableOpacity>
+        <Button title="Next" onPress={handleSubmit} />
 
-      <Button title="Next" onPress={handleSubmit} />
+        {renderPickerModal(
+          isAgePickerVisible,
+          ageOptions,
+          (selectedAge) => setAge(Number(selectedAge)),
+          () => setAgePickerVisible(false),
+          age,
+        )}
 
-      {renderPickerModal(
-        isAgePickerVisible,
-        ageOptions,
-        (selectedAge) => setAge(Number(selectedAge)),
-        () => setAgePickerVisible(false),
-        age
-      )}
-
-      {renderPickerModal(
-        isGenderPickerVisible,
-        genderOptions,
-        setGender,
-        () => setGenderPickerVisible(false),
-        gender
-      )}
-    </View>
-  </ScrollView>
-);
-
+        {renderPickerModal(
+          isGenderPickerVisible,
+          genderOptions,
+          setGender,
+          () => setGenderPickerVisible(false),
+          gender,
+        )}
+      </View>
+    </ScrollView>
+  );
 };
 
 const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
-    justifyContent: 'center',
-    backgroundColor: '#F9F9F9',
+    justifyContent: "center",
+    backgroundColor: "#F9F9F9",
   },
   container: {
     padding: 24,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0,0,0,0.4)",
   },
   pickerBox: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     padding: 16,
-    maxHeight: '60%',
+    maxHeight: "60%",
   },
   pickerList: {
     paddingBottom: 20,
   },
   pickerItem: {
     paddingVertical: 14,
-    alignItems: 'center',
+    alignItems: "center",
   },
   pickerItemText: {
     fontSize: 18,
-    color: '#808080',
-    fontWeight: '400',
+    color: "#808080",
+    fontWeight: "400",
   },
   selectedItem: {
-    backgroundColor: '#f0f0f0',
+    backgroundColor: "#f0f0f0",
     borderRadius: 12,
   },
   selectedItemText: {
-    color: '#000000',
-    fontWeight: '800',
+    color: "#000000",
+    fontWeight: "800",
     fontSize: 20,
-    
   },
 });
 
