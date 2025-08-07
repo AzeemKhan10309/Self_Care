@@ -2,8 +2,6 @@ import React from "react";
 import {
   View,
   Text,
-  StyleSheet,
-  TextInput,
   TouchableOpacity,
   Image,
 } from "react-native";
@@ -24,8 +22,12 @@ const RegisterScreen: React.FC = () => {
   const [password, setPassword] = React.useState("");
 
   const handleRegister = () => {
+Minor-Text-Chnage-in-Login
+    console.log('Registering:', { username, email, password });
+    navigation.navigate('Login'); // Navigate to Login after registration
     console.log("Registering:", { username, email, password });
     navigation.navigate("CollectInfo");
+master
   };
 
   return (
