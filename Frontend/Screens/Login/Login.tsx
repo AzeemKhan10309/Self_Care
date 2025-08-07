@@ -1,4 +1,3 @@
-
 import React from "react";
 import {
   View,
@@ -13,38 +12,32 @@ import Input from "../../Components/Input/Input";
 import Button from "../../Components/Button/Button";
 type DashboardNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-
 const LoginScreen: React.FC = () => {
   const navigation = useNavigation<DashboardNavigationProp>();
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
 
   const handleLogin = () => {
-    console.log('Logging in with:', { email, password });
-    navigation.navigate('Dashboard'); 
+    console.log("Logging in with:", { email, password });
+    navigation.navigate("Dashboard");
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login your account</Text>
 
-<Input
-  value={email}
-  placeholder="Username"
-  onChangeText={setEmail}
-/>
+      <Input value={email} placeholder="Username" onChangeText={setEmail} />
 
-<Input
-  value={password}
-  placeholder="Password"
-  onChangeText={setPassword}
-  secureTextEntry
-/>
-
+      <Input
+        value={password}
+        placeholder="Password"
+        onChangeText={setPassword}
+        secureTextEntry
+      />
 
       <TouchableOpacity
         style={styles.forgotPassword}
-        onPress={() => navigation.navigate('ForgotPassword')}
+        onPress={() => navigation.navigate("ForgotPassword")}
       >
         <Text style={styles.forgotText}>Forgot Password?</Text>
       </TouchableOpacity>
@@ -57,14 +50,20 @@ const LoginScreen: React.FC = () => {
       </View>
 
       <View style={styles.socialIcons}>
-        <Image source={require('../../assets/apple.png')} style={styles.icon} />
-        <Image source={require('../../assets/google.png')} style={styles.icon} />
-        <Image source={require('../../assets/facebook.png')} style={styles.icon} />
+        <Image source={require("../../assets/apple.png")} style={styles.icon} />
+        <Image
+          source={require("../../assets/google.png")}
+          style={styles.icon}
+        />
+        <Image
+          source={require("../../assets/facebook.png")}
+          style={styles.icon}
+        />
       </View>
 
       <View style={styles.signupContainer}>
         <Text style={styles.signupText}>Don’t have an account?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+        <TouchableOpacity onPress={() => navigation.navigate("Register")}>
           <Text style={styles.signupLink}> Sign Up</Text>
         </TouchableOpacity>
       </View>
@@ -72,6 +71,6 @@ const LoginScreen: React.FC = () => {
   );
 };
 
-import styles from './Login.styles';
+import styles from "./Login.styles";
 
 export default LoginScreen;

@@ -1,7 +1,6 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import StackNavigator from './StackNavigator/StackNavigator';
-
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import StackNavigator from "./StackNavigator/StackNavigator";
 
 const App: React.FC = () => {
   return (
