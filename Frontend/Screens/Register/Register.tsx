@@ -51,9 +51,9 @@ const RegisterScreen: React.FC = () => {
         onChangeText={setPassword}
       />
 
-      <TouchableOpacity style={styles.signUpButton} onPress={handleRegister}>
-        <Text style={styles.signUpText}>Sign Up</Text>
-      </TouchableOpacity>
+
+
+    <Button title="Sign Up" onPress={handleRegister} />
 
       <View style={styles.dividerContainer}>
         <View style={styles.line} />

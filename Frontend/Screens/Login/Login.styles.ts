@@ -4,7 +4,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F9F9F9',
     paddingHorizontal: 24,
-    paddingTop: 80,
+    paddingTop: 150,
   },
   title: {
     fontSize: 22,
@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
   forgotText: {
     color: '#000',
     fontSize: 14,
+    fontWeight: '500',
   },
   loginButton: {
     backgroundColor: '#0B5FFF',
@@ -48,7 +49,8 @@ const styles = StyleSheet.create({
   dividerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 20,
+    marginTop: 40,
   },
   line: {
     flex: 1,
@@ -73,6 +75,7 @@ const styles = StyleSheet.create({
   signupContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
+    marginTop: 70,
   },
   signupText: {
     fontSize: 14,

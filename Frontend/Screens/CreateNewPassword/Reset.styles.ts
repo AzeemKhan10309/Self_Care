@@ -3,16 +3,16 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 24,
-    justifyContent: 'center',
-    backgroundColor: '#F9F9F9',
+  marginTop: 130,
+    
   },
   innerContainer: {
     alignItems: 'center',
-    marginBottom: 80,
+    marginBottom: 20,
   },
   title: {
-    fontSize: 26,
-    fontWeight: '700',
+    fontSize: 22,
+    fontWeight: '600',
     color: '#000',
     marginBottom: 12,
   },
@@ -20,7 +20,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#8C8C8C',
     textAlign: 'center',
-    marginBottom: 30,
+    marginBottom: 10,
+    marginTop: 10,
     paddingHorizontal: 10,
   }
  

@@ -4,7 +4,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F9F9F9',
     paddingHorizontal: 24,
-    paddingTop: 80,
+    paddingTop: 150,
   },
   title: {
     fontSize: 22,
@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     alignItems: 'center',
     marginBottom: 30,
+    marginTop: 40,
   },
   signUpText: {
     color: '#FFF',
@@ -41,6 +42,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 24,
+    marginTop: 40,
   },
   line: {
     flex: 1,
@@ -65,6 +67,7 @@ const styles = StyleSheet.create({
   loginContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
+    marginTop: 40,
   },
   loginText: {
     fontSize: 14,

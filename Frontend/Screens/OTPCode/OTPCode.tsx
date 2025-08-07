@@ -47,6 +47,7 @@ const OTPCodeScreen = ({ navigation }: any) => {
           <Input
             key={index}
             keyboardType="numeric"
+            placeholder='5'
             maxLength={1}
             value={digit}
             onChangeText={(text) => handleChange(text, index)}

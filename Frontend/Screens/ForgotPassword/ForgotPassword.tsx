@@ -2,19 +2,18 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
   Keyboard,
   TouchableWithoutFeedback,
+  TouchableOpacity,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import Input from '../../Components/Input/Input';
 import Button from '../../Components/Button/Button';
+import styles from './ForgetPassword.styles';
+
 type RootStackParamList = {
   Login: undefined;
   OTPCode: undefined;
@@ -31,7 +30,7 @@ export default function ForgotPassword() {
 
   const handleSendCode = () => {
     console.log("Send code to:", email);
-    navigation.navigate('OTPCode'); 
+    navigation.navigate('OTPCode');
   };
 
   const handleLogin = () => {
@@ -40,12 +39,12 @@ export default function ForgotPassword() {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={{ flex: 1 }}
       keyboardVerticalOffset={60}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+        <View style={styles.container}>
           <View style={styles.innerContainer}>
             <Text style={styles.title}>Forgot Password?</Text>
             <Text style={styles.subtitle}>
@@ -60,9 +59,8 @@ export default function ForgotPassword() {
               keyboardType="email-address"
               autoCapitalize="none"
             />
-            
 
-    <Button title="Send Code" onPress={handleSendCode} />
+            <Button title="Send Code" onPress={handleSendCode} />
           </View>
 
           <TouchableOpacity style={styles.loginLink} onPress={handleLogin}>
@@ -71,11 +69,8 @@ export default function ForgotPassword() {
               <Text style={styles.loginText}>Login</Text>
             </Text>
           </TouchableOpacity>
-        </ScrollView>
+        </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
 }
-
-
-import styles from './ForgetPassword.styles';

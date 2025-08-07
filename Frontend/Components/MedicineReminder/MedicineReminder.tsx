@@ -45,7 +45,7 @@ const MedicationReminder: React.FC<MedicationReminderProps> = ({
                 <TouchableOpacity onPress={onCancel} style={styles.button}>
                     <Image
                         source={require('../../assets/x.png')}
-                        style={styles.checkIcon}
+                        style={styles.xIcon}
                         resizeMode="contain"
                     />        </TouchableOpacity>
                 <TouchableOpacity onPress={onComplete} style={styles.button}>
@@ -103,6 +103,11 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         fontSize: 18,
+    },
+
+    xIcon: {
+        width: 20,
+        height: 20,
     },
     checkIcon: {
         width: 24,
