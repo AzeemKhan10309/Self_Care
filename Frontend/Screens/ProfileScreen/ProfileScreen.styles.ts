@@ -5,24 +5,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#F9F9F9",
   },
   scrollContent: {
-    padding: 20,
-    paddingBottom: 100,
+    padding: 10,
+    paddingBottom: 90,
   },
-  profileContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  profileImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    marginRight: 10,
-  },
-  helloText: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
+
   editProfileBtn: {
     backgroundColor: "#d1d9ff",
     paddingHorizontal: 10,
@@ -35,17 +21,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#3A5BDE",
   },
-  percentageCircle: {
-    marginLeft: "auto",
-    borderWidth: 2,
-    borderColor: "#3A5BDE",
-    borderRadius: 999,
-    padding: 10,
-  },
-  percentageText: {
-    color: "#3A5BDE",
-    fontWeight: "bold",
-  },
+
   descriptionBox: {
     borderWidth: 1,
     borderColor: "#3A5BDE",

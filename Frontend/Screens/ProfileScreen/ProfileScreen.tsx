@@ -7,33 +7,8 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../../Types/navigation";
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 import { useNavigation } from "@react-navigation/native";
+import { tabs } from "../../src/Constants/TabConfig";
 
-const tabs = [
-  {
-    key: "Dashboard",
-    label: "Home",
-    icon: require("../../assets/Home.png"),
-    focusedIcon: require("../../assets/Home-onclick.png"),
-  },
-  {
-    key: "reminders",
-    label: "Reminders",
-    icon: require("../../assets/Today-medicine.png"),
-    focusedIcon: require("../../assets/Today-medicine-onclick.png"),
-  },
-  {
-    key: "health-tracker",
-    label: "Health-Tracker",
-    icon: require("../../assets/Health-tracker.png"),
-    focusedIcon: require("../../assets/Health-tracker-onclick.png"),
-  },
-  {
-    key: "ProfileScreen",
-    label: "Profile",
-    icon: require("../../assets/Profile-setting.png"),
-    focusedIcon: require("../../assets/Profile-setting-onclick.png"),
-  },
-];
 
 const HomeScreen: React.FC = () => {
   const [activeTab, setActiveTab] = useState("ProfileScreen");
@@ -58,9 +33,7 @@ const HomeScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.percentageCircle}>
-          <Text style={styles.percentageText}>80%</Text>
-        </View>
+       
 
         <View style={styles.descriptionBox}>
           <Text style={styles.descriptionText}>
