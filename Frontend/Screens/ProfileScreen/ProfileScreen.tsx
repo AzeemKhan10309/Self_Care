@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import styles from "./ProfileScreen.styles";
 import ProfileHeader from "../../Components/Profile/Profile";
 import BottomTab from "../../Components/BottomNavbar/BottomNavbar";
@@ -9,10 +9,10 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 import { useNavigation } from "@react-navigation/native";
 import { tabs } from "../../src/Constants/TabConfig";
 
-
 const HomeScreen: React.FC = () => {
   const [activeTab, setActiveTab] = useState("ProfileScreen");
   const navigation = useNavigation<NavigationProp>();
+
   const handleTabPress = (tabKey: string) => {
     setActiveTab(tabKey);
     navigation.navigate(tabKey as keyof RootStackParamList);
@@ -20,20 +20,20 @@ const HomeScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      {/* Main Content */}
+      <View style={styles.fixedContent}>
         <ProfileHeader
           name="Qasim"
           location="Lahore"
           profileImage={require("../../assets/Profile.png")}
         />
+        
 
         <View style={styles.profileSection}>
           <TouchableOpacity style={styles.editProfileBtn}>
             <Text style={styles.editProfileText}>Edit Profile</Text>
           </TouchableOpacity>
         </View>
-
-       
 
         <View style={styles.descriptionBox}>
           <Text style={styles.descriptionText}>
@@ -57,14 +57,14 @@ const HomeScreen: React.FC = () => {
             <Text style={styles.metricValue}>160 cm</Text>
           </View>
         </View>
-      </ScrollView>
-      <View>
-        <BottomTab
-          activeTab={activeTab}
-          onTabPress={handleTabPress}
-          tabs={tabs}
-        />
       </View>
+
+      {/* Bottom Tab */}
+      <BottomTab
+        activeTab={activeTab}
+        onTabPress={handleTabPress}
+        tabs={tabs}
+      />
     </View>
   );
 };
