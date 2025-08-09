@@ -6,8 +6,8 @@ export const tabs = [
     focusedIcon: require("../../assets/Home-onclick.png"),
   },
   {
-    key: "reminders",
-    label: "Reminders",
+    key: "Summary",
+    label: "Summary",
     icon: require("../../assets/Today-medicine.png"),
     focusedIcon: require("../../assets/Today-medicine-onclick.png"),
   },
