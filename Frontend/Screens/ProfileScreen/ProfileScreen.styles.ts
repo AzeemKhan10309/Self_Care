@@ -2,8 +2,13 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F9F9F9",
-  },
+    },
+
+    fixedContent: {
+  flex: 1,
+  padding: 10,
+  justifyContent: "flex-start",
+},
   scrollContent: {
     padding: 10,
     paddingBottom: 90,
@@ -16,37 +21,41 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 4,
     alignSelf: "flex-start",
+    marginLeft: 8,
   },
   editProfileText: {
     fontSize: 12,
-    color: "#3A5BDE",
+    color: "#0B5FFF",
   },
 
   descriptionBox: {
-    borderWidth: 1,
-    borderColor: "#3A5BDE",
+    borderWidth: 2,
+    borderColor: "#0B5FFF",
     borderRadius: 10,
     padding: 10,
     position: "relative",
     marginBottom: 20,
+    width: "96%",
+    height:"25%",
+    alignSelf: "center",
   },
   descriptionText: {
     color: "#888",
-    fontSize: 14,
+    fontSize: 15,
   },
   penIcon: {
     position: "absolute",
     top: 10,
     right: 10,
-    fontSize: 18,
-    color: "#3A5BDE",
+    fontSize: 20,
+    color: "#0B5FFF",
   },
   metricsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
   },
   metricCard: {
-    backgroundColor: "#3A5BDE",
+    backgroundColor: "#0B5FFF",
     borderRadius: 12,
     paddingVertical: 20,
     paddingHorizontal: 15,
@@ -73,5 +82,9 @@ const styles = StyleSheet.create({
   profileSection: {
     marginBottom: 20,
   },
+
+  
 });
 export default styles;
+
+
