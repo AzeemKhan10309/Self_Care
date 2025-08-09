@@ -10,6 +10,7 @@ import OTPCodeScreen from "../Screens/OTPCode/OTPCode";
 import CreateNewPassword from "../Screens/CreateNewPassword/CreateNewPassword";
 import PasswordChange from "../Screens/PasswordChanged/PasswordChanged";
 import ProfileScreen from "../Screens/ProfileScreen/ProfileScreen";
+import Summary from "../Screens/Summary/Component/Summary";
 const Stack = createNativeStackNavigator();
 
 function StackNavigator() {
@@ -70,6 +71,12 @@ function StackNavigator() {
         name="ProfileScreen"
         component={ProfileScreen}
         options={{ title: "Profile Screen" }}
+      />
+
+        <Stack.Screen
+        name="Summary"
+        component={Summary}
+        options={{ title: "Summary" }}
       />
     </Stack.Navigator>
   );
