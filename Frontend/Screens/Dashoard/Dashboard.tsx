@@ -52,7 +52,7 @@ const Dashboard: React.FC = () => {
             <View style={styles.todayReminderContainer}>
                 <Text style={styles.reminderTitle}>Today's Reminders</Text>
                 <MedicationReminder
-                    name="panadol"
+                    name="Panadol"
                     time="10:30 PM"
                     pills="2 Pills"
                     onComplete={() => console.log("Completed")}

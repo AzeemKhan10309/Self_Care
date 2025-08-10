@@ -42,12 +42,13 @@ const styles = StyleSheet.create({
   descriptionText: {
     color: "#888",
     fontSize: 15,
+    
   },
   penIcon: {
     position: "absolute",
-    top: 10,
+    bottom: 5,
     right: 10,
-    fontSize: 20,
+    fontSize: 30,
     color: "#0B5FFF",
   },
   metricsContainer: {

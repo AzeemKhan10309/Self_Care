@@ -12,8 +12,8 @@ export const tabs = [
     focusedIcon: require("../../assets/Today-medicine-onclick.png"),
   },
   {
-    key: "health-tracker",
-    label: "Health-Tracker",
+    key: "Health Tracker",
+    label: "Health Tracker",
     icon: require("../../assets/Health-tracker.png"),
     focusedIcon: require("../../assets/Health-tracker-onclick.png"),
   },

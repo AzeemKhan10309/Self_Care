@@ -11,6 +11,7 @@ import CreateNewPassword from "../Screens/CreateNewPassword/CreateNewPassword";
 import PasswordChange from "../Screens/PasswordChanged/PasswordChanged";
 import ProfileScreen from "../Screens/ProfileScreen/ProfileScreen";
 import Summary from "../Screens/Summary/Component/Summary";
+import EditProfile from "../Screens/EditProfile/EditProfile";
 const Stack = createNativeStackNavigator();
 
 function StackNavigator() {
@@ -77,6 +78,12 @@ function StackNavigator() {
         name="Summary"
         component={Summary}
         options={{ title: "Summary" }}
+      />
+
+        <Stack.Screen
+        name="EditProfile"
+        component={EditProfile}
+        options={{ title: "EditProfile" }}
       />
     </Stack.Navigator>
   );
