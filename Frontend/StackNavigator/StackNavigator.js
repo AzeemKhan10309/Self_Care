@@ -12,6 +12,7 @@ import PasswordChange from "../Screens/PasswordChanged/PasswordChanged";
 import ProfileScreen from "../Screens/ProfileScreen/ProfileScreen";
 import Summary from "../Screens/Summary/Component/Summary";
 import EditProfile from "../Screens/EditProfile/EditProfile";
+import Alarm from "../Screens/Alarm/Alarm";
 const Stack = createNativeStackNavigator();
 
 function StackNavigator() {
@@ -20,64 +21,53 @@ function StackNavigator() {
       <Stack.Screen
         name="Splash"
         component={SplashScreen}
-        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="CollectInfo"
         component={CollectInfoScreen}
-        options={{ title: "Your Info" }}
       />
 
       <Stack.Screen
         name="Login"
         component={Login}
-        options={{ title: "Login" }}
       />
 
       <Stack.Screen
         name="Dashboard"
         component={Dashboard}
-        options={{ title: "Dashboard" }}
       />
       <Stack.Screen
         name="Register"
         component={Register}
-        options={{ title: "Register" }}
       />
 
       <Stack.Screen
         name="ForgotPassword"
         component={ForgotPassword}
-        options={{ title: "ForgotPassword" }}
       />
 
       <Stack.Screen
         name="OTPCode"
         component={OTPCodeScreen}
-        options={{ title: "OTPCode" }}
       />
 
       <Stack.Screen
         name="CreateNewPassword"
         component={CreateNewPassword}
-        options={{ title: "Create New Password" }}
       />
 
       <Stack.Screen
         name="PasswordChanged"
         component={PasswordChange}
-        options={{ title: "ChangePassword" }}
       />
       <Stack.Screen
         name="ProfileScreen"
         component={ProfileScreen}
-        options={{ title: "Profile Screen" }}
       />
 
         <Stack.Screen
         name="Summary"
         component={Summary}
-        options={{ title: "Summary" }}
       />
 
         <Stack.Screen
@@ -85,6 +75,13 @@ function StackNavigator() {
         component={EditProfile}
         options={{ title: "EditProfile" }}
       />
+
+   <Stack.Screen
+        name="Alarm"
+        component={Alarm}
+      />
+
+
     </Stack.Navigator>
   );
 }
