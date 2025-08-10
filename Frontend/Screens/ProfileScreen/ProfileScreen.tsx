@@ -18,6 +18,10 @@ const HomeScreen: React.FC = () => {
     navigation.navigate(tabKey as keyof RootStackParamList);
   };
 
+  const handleEditProfile = () => {
+    navigation.navigate("EditProfile"); // <-- Make sure EditProfile is in RootStackParamList
+  };
+
   return (
     <View style={styles.container}>
       {/* Main Content */}
@@ -27,10 +31,12 @@ const HomeScreen: React.FC = () => {
           location="Lahore"
           profileImage={require("../../assets/Profile.png")}
         />
-        
 
         <View style={styles.profileSection}>
-          <TouchableOpacity style={styles.editProfileBtn}>
+          <TouchableOpacity
+            style={styles.editProfileBtn}
+            onPress={handleEditProfile}
+          >
             <Text style={styles.editProfileText}>Edit Profile</Text>
           </TouchableOpacity>
         </View>

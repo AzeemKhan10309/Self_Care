@@ -11,6 +11,7 @@ import CreateNewPassword from "../Screens/CreateNewPassword/CreateNewPassword";
 import PasswordChange from "../Screens/PasswordChanged/PasswordChanged";
 import ProfileScreen from "../Screens/ProfileScreen/ProfileScreen";
 import Summary from "../Screens/Summary/Component/Summary";
+import EditProfile from "../Screens/EditProfile/EditProfile";
 import Alarm from "../Screens/Alarm/Alarm";
 const Stack = createNativeStackNavigator();
 
@@ -68,10 +69,18 @@ function StackNavigator() {
         name="Summary"
         component={Summary}
       />
+
+        <Stack.Screen
+        name="EditProfile"
+        component={EditProfile}
+        options={{ title: "EditProfile" }}
+      />
+
    <Stack.Screen
         name="Alarm"
         component={Alarm}
       />
+
 
     </Stack.Navigator>
   );
