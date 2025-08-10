@@ -22,7 +22,7 @@ const Dashboard: React.FC = () => {
         setActiveTab(tabKey);
         navigation.navigate(tabKey as keyof RootStackParamList);
     };
- 
+
 
     return (
         <View style={styles.container}>
@@ -61,7 +61,10 @@ const Dashboard: React.FC = () => {
 
             </View>
             <View style={styles.addButtonContainer}>
-                <TouchableOpacity style={styles.addButton}>
+                <TouchableOpacity
+                    style={styles.addButton}
+                    onPress={() => navigation.navigate('Alarm')}
+                >
                     <Image
                         source={require("../../assets/Add.png")}
                         style={styles.addicon}
@@ -69,6 +72,7 @@ const Dashboard: React.FC = () => {
                     />
                 </TouchableOpacity>
             </View>
+
             <BottomTab
                 activeTab={activeTab}
                 onTabPress={handleTabPress}
