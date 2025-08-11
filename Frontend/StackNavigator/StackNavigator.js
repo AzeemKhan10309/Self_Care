@@ -13,6 +13,7 @@ import ProfileScreen from "../Screens/ProfileScreen/ProfileScreen";
 import Summary from "../Screens/Summary/Component/Summary";
 import EditProfile from "../Screens/EditProfile/EditProfile";
 import Alarm from "../Screens/Alarm/Alarm";
+import HealthTracker from "../Screens/HealthTracker/HealthTracker";
 const Stack = createNativeStackNavigator();
 
 function StackNavigator() {
@@ -80,8 +81,10 @@ function StackNavigator() {
         name="Alarm"
         component={Alarm}
       />
-
-
+      <Stack.Screen
+        name="HealthTracker"
+        component={HealthTracker}
+/>
     </Stack.Navigator>
   );
 }

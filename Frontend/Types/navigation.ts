@@ -13,4 +13,5 @@ export type RootStackParamList = {
   ProfileScreen: undefined;
   Summary: undefined;
   Alarm: undefined; 
+  HealthTracker: undefined;
 };
