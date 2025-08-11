@@ -36,7 +36,7 @@ const Dashboard: React.FC = () => {
                     name="Qasim"
                     location="Lahore"
                     profileImage={require("../../assets/Profile.png")}
-                />{" "}
+                />
                 <Text style={styles.feeling}>How are you feeling today?</Text>
             </View>
 

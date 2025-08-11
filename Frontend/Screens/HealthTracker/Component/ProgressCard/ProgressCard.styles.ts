@@ -4,7 +4,7 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', marginBottom: 4 },
   title: { color: '#fff', fontWeight: '600', marginRight: 246, fontSize: 16 },
   subtitle: { color: '#cce0ff', fontSize: 13, marginBottom: 16,marginRight: 156 },
-  circle: { alignItems: 'center', marginBottom: 16 , borderRadius: 100, width: 100, height: 100, backgroundColor: '#3f51b5', justifyContent: 'center'},
+  circle: { alignItems: 'center', marginBottom: 16 , justifyContent: 'center'},
   steps: { fontSize: 32, color: '#fff', fontWeight: '700' },
   stepsLabel: { fontSize: 14, color: '#cce0ff' },
   infoRow: { flexDirection: 'row', justifyContent: 'space-around', width: '100%' },
