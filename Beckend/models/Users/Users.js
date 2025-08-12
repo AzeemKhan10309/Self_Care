@@ -7,7 +7,7 @@ const EmergencyContactSchema = new mongoose.Schema({
 const UserSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    usernmame: { type: String, required: true, unique: true },
+    username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     passwordHash: { type: String, required: true },
     phone: { type: String, required: true },
