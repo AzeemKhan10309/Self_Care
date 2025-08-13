@@ -1,4 +1,4 @@
-import DoseLog from "../models/DoseLog.js";
+import DoseLog from "../../models/DoseLog/DoseLog.js";
 
 export const createDoseLog = async (req, res) => {
   try {
