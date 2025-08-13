@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Dependent from "../../models/Dependent/Dependent.js";
 
 const MedicineSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -14,6 +15,6 @@ const MedicineSchema = new mongoose.Schema({
     ref: "Dependent",
     required: true
   }
-}, { timestamps: true }); 
+}, { timestamps: true });
 
 export default mongoose.model("Medicine", MedicineSchema);
