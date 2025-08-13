@@ -1,15 +1,15 @@
 import mongoose from "mongoose";
 const EmergencyContactSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  phoneNumber: { type: String, required: true }
+  name: { type: String, required: false },
+  phoneNumber: { type: String, required: false },
 });
 
 const UserSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    username: { type: String, required: true, unique: true },
+    username: { type: String, unique: true, required: true },
     email: { type: String, required: true, unique: true },
-    passwordHash: { type: String, required: true },
+    password: { type: String, required: true },
     phone: { type: String, required: true },
     emergencyContacts: [EmergencyContactSchema],
     dependents: [{ type: mongoose.Schema.Types.ObjectId, ref: "Dependent" }]

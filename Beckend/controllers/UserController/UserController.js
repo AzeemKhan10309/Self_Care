@@ -3,63 +3,74 @@ import jwt from "jsonwebtoken";
 import User from "../../models/Users/Users.js";
 
 export const registerUser = async (req, res) => {
-  const { name, username, email, password, phone } = req.body;
-
   try {
-    // ✅ Check for missing fields
-    if (!name || !username || !email || !password || !phone) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
+    const { name, username, email, password, phone } = req.body;
+    console.log(req.body);
 
-    // ✅ Check if user exists
-    const existingUser = await User.findOne({
-      $or: [{ email }, { username }],
-    });
+    if (!name || !username || !email || !password || !phone) {
+      return res.status(400).json({ message: "All required fields must be provided" });
+    }
+console.log(req.body);
+
+
+    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
 
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(400).json({ message: "Email is already registered" });
     }
 
-    // ✅ Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(password, salt);
 
-    // ✅ Save user (match field name to schema)
     const newUser = new User({
       name,
       username,
       email,
-      passwordHash: hashedPassword, // use correct schema field name
-      phone,
+     password: passwordHash,
+      phone
     });
 
     await newUser.save();
-
     res.status(201).json({ message: "User registered successfully" });
+
   } catch (error) {
     console.error("Registration error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-
 export const loginUser = async (req, res) => {
-  const { email, password } = req.body;
-
   try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password are required" });
+    }
+
     const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ message: "Invalid credentials" });
-    }
-    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
-    if (!isPasswordValid) {
-      return res.status(400).json({ message: "Invalid credentials" });
-    }
-    const token = jwt.sign({ id: user._id }, config.JWT_SECRET, {
-      expiresIn: "1h",
+    if (!user) return res.status(400).json({ message: "User not found" });
+
+    const isMatch = await bcrypt.compare(password, user.password); 
+    if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+    );
+
+    res.json({
+      message: "Login successful",
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        username: user.username,
+        phone: user.phone,
+      },
     });
-    res.status(200).json({ token, user: { id: user._id, name: user.name, email: user.email } });
   } catch (error) {
-    console.error("Login error:", error);
+    console.error("Login error:", error.message);
     res.status(500).json({ message: "Server error" });
   }
-}       
+};
