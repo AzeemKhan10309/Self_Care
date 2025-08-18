@@ -4,19 +4,16 @@ import User from "../../models/Users/Users.js";
 
 export const registerUser = async (req, res) => {
   try {
-    const { name, username, email, password, phone } = req.body;
-    console.log(req.body);
+    const { name, username, email, password, phone, collectInfo } = req.body;
+    console.log("Request body:", req.body);
 
     if (!name || !username || !email || !password || !phone) {
       return res.status(400).json({ message: "All required fields must be provided" });
     }
-console.log(req.body);
-
 
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
-
     if (existingUser) {
-      return res.status(400).json({ message: "Email is already registered" });
+      return res.status(400).json({ message: "Email or username is already registered" });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -26,18 +23,36 @@ console.log(req.body);
       name,
       username,
       email,
-     password: passwordHash,
-      phone
+      password: passwordHash,
+      phone,
+      age: collectInfo?.age || null,
+       gender: collectInfo?.gender ? collectInfo.gender.toLowerCase() : null,
+      weight: collectInfo?.weight || null,
+      isProfileComplete: collectInfo ? true : false,
     });
 
     await newUser.save();
-    res.status(201).json({ message: "User registered successfully" });
+
+    const userResponse = {
+      id: newUser._id,
+      name: newUser.name,
+      username: newUser.username,
+      email: newUser.email,
+      phone: newUser.phone,
+      age: newUser.age,
+      gender: newUser.gender,
+      weight: newUser.weight,
+      isProfileComplete: newUser.isProfileComplete,
+    };
+
+    res.status(201).json({ user: userResponse });
 
   } catch (error) {
-    console.error("Registration error:", error);
+    console.error("Registration errorr:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 export const loginUser = async (req, res) => {
   try {

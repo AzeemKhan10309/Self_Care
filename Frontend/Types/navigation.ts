@@ -1,17 +1,21 @@
-export type RootStackParamList = {
-  Splash: undefined;
-  CollectInfo: undefined;
+export type AuthStackParamList = {
   Login: undefined;
-  Dashboard: undefined;
   Register: undefined;
   ForgotPassword: undefined;
   OTPCode: undefined;
-  ResetPassword: undefined;
   CreateNewPassword: undefined;
-  PasswordChange: undefined;
-  EditProfile: undefined;
+  PasswordChanged: undefined;
+  Splash:undefined;
+};
+
+export type AppStackParamList = {
+  Dashboard: undefined;
   ProfileScreen: undefined;
   Summary: undefined;
-  Alarm: undefined; 
+  EditProfile: undefined;
+  Alarm: undefined;
   HealthTracker: undefined;
+  CollectInfo: undefined;
 };
+
+export type RootStackParamList = AuthStackParamList & AppStackParamList;

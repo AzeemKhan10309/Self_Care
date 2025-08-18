@@ -8,8 +8,11 @@ type SplashScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
   "Splash"
 >;
+interface SplashProps {
+  onFinish: () => void; // 👈 yeh add karo
+}
 
-const SplashScreen: React.FC = () => {
+const SplashScreen: React.FC<SplashProps> = ({ onFinish }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
   const navigation = useNavigation<SplashScreenNavigationProp>();

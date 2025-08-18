@@ -1,85 +1,92 @@
-import React from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../Types/navigation";
+import React, { useState } from "react";
+import { View, Text, ScrollView, StyleSheet, Alert } from "react-native";
 import Input from "../../Components/Input/Input";
 import Button from "../../Components/Button/Button";
-type RegisterScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  "Register"
->;
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "../../Redux/Store";
+import { clearCollectInfo } from "../../Redux/CollectInfoSlice";
+import { registerUser } from "../../Redux/AuthSlice";
 
 const RegisterScreen: React.FC = () => {
-  const navigation = useNavigation<RegisterScreenNavigationProp>();
-  const [username, setUsername] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const dispatch = useDispatch<AppDispatch>();
+  const collectInfo = useSelector((state: RootState) => state.collectInfo);
 
-  const handleRegister = () => {
-    navigation.navigate('Login'); 
-   
+  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [phone, setPhone] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleRegister = async () => {
+    if (!name || !email || !password) {
+      Alert.alert("Error", "Please fill all fields");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      await dispatch(registerUser({ name, username, email, password, phone, collectInfo })
+).unwrap();
+
+      dispatch(clearCollectInfo());
+      Alert.alert("Success", "Registration successful!");
+    } catch (err: any) {
+      Alert.alert("Registration Error", err || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Create an account</Text>
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Register your account</Text>
 
-      <Input
-        placeholder="Username"
-        placeholderTextColor="#B0B0B0"
-        value={username}
-        onChangeText={setUsername}
-      />
-      <Input
-        placeholder="E-mail"
-        placeholderTextColor="#B0B0B0"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <Input
-        placeholder="Password"
-        placeholderTextColor="#B0B0B0"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
+        <Input placeholder="Name" value={name} onChangeText={setName} />
+        <Input placeholder="Username" value={username} onChangeText={setUsername} />
 
-      <Button title="Sign Up" onPress={handleRegister} />
-
-      <View style={styles.dividerContainer}>
-        <View style={styles.line} />
-        <Text style={styles.orText}>Or Sign Up with</Text>
-        <View style={styles.line} />
-      </View>
-
-      <View style={styles.socialIcons}>
-        <Image source={require("../../assets/apple.png")} style={styles.icon} />
-        <Image
-          source={require("../../assets/google.png")}
-          style={styles.icon}
+        <Input
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
         />
-        <Image
-          source={require("../../assets/facebook.png")}
-          style={styles.icon}
+        <Input
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
+        <Input placeholder="Phone" value={phone} onChangeText={setPhone} />
+
+        <Button
+          title={loading ? "Registering..." : "Register"}
+          onPress={handleRegister}
+          disabled={loading}
         />
       </View>
-
-      <View style={styles.loginContainer}>
-        <Text style={styles.loginText}>Already have account?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-          <Text style={styles.loginLink}> Login</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </ScrollView>
   );
 };
 
-import styles from "./Register.styles";
+const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: "center",
+    backgroundColor: "#F9F9F9",
+  },
+  container: {
+    padding: 24,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    textAlign: "center",
+  },
+});
 
 export default RegisterScreen;
