@@ -18,7 +18,7 @@ const LoginScreen: React.FC = () => {
   const [password, setPassword] = React.useState("");
 
   const handleLogin = () => {
-    console.log("Logging in with:", { email, password });
+    console.log("Logging in with::", { email, password });
     navigation.navigate("Dashboard");
   };
 
