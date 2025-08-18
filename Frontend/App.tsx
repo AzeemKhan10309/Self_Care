@@ -1,12 +1,17 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import StackNavigator from "./StackNavigator/StackNavigator";
+import { Provider } from "react-redux";
+import RootNavigator from "./StackNavigator/RootNavigator";
+import {store} from "./Redux/Store"
+import { navigationRef } from "./navigationService";
 
 const App: React.FC = () => {
   return (
-    <NavigationContainer>
-      <StackNavigator />
-    </NavigationContainer>
+ <Provider store={store}>
+      <NavigationContainer ref={navigationRef}>
+        <RootNavigator />
+      </NavigationContainer>
+    </Provider>
   );
 };
 export default App;
