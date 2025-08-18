@@ -13,7 +13,6 @@ const initialState: AuthState = {
   error: null,
 };
 
-// Register user
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (
@@ -52,7 +51,6 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-// Login user
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (
@@ -77,6 +75,23 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+export const fetchUserInfo = createAsyncThunk(
+  "auth/fetchUserInfo",
+  async (userId: string, { rejectWithValue }) => {
+    try {
+      const res = await apiRequest<{ user: any }>("/users/${userId}", "GET");
+
+      if ("error" in res) {
+        return rejectWithValue(res.message);
+      }
+
+      return res.user;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -88,7 +103,6 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Register
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -101,7 +115,6 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      // Login
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -111,6 +124,18 @@ const authSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(loginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(fetchUserInfo.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchUserInfo.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(fetchUserInfo.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });
