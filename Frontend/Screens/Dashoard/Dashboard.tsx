@@ -59,7 +59,7 @@ const Dashboard: React.FC = () => {
             <View style={styles.addButtonContainer}>
                 <TouchableOpacity
                     style={styles.addButton}
-                    onPress={() => navigation.navigate('Alarm')}
+                    onPress={() => navigation.navigate('AddMedicine')}
                 >
                     <Image
                         source={require("../../assets/Add.png")}

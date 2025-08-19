@@ -16,6 +16,7 @@ export type AppStackParamList = {
   Alarm: undefined;
   HealthTracker: undefined;
   CollectInfo: undefined;
+  AddMedicine:undefined;
 };
 
 export type RootStackParamList = AuthStackParamList & AppStackParamList;
