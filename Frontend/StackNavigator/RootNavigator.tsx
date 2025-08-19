@@ -2,9 +2,8 @@ import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import { RootState } from "../Redux/Store";
-import { navigationRef } from "../navigationService";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import SplashScreen from "../Screens/Splash/Splash";
 import AuthStack from "./AuthStack";
 import AppStack from "./AppStack";
 import SplashScreen from "../Screens/Splash/Splash";
