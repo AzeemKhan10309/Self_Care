@@ -39,7 +39,6 @@ const LoginScreen: React.FC = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Login your account</Text>
 
-      {/* Error */}
 
       <Input value={email} placeholder="Email" onChangeText={setEmail} />
       <Input
@@ -56,7 +55,6 @@ const LoginScreen: React.FC = () => {
         <Text style={styles.forgotText}>Forgot Password?</Text>
       </TouchableOpacity>
 
-      {/* Redux Button with loading */}
       <Button title={loading ? "Logging in..." : "Login"} onPress={handleLogin} />
 
       <View style={styles.dividerContainer}>
@@ -73,7 +71,7 @@ const LoginScreen: React.FC = () => {
 
       <View style={styles.signupContainer}>
         <Text style={styles.signupText}>Don’t have an account?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+        <TouchableOpacity onPress={() => navigation.navigate("CollectInfo")}>
           <Text style={styles.signupLink}> Sign Up</Text>
         </TouchableOpacity>
       </View>
