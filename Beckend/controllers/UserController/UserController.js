@@ -2,6 +2,32 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../../models/Users/Users.js";
 
+export const checkUsername = async (req, res) => {
+  try {
+    const { username } = req.query;
+    if (!username) {
+      return res.status(400).json({ message: "Username required" });
+    }
+
+    const exists = await User.findOne({ username });
+    if (!exists) {
+      return res.json({ available: true });
+    }
+
+    // Agar username already exist hai to random suggestions do
+    const suggestions = [
+      `${username}${Math.floor(100 + Math.random() * 900)}`,
+      `${username}_${Math.floor(Math.random() * 1000)}`,
+      `${username}X${Date.now().toString().slice(-3)}`,
+    ];
+
+    res.json({ available: false, suggestions });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
 export const registerUser = async (req, res) => {
   try {
     const { name, username, email, password, phone } = req.body;

@@ -4,43 +4,20 @@ import {
   Text,
   View,
   TextInput,
-  KeyboardTypeOptions,
+  TextInputProps,
 } from "react-native";
 
-interface InputProps {
-  value?: string;
-  placeholder?: string;
-  onChangeText?: (text: string) => void;
+// ✅ Extend TextInputProps so all RN TextInput props are supported
+interface InputProps extends TextInputProps {
   label?: string;
-  editable?: boolean;
-  secureTextEntry?: boolean;
-  keyboardType?: KeyboardTypeOptions;
-  placeholderTextColor?: string;
-  autoCapitalize?: "none" | "sentences" | "words" | "characters";
-  maxLength?: number;
 }
 
-const Input: React.FC<InputProps> = ({
-  value,
-  placeholder,
-  onChangeText,
-  label,
-  editable = true,
-  secureTextEntry,
-  keyboardType,
-  placeholderTextColor = "#B0B0B0",
-}) => {
+const Input: React.FC<InputProps> = ({ label, style, ...rest }) => {
   return (
     <View style={styles.container}>
       <TextInput
-        style={styles.input}
-        value={value}
-        placeholder={placeholder}
-        onChangeText={onChangeText}
-        editable={editable}
-        secureTextEntry={secureTextEntry}
-        keyboardType={keyboardType}
-        placeholderTextColor="#B0B0B0"
+        style={[styles.input, style]} // merge styles
+        {...rest} // ✅ spread all props (value, onChangeText, onBlur, etc.)
       />
       {label && <Text style={styles.label}>{label}</Text>}
     </View>

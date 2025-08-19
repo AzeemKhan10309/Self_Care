@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import React from "react";
 import {
   View,
@@ -14,6 +15,27 @@ type RegisterScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
   "Register"
 >;
+=======
+import React, { useState, useCallback } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  Alert,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+} from "react-native";
+import Input from "../../Components/Input/Input";
+import Button from "../../Components/Button/Button";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "../../Redux/Store";
+import { clearCollectInfo } from "../../Redux/CollectInfoSlice";
+import { registerUser, checkUsername } from "../../Redux/AuthSlice";
+import styles from "./Register.styles";
+import { debounce } from "lodash"; // ✅
+>>>>>>> Stashed changes
 
 const RegisterScreen: React.FC = () => {
   const navigation = useNavigation<RegisterScreenNavigationProp>();
@@ -21,6 +43,7 @@ const RegisterScreen: React.FC = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
+<<<<<<< Updated upstream
   const handleRegister = () => {
     navigation.navigate('Login'); 
    
@@ -82,4 +105,126 @@ const RegisterScreen: React.FC = () => {
 
 import styles from "./Register.styles";
 
+=======
+  // Redux auth state
+  const { usernameAvailable, loading } = useSelector(
+    (state: RootState) => state.auth
+  );
+
+  // local form state
+  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [phone, setPhone] = useState("");
+  const [registerLoading, setRegisterLoading] = useState(false);
+
+  const debouncedCheck = useCallback(
+    debounce((value: string) => {
+      if (value.trim().length > 2) {
+        dispatch(checkUsername(value));
+      }
+    }, 500), // wait 500ms after last keystroke
+    [dispatch]
+  );
+
+  const handleUsernameChange = (value: string) => {
+    setUsername(value);
+    debouncedCheck(value);
+  };
+
+  const handleRegister = async () => {
+    if (!name || !username || !email || !password) {
+      Alert.alert("Error", "Please fill all fields");
+      return;
+    }
+
+    if (usernameAvailable === false) {
+      Alert.alert("Error", "Username is already taken. Please choose another.");
+      return;
+    }
+
+    setRegisterLoading(true);
+    try {
+      await dispatch(
+        registerUser({ name, username, email, password, phone, collectInfo })
+      ).unwrap();
+
+      dispatch(clearCollectInfo());
+      Alert.alert("Success", "Registration successful!");
+    } catch (err: any) {
+      Alert.alert("Registration Error", err || "Something went wrong");
+    } finally {
+      setRegisterLoading(false);
+    }
+    
+  };
+
+  return (
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.container}>
+            <Text style={styles.title}>Register your account</Text>
+
+            {/* Name */}
+            <Input placeholder="Name" value={name} onChangeText={setName} />
+
+            {/* Username with immediate check */}
+            <Input
+              placeholder="Username"
+              value={username}
+              onChangeText={handleUsernameChange} // ✅ triggers API in real-time
+            />
+
+            {/* Username response */}
+         {loading && username.length > 2 && (
+  <Text style={{ color: "orange" }}>Checking...</Text>
+)}
+{usernameAvailable === true && (
+  <Text style={{ color: "green" }}>✅ Username available</Text>
+)}
+{usernameAvailable === false && !loading && (
+  <Text style={{ color: "red" }}>❌ Username taken</Text>
+)}
+{!loading && username.length > 2 && usernameAvailable === null && (
+  <Text style={{ color: "gray" }}>⚠️ Could not check username</Text>
+)}
+
+            {/* Email */}
+            <Input
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+            />
+
+            {/* Password */}
+            <Input
+              placeholder="Password"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
+
+            {/* Phone */}
+            <Input placeholder="Phone" value={phone} onChangeText={setPhone} />
+
+            {/* Register Button */}
+            <Button
+              title={registerLoading ? "Registering..." : "Register"}
+              onPress={handleRegister}
+              disabled={registerLoading}
+            />
+          </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
+  );
+};
+
+>>>>>>> Stashed changes
 export default RegisterScreen;

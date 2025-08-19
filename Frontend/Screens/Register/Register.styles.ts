@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -78,5 +79,55 @@ const styles = StyleSheet.create({
     color: "#0B5FFF",
     fontWeight: "600",
   },
+<<<<<<< Updated upstream
+=======
+
+  // 👇 New styles for username validation
+  successText: {
+    color: "green",
+    fontSize: 14,
+    marginBottom: 8,
+  },
+  errorText: {
+    color: "red",
+    fontSize: 14,
+    marginBottom: 8,
+  },
+  suggestionText: {
+    color: "#0B5FFF",
+    fontSize: 14,
+    marginVertical: 4,
+  },
+  suggestionContainer: {
+    marginBottom: 12,
+  },
+
+scrollContainer: {
+    flexGrow: 1,
+    justifyContent: "center",
+    paddingBottom: 40,
+  },
+  usernameAvailable: {
+    color: "green",
+    fontSize: 14,
+    marginVertical: 5,
+  },
+  usernameTaken: {
+    color: "red",
+    fontSize: 14,
+    marginVertical: 5,
+  },
+
+  suggestionTag: {
+    backgroundColor: "#eee",
+    borderRadius: 15,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    margin: 4,
+  },
+ 
+
+>>>>>>> Stashed changes
 });
+
 export default styles;

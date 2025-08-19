@@ -22,6 +22,20 @@ const LoginScreen: React.FC = () => {
     navigation.navigate("Dashboard");
   };
 
+<<<<<<< Updated upstream
+=======
+  React.useEffect(() => {
+    if (user) {
+      navigation.navigate("Dashboard");
+    }
+      if (error) {
+    Alert.alert("Login Failed", error, [{ text: "OK" ,
+      
+    }]);
+  }
+  }, [user,error]);
+
+>>>>>>> Stashed changes
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login your account</Text>
