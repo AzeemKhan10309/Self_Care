@@ -1,59 +1,49 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, ImageSourcePropType, PermissionsAndroid, Platform } from "react-native";
+import { View, Text, Image } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../../Redux/Store";
 import { fetchUserInfo } from "../../Redux/AuthSlice";
-import Geolocation from "react-native-geolocation-service";
+import * as Location from "expo-location";
 import styles from "./Profile.styles";
 
-interface ProfileHeaderProps {
-  name: string;
-  profileImage: ImageSourcePropType;
-}
-
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({ name, profileImage }) => {
+const ProfileHeader: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
-  const userId = user?._id;
   const [currentLocation, setCurrentLocation] = useState("Unknown");
 
   useEffect(() => {
-    if (!user) {
-dispatch(fetchUserInfo(userId));
+    if (user?._id) {
+      dispatch(fetchUserInfo(user._id));
     }
 
     const getLocation = async () => {
-      if (Platform.OS === "android") {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-        );
-        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-          console.log("Location permission denied");
-          return;
-        }
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Location permission denied");
+        return;
       }
 
-      Geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setCurrentLocation(`Lat: ${latitude.toFixed(2)}, Lon: ${longitude.toFixed(2)}`);
-        },
-        (error) => {
-          console.log(error.message);
-        },
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-      );
+      const location = await Location.getCurrentPositionAsync({});
+      const { latitude, longitude } = location.coords;
+      setCurrentLocation(`Lat: ${latitude.toFixed(2)}, Lon: ${longitude.toFixed(2)}`);
     };
 
     getLocation();
-  }, [dispatch, user]);
+  }, [dispatch, user?._id]);
 
   return (
     <View style={styles.profileRow}>
-      <Image source={profileImage} style={styles.profileImage} />
+      <Image
+        source={
+          user?.profileImage
+            ? { uri: user.profileImage }
+            : require("../../assets/Profile.png")
+        }
+        style={styles.profileImage}
+      />
 
       <View style={styles.nameLocation}>
-        <Text style={styles.greeting}>Hello, {name}!</Text>
+        <Text style={styles.greeting}>Hello, {user?.name || "User"}!</Text>
 
         <View style={styles.locationRow}>
           <Image

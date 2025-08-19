@@ -32,11 +32,7 @@ const Dashboard: React.FC = () => {
                     style={styles.headerBackground}
                     resizeMode="cover"
                 />
-                <ProfileHeader
-                    name="Qasim"
-                    location="Lahore"
-                    profileImage={require("../../assets/Profile.png")}
-                />
+                <ProfileHeader/>
                 <Text style={styles.feeling}>How are you feeling today?</Text>
             </View>
 
