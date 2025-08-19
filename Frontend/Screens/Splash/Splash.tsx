@@ -15,7 +15,6 @@ interface SplashProps {
 const SplashScreen: React.FC<SplashProps> = ({ onFinish }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
-  const navigation = useNavigation<SplashScreenNavigationProp>();
 
   useEffect(() => {
     Animated.parallel([
@@ -31,7 +30,7 @@ const SplashScreen: React.FC<SplashProps> = ({ onFinish }) => {
       }),
     ]).start(() => {
       setTimeout(() => {
-        navigation.navigate("CollectInfo");
+  onFinish();
       }, 2000);
     });
   }, []);
