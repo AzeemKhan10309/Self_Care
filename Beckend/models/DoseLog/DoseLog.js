@@ -4,21 +4,25 @@ const DoseLogSchema = new mongoose.Schema({
   medicineId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Medicine",
-    required: true
+    required: true,
   },
-  dependentId: {
+  userId: {  
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Dependent",
-    required: true
+    ref: "User",
+    required: true,
   },
-  date: {
-    type: Date,
-    required: true
+  dependentId: {  
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: false,
   },
+  date: { type: Date, required: true },
   status: {
     type: String,
     enum: ["Taken", "Missed"],
-    required: true
-  }
-}, { timestamps: true });
+    default: "Missed",
+  },
+  time: { type: Date, required: true },
+});
+
 export default mongoose.model("DoseLog", DoseLogSchema);

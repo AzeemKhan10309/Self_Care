@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, ImageSourcePropType } from 'react-native';
-import styles from '../Component/UpComingDose.styles';
+import styles from "./UpComingDose.styles";
 interface DoseCardProps {
   title: string;
   image: ImageSourcePropType;

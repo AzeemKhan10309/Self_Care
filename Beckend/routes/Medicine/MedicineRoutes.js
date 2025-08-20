@@ -1,29 +1,31 @@
 import express from "express";
+import multer from "multer";
+
 import {
   createMedicine,
   getAllMedicines,
   getMedicineById,
   updateMedicine,
   deleteMedicine,
-  markMedicineTaken,
-  getMedicineHistory,
-  getMedicinesByDependent,
-  getTodayMedicines,
-  toggleReminder,
+ 
 } from "../../controllers/Medicine/MedicineController.js";
 import authMiddleware from "../../middlewares/authMiddleware.js";
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, "uploads/"),
+  filename: (req, file, cb) => {
+    const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, unique + "-" + file.originalname);
+  },
+});
+
+const upload = multer({ storage });
 
 const router = express.Router();
 
-router.post("/", authMiddleware, createMedicine);
+router.post("/", authMiddleware, upload.single("image"), createMedicine);
 router.get("/", authMiddleware, getAllMedicines);
 router.get("/:id", authMiddleware, getMedicineById);
 router.put("/:id", authMiddleware, updateMedicine);
 router.delete("/:id", authMiddleware, deleteMedicine);
-router.post("/:id/taken", authMiddleware, markMedicineTaken);
-router.get("/:id/history", authMiddleware, getMedicineHistory);
-router.get("/dependent/:dependentId", authMiddleware, getMedicinesByDependent);
-router.get("/today/list", authMiddleware, getTodayMedicines);
-router.patch("/:id/reminder", authMiddleware, toggleReminder);
 
 export default router;

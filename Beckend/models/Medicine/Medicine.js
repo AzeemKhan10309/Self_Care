@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import Dependent from "../../models/Dependent/Dependent.js";
 
 
 const medicineSchema = new mongoose.Schema(
@@ -7,17 +6,18 @@ const medicineSchema = new mongoose.Schema(
     name: { type: String, required: true },
     description: { type: String },
 
-    type: { type: String, required: true },
+  type: { type: String, enum: ["Tablet", "Syrup", "Injection", "Drop"], required: true },
     dosage: { type: Number, required: true },
     unit: { type: String, required: true },
 
     startDate: { type: Date, required: true },
     endDate: { type: Date },
 
-    times: [{ type: String, required: true }],
-    frequency: { type: Number },
-    days: [{ type: String }],
-
+    times: [Date],
+selectedDays: {
+  type: [Number], 
+  default: []
+},
     reminderEnabled: { type: Boolean, default: true },
     reminderBefore: { type: Number, default: 10 },
     repeat: { type: Boolean, default: true },
@@ -38,5 +38,4 @@ const medicineSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Medicine = mongoose.model("Medicine", medicineSchema);
-export default Medicine;   // ✅ Proper ESM export
+export default mongoose.model("Medicine", medicineSchema);

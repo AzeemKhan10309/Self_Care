@@ -1,35 +1,37 @@
 import { StyleSheet } from "react-native";
 
-const styles = StyleSheet.create({
+export default StyleSheet.create({
   container: {
-    paddingVertical: 9,
+    marginTop: 15,
   },
   dateText: {
-    fontSize: 20,
-    fontWeight: "500",
-    marginBottom: 13,
+    fontSize: 14,
+    marginBottom: 10,
     textAlign: "center",
-    color: "#030303ff",
   },
   daysRow: {
     flexDirection: "row",
+    justifyContent: "space-around",
   },
-  day: {
-    width: 35,
-    height: 35,
-    borderRadius: 17.5,
-    textAlign: "center",
+  dayButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 24,
+    backgroundColor: "#eee",
+    height: 50,
+    width: 50,
+    alignItems: "center",
     justifyContent: "center",
-    alignItems: "center",  
-     lineHeight: 35,
-    marginHorizontal: 11,
-     marginVertical: 5,
-    fontSize: 20,
-    color: "#1F62E8",
-    borderWidth: 2,
-    borderColor: "#1F62E8",
-    fontWeight:"bold"
+  },
+  selectedDay: {
+    backgroundColor: "#1F62E8",
+  },
+  dayText: {
+    fontSize: 14,
+    color: "#333",
+  },
+  selectedDayText: {
+    color: "#fff",
+    fontWeight: "bold",
   },
 });
-
-export default styles;
