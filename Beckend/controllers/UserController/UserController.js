@@ -98,3 +98,49 @@ export const UserInfo = async (req, res) => {
     res.status(404).json({ message: "User not found" });
   }
 };
+
+
+function generateSuggestions(username) {
+  const cleanName = username.toLowerCase();
+  const randomNum = () => Math.floor(1000 + Math.random() * 9000);
+
+  return [
+    `${cleanName}${randomNum()}`,
+    `${cleanName}_123`,
+    `${cleanName}_official`,
+    `${cleanName}_dev`,
+    `the_${cleanName}`,
+    `${cleanName}_x`,
+  ];
+}
+
+export const UserAvailablity = async (req, res) => {
+  try {
+    const { username } = req.params;
+
+    if (!username || username.trim() === "") {
+      return res.status(400).json({ error: "Username is required" });
+    }
+
+    // Case insensitive check
+    const existingUser = await User.findOne({ username: new RegExp(`^${username}$`, "i") });
+
+    if (existingUser) {
+      const suggestions = generateSuggestions(username);
+      return res.json({
+        available: false,
+        message: "Username already taken",
+        suggestions,
+      });
+    }
+
+    res.json({
+      available: true,
+      message: "Username is available",
+    });
+  } catch (error) {
+    console.error("Error checking username:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+

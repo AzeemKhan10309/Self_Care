@@ -1,115 +1,151 @@
 import React, { useState } from "react";
-import {
-    View,
-    Text,
-    TouchableOpacity,
-    Switch,
-} from "react-native";
+import { ScrollView, View, Text, TouchableOpacity, Image, Platform } from "react-native";
+import * as ImagePicker from "expo-image-picker";
+
+import MedicineInfo from "./Components/MedicineInfo/MedicineInfo";
+import Reminder from "./Components/Reminder/Reminder";
+import Schedule from "./Components/Schedule/Schedule";
 import Input from "../../Components/Input/Input";
 import styles from "./AddMedicine.styles";
-import TimePicker from "./Components/TimePicker/TimePicker";
-import WeekDays from "./Components/WeekDays/WeekDays";
-
+import Button from "../../Components/Button/Button";
 const AddMedicineScreen: React.FC = () => {
-    const [time, setTime] = useState(new Date());
-    const [medicine, setMedicine] = useState("");
-    const [dose, setDose] = useState(1);
-    const [alarm, setAlarm] = useState(true);
-    const [vibration, setVibration] = useState(true);
-    const [snooze, setSnooze] = useState(true);
+  const [medicine, setMedicine] = useState("");
+  const [description, setDescription] = useState("");
+  const [type, setType] = useState("");
+  const [dosage, setDosage] = useState(1);
+  const [unit, setUnit] = useState("");
 
-    return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Add Medicine</Text>
+  const typeUnitMap: { [key: string]: string } = {
+    Tablet: "Tablet",
+    Syrup: "ml",
+    Injection: "CC",
+  };
 
-            <View style={styles.timepicker}>
+  const handleTypeSelect = (selectedType: string) => {
+    setType(selectedType);
+    setUnit(typeUnitMap[selectedType] || "");
+  };
 
-                <TimePicker value={time} onChange={setTime} />
-            </View>
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [times, setTimes] = useState<Date[]>([]);
+  const [currentIndex, setCurrentIndex] = useState<number | null>(null);
+  const [showTimePicker, setShowTimePicker] = useState(false);
 
+  const handleAddTime = () => {
+    setCurrentIndex(times.length);
+    setShowTimePicker(true);
+  };
 
-            {/* Date & Days */}
-      
-<WeekDays
-  selectedDay={5} // Saturday
-  onSelectDay={(i) => console.log("Selected Day:", i)}
-  showDate="Today - Sat, 4 Dec"
-/>
-            {/* Medicine Name */}
-            <Input
-                placeholder="Add Medicine Name"
-                value={medicine}
-                onChangeText={setMedicine}
-            />
+  const handleEditTime = (index: number) => {
+    setCurrentIndex(index);
+    setShowTimePicker(true);
+  };
 
-            {/* Dose */}
-            <View style={styles.doseContainer}>
-                <TouchableOpacity
-                    onPress={() => setDose(Math.max(1, dose - 1))}
-                    style={styles.doseButton}
-                >
-                    <Text style={styles.doseButtonText}>-</Text>
-                </TouchableOpacity>
-                <Text style={styles.doseValue}>{dose}</Text>
-                <TouchableOpacity
-                    onPress={() => setDose(dose + 1)}
-                    style={styles.doseButton}
-                >
-                    <Text style={styles.doseButtonText}>+</Text>
-                </TouchableOpacity>
-            </View>
+  const handleTimeChange = (event: any, selectedTime?: Date) => {
+    if (Platform.OS !== "ios") setShowTimePicker(false);
+    if (selectedTime && currentIndex !== null) {
+      const newTimes = [...times];
+      if (currentIndex === times.length) newTimes.push(selectedTime);
+      else newTimes[currentIndex] = selectedTime;
+      setTimes(newTimes);
+      setCurrentIndex(null);
+    } else {
+      setShowTimePicker(false);
+      setCurrentIndex(null);
+    }
+  };
 
-            {/* Alarm Toggle */}
-<View style={styles.row}>
-  <Text style={styles.label}>
-    Alarm sound{"\n"}
-    <Text style={styles.subLabel}>Homecoming</Text>
-  </Text>
-  <Switch
-    value={snooze}
-    onValueChange={setSnooze}
-    trackColor={{ false: "#F6F6F6", true: "#2563eb" }}
-    thumbColor={snooze ? "#f4f3f4" : "#f4f3f4"}
-    ios_backgroundColor="#F6F6F6"
-  />
-</View>
+  const removeTime = (index: number) => {
+    setTimes(times.filter((_, i) => i !== index));
+  };
 
-{/* Vibration Toggle */}
-<View style={styles.row}>
-  <Text style={styles.label}>
-    Vibration{"\n"}
-    <Text style={styles.subLabel}>Basic call</Text>
-  </Text>
-  <Switch
-    value={snooze}
-    onValueChange={setSnooze}
-    trackColor={{ false: "#F6F6F6", true: "#2563eb" }}
-    thumbColor={snooze ? "#f4f3f4" : "#f4f3f4"}
-    ios_backgroundColor="#F6F6F6"
-  />
-</View>
+  const [reminderEnabled, setReminderEnabled] = useState(true);
+  const [reminderBefore, setReminderBefore] = useState(10);
+  const [repeat, setRepeat] = useState(true);
 
-{/* Snooze Toggle */}
-<View style={styles.row}>
-  <Text style={styles.label}>
-    Snooze{"\n"}
-    <Text style={styles.subLabel}>5 minutes, 3 times</Text>
-  </Text>
-  <Switch
-    value={snooze}
-    onValueChange={setSnooze}
-    trackColor={{ false: "#F6F6F6", true: "#2563eb" }}
-    thumbColor={snooze ? "#f4f3f4" : "#f4f3f4"}
-    ios_backgroundColor="#F6F6F6"
-  />
-</View>
+  const [notes, setNotes] = useState("");
+  const [image, setImage] = useState<string | null>(null);
 
-            {/* Submit Button */}
-            <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText}>Add Medicine</Text>
-            </TouchableOpacity>
-        </View>
-    );
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 1,
+    });
+    if (!result.canceled) setImage(result.assets[0].uri);
+  };
+
+  const handleSave = () => {
+    const medicineData = {
+      medicine,
+      description,
+      type,
+      dosage,
+      unit,
+      startDate,
+      endDate,
+      times,
+      reminderEnabled,
+      reminderBefore,
+      repeat,
+      notes,
+      image,
+    };
+    console.log("Saving Medicine:", medicineData);
+    // TODO: send to backend API
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Add Medicine</Text>
+
+      <MedicineInfo
+        medicine={medicine}
+        setMedicine={setMedicine}
+        description={description}
+        setDescription={setDescription}
+        type={type}
+        handleTypeSelect={handleTypeSelect}
+        dosage={dosage}
+        setDosage={setDosage}
+        unit={unit}
+      />
+
+      <Schedule
+        startDate={startDate}
+        setStartDate={setStartDate}
+        endDate={endDate}
+        setEndDate={setEndDate}
+        times={times}
+        handleAddTime={handleAddTime}
+        handleEditTime={handleEditTime}
+        removeTime={removeTime}
+        showTimePicker={showTimePicker}
+        currentIndex={currentIndex}
+        handleTimeChange={handleTimeChange}
+      />
+
+      <Reminder
+        reminderEnabled={reminderEnabled}
+        setReminderEnabled={setReminderEnabled}
+        reminderBefore={reminderBefore}
+        setReminderBefore={setReminderBefore}
+        repeat={repeat}
+        setRepeat={setRepeat}
+      />
+
+      <Input placeholder="Notes" value={notes} onChangeText={setNotes} />
+      <Button title="Select Image" onPress={pickImage} />
+      {image && (
+        <Image
+          source={{ uri: image }}
+          style={{ width: 100, height: 100, marginTop: 10 }}
+        />
+      )}
+
+      <Button title="Save Medicine" onPress={handleSave} />
+    </View>
+  );
 };
 
 export default AddMedicineScreen;
