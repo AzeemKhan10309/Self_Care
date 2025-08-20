@@ -4,7 +4,12 @@ import {
   getAllMedicines,
   getMedicineById,
   updateMedicine,
-  deleteMedicine
+  deleteMedicine,
+  markMedicineTaken,
+  getMedicineHistory,
+  getMedicinesByDependent,
+  getTodayMedicines,
+  toggleReminder,
 } from "../../controllers/Medicine/MedicineController.js";
 import authMiddleware from "../../middlewares/authMiddleware.js";
 
@@ -15,5 +20,10 @@ router.get("/", authMiddleware, getAllMedicines);
 router.get("/:id", authMiddleware, getMedicineById);
 router.put("/:id", authMiddleware, updateMedicine);
 router.delete("/:id", authMiddleware, deleteMedicine);
+router.post("/:id/taken", authMiddleware, markMedicineTaken);
+router.get("/:id/history", authMiddleware, getMedicineHistory);
+router.get("/dependent/:dependentId", authMiddleware, getMedicinesByDependent);
+router.get("/today/list", authMiddleware, getTodayMedicines);
+router.patch("/:id/reminder", authMiddleware, toggleReminder);
 
 export default router;
