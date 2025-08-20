@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import styles from "./WeekDays.styles";
 
 interface WeekDaysProps {
@@ -15,11 +15,7 @@ const WeekDays: React.FC<WeekDaysProps> = ({ selectedDay, onSelectDay, showDate 
     <View style={styles.container}>
       {showDate && <Text style={styles.dateText}>{showDate}</Text>}
 
-      <ScrollView 
-        horizontal 
-        showsHorizontalScrollIndicator={false} 
-        contentContainerStyle={styles.daysRow}
-      >
+      <View style={styles.daysRow}>
         {days.map((d, i) => (
           <TouchableOpacity key={i} onPress={() => onSelectDay?.(i)}>
             <Text
@@ -32,10 +28,9 @@ const WeekDays: React.FC<WeekDaysProps> = ({ selectedDay, onSelectDay, showDate 
             </Text>
           </TouchableOpacity>
         ))}
-      </ScrollView>
+      </View>
     </View>
   );
 };
 
 export default WeekDays;
-    

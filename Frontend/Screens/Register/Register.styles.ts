@@ -1,16 +1,24 @@
 import { StyleSheet } from "react-native";
+
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: "center",
+    padding: 16,
+    backgroundColor: "#F9F9F9",
+
+  },
   container: {
     flex: 1,
-    backgroundColor: "#F9F9F9",
-    paddingHorizontal: 24,
-    paddingTop: 150,
+    padding: 16,
+    marginTop:200
+
   },
   title: {
-    fontSize: 22,
-    fontWeight: "600",
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 16,
     textAlign: "center",
-    marginBottom: 30,
   },
   input: {
     backgroundColor: "#FFFFFF",
@@ -30,56 +38,49 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     paddingVertical: 14,
     alignItems: "center",
-    marginBottom: 30,
     marginTop: 40,
+    marginBottom: 30,
   },
   signUpText: {
     color: "#FFF",
     fontSize: 16,
     fontWeight: "600",
   },
-  dividerContainer: {
+
+  // ✅ Suggestions styles
+  suggestions: {
+    marginTop: 8,
     flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 24,
-    marginTop: 40,
+    flexWrap: "wrap",
   },
-  line: {
-    flex: 1,
-    height: 1,
-    backgroundColor: "#D9D9D9",
+  suggestionText: {
+    color: "gray",
+    width: "100%",
+    marginBottom: 4,
   },
-  orText: {
-    marginHorizontal: 12,
-    fontSize: 14,
-    color: "#333",
+  suggestionButton: {
+    backgroundColor: "#f0f0f0",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 16,
+    marginRight: 8,
+    marginBottom: 8,
   },
-  socialIcons: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    marginBottom: 40,
+  suggestionButtonText: {
+    color: "#007bff",
   },
-  icon: {
-    width: 36,
-    height: 36,
-    resizeMode: "contain",
+
+  // ✅ Username message colors
+  usernameMessageSuccess: {
+    color: "green",
+    marginTop: 4,
+    marginBottom: 4,
   },
-  loginContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginTop: 40,
+  usernameMessageError: {
+    color: "red",
+    marginTop: 4,
+    marginBottom: 4,
   },
-  loginText: {
-    fontSize: 14,
-    color: "#000",
-  },
-  loginLink: {
-    fontSize: 14,
-    color: "#0B5FFF",
-    fontWeight: "600",
-  },
-  error:{
-    
-  }
 });
+
 export default styles;

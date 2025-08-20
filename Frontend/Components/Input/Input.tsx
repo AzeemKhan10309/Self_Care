@@ -5,6 +5,7 @@ import {
   View,
   TextInput,
   KeyboardTypeOptions,
+  ViewStyle,
 } from "react-native";
 
 interface InputProps {
@@ -18,6 +19,7 @@ interface InputProps {
   placeholderTextColor?: string;
   autoCapitalize?: "none" | "sentences" | "words" | "characters";
   maxLength?: number;
+  containerStyle?: ViewStyle; // <-- Added
 }
 
 const Input: React.FC<InputProps> = ({
@@ -29,9 +31,10 @@ const Input: React.FC<InputProps> = ({
   secureTextEntry,
   keyboardType,
   placeholderTextColor = "#B0B0B0",
+  containerStyle, // <-- Added
 }) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, containerStyle]}>
       <TextInput
         style={styles.input}
         value={value}
@@ -40,7 +43,7 @@ const Input: React.FC<InputProps> = ({
         editable={editable}
         secureTextEntry={secureTextEntry}
         keyboardType={keyboardType}
-        placeholderTextColor="#B0B0B0"
+        placeholderTextColor={placeholderTextColor}
       />
       {label && <Text style={styles.label}>{label}</Text>}
     </View>
