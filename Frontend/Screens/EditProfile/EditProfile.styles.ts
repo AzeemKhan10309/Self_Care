@@ -5,6 +5,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F9F9F9",
     padding: 20,
+    marginTop: 70,
   },
   header: {
     alignItems: "center",
@@ -15,6 +16,7 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 40,
     marginBottom: 10,
+    marginLeft: 160,
   },
   name: {
     fontSize: 20,

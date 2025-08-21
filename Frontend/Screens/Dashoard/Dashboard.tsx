@@ -1,16 +1,17 @@
-
 import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
-import MedicationReminder from "./Component/MedicineReminder/MedicineReminder";
-import BottomTab from "../../Components/BottomNavbar/BottomNavbar";
-import ProfileHeader from "../../Components/Profile/Profile";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../../Types/navigation";
-import styles from "./Dashboard.styles";
+
+import { MedicationReminder } from "./Component/MedicineReminder/MedicineReminder";
 import UpComingDose from "./Component/UpComingDose/UpcomingDose";
+import BottomTab from "../../Components/BottomNavbar/BottomNavbar";
+import ProfileHeader from "../../Components/Profile/Profile";
+
 import { tabs } from "../../src/Constants/TabConfig";
 import { apiRequest } from "../../Services/api";
+import styles from "./Dashboard.styles";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -51,13 +52,13 @@ const Dashboard: React.FC = () => {
     );
   };
 
+  // Fetch medicines from API
   useEffect(() => {
     const fetchReminders = async () => {
       try {
         const data = await apiRequest<Medicine[]>("/medicines/", "GET");
         if (!("error" in data)) {
           setMedicines(data);
-          console.log("Fetched medicines:", data);
         } else {
           console.error("API Error:", data.message);
         }
@@ -70,10 +71,6 @@ const Dashboard: React.FC = () => {
     fetchReminders();
   }, []);
 
-  // --- Next Dose Logic ---
-  // ----------------------
-  // Next Dose Calculation
-  // ----------------------
   const now = new Date();
   const nowTS = now.getTime();
 
@@ -85,15 +82,12 @@ const Dashboard: React.FC = () => {
       let doseDate = new Date(timeStr);
 
       if (med.repeat && med.selectedDays?.length) {
-        const today = now.getDay();
-=======
-        const today = now.getDay(); // 0=Sun, 1=Mon ...
+        const today = now.getDay(); // 0=Sun, 1=Mon, ...
         let nextDoseDate = new Date(doseDate);
 
         if (med.selectedDays.includes(today) && nextDoseDate.getTime() > nowTS) {
           doseDate = nextDoseDate;
         } else {
-
           let daysAhead = 1;
           while (!med.selectedDays.includes((today + daysAhead) % 7)) {
             daysAhead++;
@@ -109,16 +103,12 @@ const Dashboard: React.FC = () => {
     });
   });
 
+  // Future doses
   const futureDoses = allDoses.filter((d) => d.doseDate.getTime() > nowTS);
-  // Filter future doses
-  const futureDoses = allDoses.filter((d) => d.doseDate.getTime() > nowTS);
-
-
   const sortedDoses = futureDoses.sort(
     (a, b) => a.doseDate.getTime() - b.doseDate.getTime()
   );
   const nextDose = sortedDoses[0];
-
 
   let doseDayLabel = "";
   if (nextDose) {
@@ -132,7 +122,6 @@ const Dashboard: React.FC = () => {
       doseDayLabel = ` (Next: ${doseDate.toLocaleDateString(undefined, options)})`;
     }
   }
-
 
   const todayUpcomingMedicines = medicines
     .filter((med) =>
@@ -169,29 +158,8 @@ const Dashboard: React.FC = () => {
         <Text style={styles.feeling}>How are you feeling today?</Text>
       </View>
 
-   
-{nextDose ? (
-  <UpComingDose
-    title="Upcoming Dose"
-    image={require("../../assets/pills.png")}
-    doseName={nextDose.med.name}
-    doseDetails={`${nextDose.med.dosage} ${nextDose.med.unit}${doseDayLabel}`}
-    doseDate={nextDose.doseDate.toLocaleDateString()}
-    doseTime={nextDose.doseDate.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    })}
-  />
-) : (
-  <View style={styles.upcomingDoseContainer}>
-    <Text style={styles.upcomingDose}>Upcoming Dose</Text>
-    <View style={styles.doseCard}>
-      <Text style={styles.doseDetails}>No medicine scheduled</Text>
-    </View>
-  </View>
-)}
-
-      {nextDose && (
+      {/* Next Dose */}
+      {nextDose ? (
         <UpComingDose
           title="Upcoming Dose"
           image={require("../../assets/pills.png")}
@@ -203,6 +171,13 @@ const Dashboard: React.FC = () => {
             minute: "2-digit",
           })}
         />
+      ) : (
+        <View style={styles.upcomingDoseContainer}>
+          <Text style={styles.upcomingDose}>Upcoming Dose</Text>
+          <View style={styles.doseCard}>
+            <Text style={styles.doseDetails}>No medicine scheduled</Text>
+          </View>
+        </View>
       )}
 
       {/* Today's Reminders */}
@@ -213,31 +188,30 @@ const Dashboard: React.FC = () => {
         ) : todayUpcomingMedicines.length === 0 ? (
           <Text>No medicines for today</Text>
         ) : (
-          todayUpcomingMedicines.map((med) => (
-            <MedicationReminder
-              key={med._id}
-              id={med._id}
-              name={med.name}
-              time={
-                med.times[0]
-                  ? new Date(
-                      typeof med.times[0] === "string"
-                        ? med.times[0]
-                        : med.times[0].$date
-                      typeof med.times[0] === "string" ? med.times[0] : med.times[0].$date
-                    ).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-                  : ""
-              }
-              pills={`${med.dosage} ${med.unit}`}
-              status={med.status}
-              onComplete={handleComplete}
-              onCancel={handleCancel}
-            />
-          ))
+          todayUpcomingMedicines.map((med) => {
+            const medTime = med.times[0]
+              ? new Date(
+                  typeof med.times[0] === "string" ? med.times[0] : med.times[0].$date
+                ).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+              : "";
+
+            return (
+              <MedicationReminder
+                key={med._id}
+                id={med._id}
+                name={med.name}
+                time={medTime}
+                pills={`${med.dosage} ${med.unit}`}
+                status={med.status}
+                onComplete={handleComplete}
+                onCancel={handleCancel}
+              />
+            );
+          })
         )}
       </View>
 
-
+      {/* Add Medicine Button */}
       <View style={styles.addButtonContainer}>
         <TouchableOpacity
           style={styles.addButton}
@@ -251,6 +225,7 @@ const Dashboard: React.FC = () => {
         </TouchableOpacity>
       </View>
 
+      {/* Bottom Tabs */}
       <BottomTab activeTab={activeTab} onTabPress={handleTabPress} tabs={tabs} />
     </View>
   );

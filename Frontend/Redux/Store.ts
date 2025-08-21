@@ -10,7 +10,7 @@ export const store = configureStore({
   },
    middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: false, // 👈 disables warnings
+      serializableCheck: false, 
     })
 });
 

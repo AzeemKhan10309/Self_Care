@@ -7,12 +7,13 @@ import medicineRoutes from './routes/Medicine/MedicineRoutes.js';
 import doselog from './routes/DoseLog/DoseLogRoute.js'
 import emergancycontacts from './routes/EmerygancyContacts/EmergancyContacts.js';
 import cors from 'cors';
+import path from 'path';
 const app = express();
 const PORT = process.env.PORT || 5000;
 connectDB();
 app.use(cors());
 app.use(express.json());
-app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
 app.use('/api/users', userRoutes);
 app.use('/api/medicines', medicineRoutes);
 app.use('/api/doselog' , doselog)
