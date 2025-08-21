@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   ScrollView,
   TouchableOpacity,
   Modal,
@@ -10,6 +9,7 @@ import {
   Pressable,
   Keyboard,
   TouchableWithoutFeedback,
+  Platform,
 } from "react-native";
 import Input from "../../Components/Input/Input";
 import Button from "../../Components/Button/Button";
@@ -19,7 +19,9 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useDispatch } from "react-redux";
 import { setCollectInfo } from "../../Redux/CollectInfoSlice";
 import { AppDispatch } from "../../Redux/Store";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import styles from "./CollectInfo.styles";
+
 type CollectInfoScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
   "CollectInfo"
@@ -32,15 +34,26 @@ const CollectInfoScreen: React.FC = () => {
   const [age, setAge] = useState<number | null>(null);
   const [gender, setGender] = useState("");
   const [weight, setWeight] = useState<number | null>(null);
+  const [height, setHeight] = useState<number | null>(null);
+  const [dob, setDob] = useState<Date | null>(null);
 
   const [isAgePickerVisible, setAgePickerVisible] = useState(false);
   const [isGenderPickerVisible, setGenderPickerVisible] = useState(false);
+  const [isDobPickerVisible, setDobPickerVisible] = useState(false);
 
   const ageOptions = Array.from({ length: 84 }, (_, i) => (i + 7).toString());
   const genderOptions = ["Male", "Female", "Other"];
 
   const handleSubmit = () => {
-    dispatch(setCollectInfo({ age, gender, weight }));
+    dispatch(
+      setCollectInfo({
+        age,
+        gender,
+        weight,
+        height,
+        dob: dob, 
+      })
+    );
     navigation.navigate("Register");
   };
 
@@ -96,7 +109,7 @@ const CollectInfoScreen: React.FC = () => {
         <View style={styles.container}>
           <Text style={styles.title}>Tell me more about yourself</Text>
 
-          {/* Age Picker */}
+          
           <TouchableOpacity onPress={() => setAgePickerVisible(true)}>
             <Input
               value={age ? age.toString() : ""}
@@ -107,18 +120,50 @@ const CollectInfoScreen: React.FC = () => {
             />
           </TouchableOpacity>
 
-          {/* Weight Input */}
+         
           <Input
             value={weight ? weight.toString() : ""}
             placeholder="Enter your weight in kg"
             onChangeText={(text) => setWeight(Number(text))}
             label="Weight (kg)"
             keyboardType="numeric"
-              editable={true}
-
           />
 
-          {/* Gender Picker */}
+          <Input
+            value={height ? height.toString() : ""}
+            placeholder="Enter your height in cm"
+            onChangeText={(text) => setHeight(Number(text))}
+            label="Height (cm)"
+            keyboardType="numeric"
+          />
+
+       
+          <TouchableOpacity onPress={() => setDobPickerVisible(true)}>
+            <Input
+              value={dob ? dob.toDateString() : ""}
+              placeholder="Select your date of birth"
+              onChangeText={() => {}}
+              label="Date of Birth"
+              editable={false}
+            />
+          </TouchableOpacity>
+
+          {isDobPickerVisible && (
+            <DateTimePicker
+              value={dob || new Date()}
+              mode="date"
+              display={Platform.OS === "ios" ? "spinner" : "default"}
+              onChange={(event, selectedDate) => {
+                setDobPickerVisible(Platform.OS === "ios"); 
+                if (selectedDate) {
+                  setDob(selectedDate);
+                }
+              }}
+              maximumDate={new Date()} 
+            />
+          )}
+
+    
           <TouchableOpacity onPress={() => setGenderPickerVisible(true)}>
             <Input
               value={gender}
@@ -131,7 +176,6 @@ const CollectInfoScreen: React.FC = () => {
 
           <Button title="Next" onPress={handleSubmit} />
 
-          {/* Modals */}
           {renderPickerModal(
             isAgePickerVisible,
             ageOptions,
@@ -151,4 +195,5 @@ const CollectInfoScreen: React.FC = () => {
     </ScrollView>
   );
 };
+
 export default CollectInfoScreen;

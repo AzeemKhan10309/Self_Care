@@ -1,15 +1,15 @@
 import React,{useState} from 'react';
 import { View, Text, ScrollView } from 'react-native';
-import DateTab from '../Component/DoseTab/DoseTab';
-import DoseItem from '../Component/DoesItem/DoesItem';
-import BottomTab from '../../../Components/BottomNavbar/BottomNavbar';
+import DateTab from './Component/DoseTab/DoseTab';
+import DoseItem from './Component/DoesItem/DoesItem';
+import BottomTab from '../../Components/BottomNavbar/BottomNavbar';
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import type { RootStackParamList } from "../../../Types/navigation";
+import type { RootStackParamList } from "../../Types/navigation";
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
-import { tabs } from '../../../src/Constants/TabConfig';
-import NotificationCard from './NotificationCard/NotificationCard';
-import styles from '../Summary.styles';
+import { tabs } from '../../src/Constants/TabConfig';
+import NotificationCard from './Component/NotificationCard/NotificationCard';
+import styles from './Summary.styles';
 
 const Summary: React.FC = () => {
     const [activeTab, setActiveTab] = useState("Summary");

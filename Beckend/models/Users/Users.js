@@ -10,6 +10,8 @@ const UserSchema = new mongoose.Schema(
     age: { type: Number, default: null },
     gender: { type: String, enum: ["male", "female", "other"], default: null },
     weight: { type: Number, default: null },
+    height: { type: Number, default: null },
+    dob: { type: Date, default: null },
     isProfileComplete: { type: Boolean, default: false },
   },
   { timestamps: true }

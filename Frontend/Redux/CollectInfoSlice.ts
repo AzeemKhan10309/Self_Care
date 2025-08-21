@@ -5,12 +5,16 @@ interface CollectInfoState {
   age: number | null;
   gender: string;
   weight: number | null;
+   height: number |null;
+   dob: Date | null;  
 }
 
 const initialState: CollectInfoState = {
   age: null,
   gender: "",
   weight: null,
+  height: null,
+  dob: null,
 };
 
 const collectInfoSlice = createSlice({

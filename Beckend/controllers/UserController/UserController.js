@@ -28,6 +28,8 @@ export const registerUser = async (req, res) => {
       age: collectInfo?.age || null,
        gender: collectInfo?.gender ? collectInfo.gender.toLowerCase() : null,
       weight: collectInfo?.weight || null,
+      height: collectInfo?.height || null,
+      dob: collectInfo?.dob ? new Date(collectInfo.dob) : null,
       isProfileComplete: collectInfo ? true : false,
     });
 
@@ -42,6 +44,8 @@ export const registerUser = async (req, res) => {
       age: newUser.age,
       gender: newUser.gender,
       weight: newUser.weight,
+      height: newUser.height,
+      dob: newUser.dob,
       isProfileComplete: newUser.isProfileComplete,
     };
 
@@ -91,13 +95,21 @@ export const loginUser = async (req, res) => {
 };
 
 export const UserInfo = async (req, res) => {
-  const user = await User.findById(req.params.id).select("-password");
-  if (user) {
-    res.json({ user });
-  } else {
-    res.status(404).json({ message: "User not found" });
+  try {
+       const user = await User.findById(req.params.id).select("-password");
+
+
+    if (user) {
+      console.log("User found:", user);
+      res.json({ user });
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 
 
 function generateSuggestions(username) {
@@ -122,7 +134,6 @@ export const UserAvailablity = async (req, res) => {
       return res.status(400).json({ error: "Username is required" });
     }
 
-    // Case insensitive check
     const existingUser = await User.findOne({ username: new RegExp(`^${username}$`, "i") });
 
     if (existingUser) {
@@ -141,6 +152,32 @@ export const UserAvailablity = async (req, res) => {
   } catch (error) {
     console.error("Error checking username:", error);
     res.status(500).json({ error: "Server error" });
+  }
+};
+
+export const updateUserProfile = async (req, res) => {
+  try {
+
+    const { userId } = req.params;
+    const updates = req.body; 
+ console.log("Updating userId:", userId);
+    console.log("Updates:", updates);
+
+    const user = await User.findByIdAndUpdate(userId, updates, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({
+      message: "Profile updated successfully",
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 

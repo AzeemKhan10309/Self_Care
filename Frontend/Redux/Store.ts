@@ -8,6 +8,10 @@ export const store = configureStore({
     collectInfo: collectInfoReducer,
 
   },
+   middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false, // 👈 disables warnings
+    })
 });
 
 export type RootState = ReturnType<typeof store.getState>;

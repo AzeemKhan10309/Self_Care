@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import Summary from './Component/Summary';
+import Summary from './Summary';
 const styles = StyleSheet.create({
   dateTabs: {
     flexDirection: 'row',

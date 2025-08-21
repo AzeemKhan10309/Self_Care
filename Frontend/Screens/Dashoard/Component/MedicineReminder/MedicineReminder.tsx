@@ -1,3 +1,4 @@
+// Frontend/Screens/Dashboard/Component/MedicineReminder/MedicineReminder.tsx
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { apiRequest } from "../../../../Services/api";
@@ -5,11 +6,11 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../Redux/Store";
 
 interface MedicationReminderProps {
-  id: string;          // medicineId
+  id: string;          
   name: string;
   time: string;
   pills: string;
-  status: "Taken" | "Missed" | undefined;  
+  status?: "Taken" | "Missed";  
   onComplete: (id: string) => void;
   onCancel: (id: string) => void;
 }
@@ -25,18 +26,16 @@ const MedicationReminder: React.FC<MedicationReminderProps> = ({
 }) => {
   const [loading, setLoading] = useState(false);
 
-  // Get user from Redux
   const { user } = useSelector((state: RootState) => state.auth);
-  const userId = user?._id;
+  const userId = user?.id;
 
-  // Disable buttons if userId missing, loading, or already Taken/Missed
   const isDisabled = loading || !userId || status === "Taken" || status === "Missed";
 
   const handleComplete = async () => {
-    if (status || !userId) return; // prevent double marking or missing user
+    if (status || !userId) return; 
     setLoading(true);
     try {
-      onComplete(id);
+      onComplete(id); // parent state update
       const payload = {
         medicineId: id,
         userId,
@@ -44,7 +43,6 @@ const MedicationReminder: React.FC<MedicationReminderProps> = ({
         time: new Date().toISOString(),
         status: "Taken",
       };
-      console.log("Sending dose log:", payload);
       await apiRequest("/doselog/", "POST", payload);
     } catch (err) {
       console.error("Error logging dose:", err);
@@ -54,10 +52,10 @@ const MedicationReminder: React.FC<MedicationReminderProps> = ({
   };
 
   const handleCancel = async () => {
-    if (status || !userId) return; // prevent double marking or missing user
+    if (status || !userId) return; 
     setLoading(true);
     try {
-      onCancel(id);
+      onCancel(id); // parent state update
       const payload = {
         medicineId: id,
         userId,
@@ -65,7 +63,6 @@ const MedicationReminder: React.FC<MedicationReminderProps> = ({
         time: new Date().toISOString(),
         status: "Missed",
       };
-      console.log("Sending dose log:", payload);
       await apiRequest("/doselog/", "POST", payload);
     } catch (err) {
       console.error("Error logging dose:", err);
