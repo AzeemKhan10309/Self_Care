@@ -93,29 +93,7 @@ export const fetchUserInfo = createAsyncThunk(
 );
 
 
-export const updateUserProfile = createAsyncThunk(
-  "auth/updateUserProfile",
-  async (
-    { userId, data }: { userId: string; data: any },
-    { rejectWithValue }
-  ) => {
-    try {
-      const res = await apiRequest<{ user: any }>(
-        `/users/${userId}`,
-        "PUT",   
-        data
-      );
 
-      if ("error" in res) {
-        return rejectWithValue(res.message);
-      }
-
-      return res.user; 
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || error.message);
-    }
-  }
-);
 
 const authSlice = createSlice({
   name: "auth",
@@ -168,18 +146,7 @@ const authSlice = createSlice({
         state.error = action.payload as string;
       })
 
-      .addCase(updateUserProfile.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(updateUserProfile.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload; // update redux user with latest data
-      })
-      .addCase(updateUserProfile.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      })
+      
 
   },
 });

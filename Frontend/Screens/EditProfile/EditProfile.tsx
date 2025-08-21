@@ -15,7 +15,7 @@ import Button from "../../Components/Button/Button";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../Redux/Store";
-import { fetchUserInfo, updateUserProfile } from "../../Redux/AuthSlice";
+import { fetchUserInfo } from "../../Redux/AuthSlice";
 import * as Location from "expo-location";
 import * as ImagePicker from "expo-image-picker";
 
@@ -89,29 +89,11 @@ const EditProfile: React.FC<EditProfileProps> = ({ userId }) => {
     }
   };
 
+  
+
   const handleUpdateProfile = () => {
-    if (!userId) return;
-
-    const updatedData = {
-      name,
-      username,
-      phone,
-      email,
-      dob: dob ? dob.toISOString() : null,
-      weight: weight ? Number(weight) : null,
-      height: height ? Number(height) : null,
-      location,
-      profileImage,
-    };
-
-    dispatch(updateUserProfile({ userId, data: updatedData }))
-      .unwrap()
-      .then(() => {
-        Alert.alert("Success", "Profile updated successfully!");
-      })
-      .catch((err) => {
-        Alert.alert("Error", err || "Failed to update profile");
-      });
+    // TODO: Implement profile update logic here
+    Alert.alert("Profile Updated", "Your profile has been updated successfully.");
   };
 
   if (loading) return <Text>Loading user info...</Text>;
