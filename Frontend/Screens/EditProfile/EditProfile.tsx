@@ -10,7 +10,7 @@ import styles, { phoneStyles } from "./EditProfile.styles";
 import Input from "../../Components/Input/Input";
 import Button from "../../Components/Button/Button";
 import DateTimePicker from "@react-native-community/datetimepicker";
-
+import ProfileHeader from "../../Components/Profile/Profile";
 const EditProfile: React.FC = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -35,16 +35,8 @@ const EditProfile: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Image
-          source={require("../../assets/Profile.png")}
-          style={styles.profileImage}
-        />
-        <Text style={styles.name}>Qasim</Text>
-        <Text style={styles.location}>📍 Lahore</Text>
-        <Text style={styles.email}>qasimjamal@gmail.com</Text>
-      </View>
-
+   
+<ProfileHeader />
 
       <Input
         placeholder="What's your first name?"
