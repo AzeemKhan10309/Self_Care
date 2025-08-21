@@ -1,14 +1,11 @@
-// CollectInfoSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface CollectInfoState {
   age: number | null;
   gender: string;
   weight: number | null;
-   height: number |null;
-   dob: Date | null;  
-  height: number | null;   
-  dob: string | null;      
+  height: number | null;
+  dob: Date | null; 
 }
 
 const initialState: CollectInfoState = {
@@ -17,7 +14,6 @@ const initialState: CollectInfoState = {
   weight: null,
   height: null,
   dob: null,
-  dob: null,    
 };
 
 const collectInfoSlice = createSlice({

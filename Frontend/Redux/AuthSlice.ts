@@ -26,6 +26,7 @@ const mapUser = (u: any) => ({
   age: u.age ?? null,
   gender: u.gender ?? null,
   isProfileComplete: u.isProfileComplete ?? false,
+   profileImage: u.profileImage || null,
 });
 
 export const registerUser = createAsyncThunk(
@@ -41,11 +42,6 @@ export const registerUser = createAsyncThunk(
         { name, username, email, password, phone, collectInfo }
       );
       if ("error" in res) return rejectWithValue(res.message);
-      await AsyncStorage.setItem("token", res.token);
-
-      if ("error" in res) {
-        return rejectWithValue(res.message);
-      }
       await AsyncStorage.setItem("token", res.token);
 
       return res.user;
@@ -66,11 +62,7 @@ export const loginUser = createAsyncThunk(
       );
       if ("error" in res) return rejectWithValue(res.message);
       await AsyncStorage.setItem("token", res.token);
-
-      if ("error" in res) {
-        return rejectWithValue(res.message);
-      }
-      await AsyncStorage.setItem("token", res.token);
+console.log("📌 fetchUserInfo raw response:", res);
 
       return res.user;
     } catch (error: any) {
@@ -84,36 +76,9 @@ export const fetchUserInfo = createAsyncThunk(
   async (userId: string, { rejectWithValue }) => {
     try {
       const res = await apiRequest(`/users/${userId}`, "GET");
- console.log("📌 fetchUserInfo raw response:", res);    
-   if ("error" in res) return rejectWithValue(res.message);
+      if ("error" in res) return rejectWithValue(res.message);
 
-      return res.user; 
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || error.message);
-    }
-  }
-);
-
-
-
-export const updateUserProfile = createAsyncThunk(
-  "auth/updateUserProfile",
-  async (
-    { userId, data }: { userId: string; data: any },
-    { rejectWithValue }
-  ) => {
-    try {
-      const res = await apiRequest<{ user: any }>(
-        `/users/${userId}`,
-        "PUT",   
-        data
-      );
-
-      if ("error" in res) {
-        return rejectWithValue(res.message);
-      }
-
-      return res.user; 
+      return res.user;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || error.message);
     }
@@ -132,7 +97,6 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -170,21 +134,7 @@ const authSlice = createSlice({
       .addCase(fetchUserInfo.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
-      })
-
-      .addCase(updateUserProfile.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(updateUserProfile.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload; // update redux user with latest data
-      })
-      .addCase(updateUserProfile.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      })
-
+      });
   },
 });
 

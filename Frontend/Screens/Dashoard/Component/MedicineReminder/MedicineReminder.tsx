@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { apiRequest } from "../../../../Services/api";
@@ -6,21 +5,16 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../Redux/Store";
 
 interface MedicationReminderProps {
-  id: string;          
+  id: string;
   name: string;
   time: string;
   pills: string;
-  status?: "Taken" | "Missed";  
-  id: string;          // medicineId
-  name: string;
-  time: string;
-  pills: string;
-  status: "Taken" | "Missed" | undefined;  
+  status?: "Taken" | "Missed";
   onComplete: (id: string) => void;
   onCancel: (id: string) => void;
 }
 
-const MedicationReminder: React.FC<MedicationReminderProps> = ({
+export const MedicationReminder: React.FC<MedicationReminderProps> = ({
   id,
   name,
   time,
@@ -30,60 +24,24 @@ const MedicationReminder: React.FC<MedicationReminderProps> = ({
   onCancel,
 }) => {
   const [loading, setLoading] = useState(false);
-
-  const { user } = useSelector((state: RootState) => state.auth);
-  const userId = user?.id;
-
-  const isDisabled = loading || !userId || status === "Taken" || status === "Missed";
-
-  const handleComplete = async () => {
-    if (status || !userId) return; 
-    setLoading(true);
-    try {
-      onComplete(id); // parent state update
-  // Get user from Redux
   const { user } = useSelector((state: RootState) => state.auth);
   const userId = user?._id;
 
-  // Disable buttons if userId missing, loading, or already Taken/Missed
   const isDisabled = loading || !userId || status === "Taken" || status === "Missed";
 
-  const handleComplete = async () => {
-    if (status || !userId) return; // prevent double marking or missing user
+  const handleAction = async (action: "Taken" | "Missed") => {
+    if (status || !userId) return;
     setLoading(true);
     try {
-      onComplete(id);
-      const payload = {
-        medicineId: id,
-        userId,
-        dependentId: null,
-        time: new Date().toISOString(),
-        status: "Taken",
-      };
-      console.log("Sending dose log:", payload);
-      await apiRequest("/doselog/", "POST", payload);
-    } catch (err) {
-      console.error("Error logging dose:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+      if (action === "Taken") onComplete(id);
+      if (action === "Missed") onCancel(id);
 
-  const handleCancel = async () => {
-    if (status || !userId) return; 
-    setLoading(true);
-    try {
-      onCancel(id); // parent state update
-    if (status || !userId) return; // prevent double marking or missing user
-    setLoading(true);
-    try {
-      onCancel(id);
       const payload = {
         medicineId: id,
         userId,
         dependentId: null,
         time: new Date().toISOString(),
-        status: "Missed",
+        status: action,
       };
       console.log("Sending dose log:", payload);
       await apiRequest("/doselog/", "POST", payload);
@@ -106,6 +64,7 @@ const MedicationReminder: React.FC<MedicationReminderProps> = ({
         >
           {name}
         </Text>
+
         <View style={styles.inRow}>
           <View style={styles.timeContainer}>
             <Image
@@ -129,12 +88,9 @@ const MedicationReminder: React.FC<MedicationReminderProps> = ({
 
       <View style={styles.actionsContainer}>
         <TouchableOpacity
-          onPress={handleCancel}
+          onPress={() => handleAction("Missed")}
           disabled={isDisabled}
-          style={[
-            styles.button,
-            status === "Missed" && { backgroundColor: "red" },
-          ]}
+          style={[styles.button, status === "Missed" && { backgroundColor: "red" }]}
         >
           <Image
             source={require("../../../../assets/x.png")}
@@ -144,12 +100,9 @@ const MedicationReminder: React.FC<MedicationReminderProps> = ({
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={handleComplete}
+          onPress={() => handleAction("Taken")}
           disabled={isDisabled}
-          style={[
-            styles.button,
-            status === "Taken" && { backgroundColor: "green" },
-          ]}
+          style={[styles.button, status === "Taken" && { backgroundColor: "green" }]}
         >
           <Image
             source={require("../../../../assets/check.png")}
@@ -161,8 +114,6 @@ const MedicationReminder: React.FC<MedicationReminderProps> = ({
     </View>
   );
 };
-
-export default MedicationReminder;
 
 const styles = StyleSheet.create({
   container: {
