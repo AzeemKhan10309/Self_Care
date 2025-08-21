@@ -51,6 +51,8 @@ const CollectInfoScreen: React.FC = () => {
         gender,
         weight,
         height,
+        dob: dob, 
+=======
         dob: dob ? dob.toISOString() : null, 
       })
     );

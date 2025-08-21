@@ -12,7 +12,32 @@ const styles = StyleSheet.create({
   },
 
  
-
+  upcomingDoseContainer: {
+      padding: 20,
+    borderRadius: 0,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 9
+  },
+    upcomingDose: {
+       fontSize: 20,
+    fontWeight: "800",
+    marginBottom: 10,
+    color: "#1F62E8",
+  },
+    doseCard: {
+   backgroundColor: "#1F62E8",
+    padding: 20,
+    borderRadius: 10,
+    marginBottom: 0,
+  },
+    doseDetails: {
+    fontSize: 21,
+    color: "#FFFFFF",
+    marginTop: 5,
+    fontWeight: "600",
+  },
 
 
 

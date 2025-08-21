@@ -5,6 +5,8 @@ interface CollectInfoState {
   age: number | null;
   gender: string;
   weight: number | null;
+   height: number |null;
+   dob: Date | null;  
   height: number | null;   
   dob: string | null;      
 }
@@ -14,6 +16,7 @@ const initialState: CollectInfoState = {
   gender: "",
   weight: null,
   height: null,
+  dob: null,
   dob: null,    
 };
 

@@ -24,13 +24,8 @@ const HomeScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      {/* Main Content */}
       <View style={styles.fixedContent}>
-        <ProfileHeader
-          name="Qasim"
-          location="Lahore"
-          profileImage={require("../../assets/Profile.png")}
-        />
+        <ProfileHeader/>
 
         <View style={styles.profileSection}>
           <TouchableOpacity

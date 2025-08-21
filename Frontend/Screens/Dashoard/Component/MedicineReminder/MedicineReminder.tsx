@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { apiRequest } from "../../../../Services/api";
@@ -5,6 +6,11 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../Redux/Store";
 
 interface MedicationReminderProps {
+  id: string;          
+  name: string;
+  time: string;
+  pills: string;
+  status?: "Taken" | "Missed";  
   id: string;          // medicineId
   name: string;
   time: string;
@@ -25,6 +31,16 @@ const MedicationReminder: React.FC<MedicationReminderProps> = ({
 }) => {
   const [loading, setLoading] = useState(false);
 
+  const { user } = useSelector((state: RootState) => state.auth);
+  const userId = user?.id;
+
+  const isDisabled = loading || !userId || status === "Taken" || status === "Missed";
+
+  const handleComplete = async () => {
+    if (status || !userId) return; 
+    setLoading(true);
+    try {
+      onComplete(id); // parent state update
   // Get user from Redux
   const { user } = useSelector((state: RootState) => state.auth);
   const userId = user?._id;
@@ -54,6 +70,10 @@ const MedicationReminder: React.FC<MedicationReminderProps> = ({
   };
 
   const handleCancel = async () => {
+    if (status || !userId) return; 
+    setLoading(true);
+    try {
+      onCancel(id); // parent state update
     if (status || !userId) return; // prevent double marking or missing user
     setLoading(true);
     try {
