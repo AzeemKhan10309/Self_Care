@@ -1,14 +1,13 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, TouchableOpacity, Image, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useDispatch, useSelector } from "react-redux";
 import { RootStackParamList } from "../../Types/navigation";
 import { RootState, AppDispatch } from "../../Redux/Store";
-import { loginUser } from "../../Redux/AuthSlice";
+import { loginUser, fetchUserInfo } from "../../Redux/AuthSlice";  
 import Input from "../../Components/Input/Input";
 import Button from "../../Components/Button/Button";
-import{Alert} from "react-native"
 import styles from "./Login.styles";
 
 type DashboardNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -23,22 +22,32 @@ const LoginScreen: React.FC = () => {
   const { loading, error, user } = useSelector((state: RootState) => state.auth);
 
   const handleLogin = () => {
-    dispatch(loginUser({ email, password }));
+    dispatch(loginUser({ email, password }))
+      .unwrap()
+      .then((loggedInUser) => {
+      
+        if (loggedInUser?._id) {
+          dispatch(fetchUserInfo(loggedInUser._id));
+        }
+      })
+      .catch(() => {
+       
+      });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (user) {
       navigation.navigate("Dashboard");
     }
-      if (error) {
-    Alert.alert("Login Failed", error, [{ text: "OK" }]);
-  }
-  }, [user,error]);
+
+    if (error) {
+      Alert.alert("Login Failed", error, [{ text: "OK" }]);
+    }
+  }, [user, error, navigation]);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login your account</Text>
-
 
       <Input value={email} placeholder="Email" onChangeText={setEmail} />
       <Input

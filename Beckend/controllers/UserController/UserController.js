@@ -28,6 +28,8 @@ export const registerUser = async (req, res) => {
       age: collectInfo?.age || null,
        gender: collectInfo?.gender ? collectInfo.gender.toLowerCase() : null,
       weight: collectInfo?.weight || null,
+      height: collectInfo?.height || null,
+      dob: collectInfo?.dob ? new Date(collectInfo.dob) : null,
       isProfileComplete: collectInfo ? true : false,
     });
 
@@ -42,6 +44,8 @@ export const registerUser = async (req, res) => {
       age: newUser.age,
       gender: newUser.gender,
       weight: newUser.weight,
+      height: newUser.height,
+      dob: newUser.dob,
       isProfileComplete: newUser.isProfileComplete,
     };
 
@@ -99,6 +103,28 @@ export const UserInfo = async (req, res) => {
   }
 };
 
+export const updateUserProfile = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const updates = req.body; // contains name, email, phone, dob, weight, height, etc.
+
+    const user = await User.findByIdAndUpdate(userId, updates, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({
+      message: "Profile updated successfully",
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
 
 function generateSuggestions(username) {
   const cleanName = username.toLowerCase();

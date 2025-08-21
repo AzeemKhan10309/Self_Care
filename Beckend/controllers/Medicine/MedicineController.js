@@ -19,7 +19,7 @@ export const createMedicine = async (req, res) => {
       selectedDays
     } = req.body;
 
-    const image = req.file ? `/uploads/${req.file.filename}` : null;
+    const image = req.file ? /uploads/${req.file.filename} : null;
 
     const newMedicine = new Medicine({
       name: medicine,
@@ -113,5 +113,3 @@ export const deleteMedicine = async (req, res) => {
     res.status(500).json({ message: "Failed to delete medicine", error: error.message });
   }
 };
-
-
