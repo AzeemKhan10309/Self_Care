@@ -1,29 +1,106 @@
-
 import { StyleSheet } from "react-native";
+
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: "#F6F6F6" },
-  title: { fontSize: 18, fontWeight: "600", textAlign: "center", marginVertical: 15 },
-  day: { fontSize: 16, padding: 8, borderRadius: 20, textAlign: "center" },
-  doseContainer: { flexDirection: "row", alignItems: "center",justifyContent: "center", marginVertical: 20 },
-  doseButton: { backgroundColor: "#ffffffff", fontSize: 10, textAlign: "center",
-    justifyContent: "center",
-    alignItems: "center",  
-     lineHeight: 28, gap: 50, height:30, width:30,  borderRadius: 15,flexDirection: "row",
-   marginHorizontal: 130,     },
-  doseButtonText: { fontSize: 18, fontWeight: "bold" },
-  doseValue: { fontSize: 18, fontWeight: "600", marginHorizontal: 20 },
-  row: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 },
-  label: { fontSize: 16, fontWeight: "500" },
-  subLabel: { fontSize: 14, color: "gray" },
-  button: { backgroundColor: "#2563eb", padding: 15, borderRadius: 30, marginTop: 20 },
-  buttonText: { color: "#fff", fontSize: 18, textAlign: "center", fontWeight: "600" },
-    text: {
-    fontSize: 18,
-    marginBottom: 20,
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: "#fff",
+    marginTop: 23,
   },
-  timepicker:{
-    marginLeft:40
-  }
+  title: {
+    fontSize: 22,
+    fontWeight: "600",
+    textAlign: "center",
+    marginVertical: 16,
+  },
+  section: {
+    marginBottom: 0,
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: "#f2f2f2",
+
+  },
+  sectionTitle: {
+    fontSize: 28,
+    fontWeight: "500",
+    marginBottom: 12,
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+   
+  dosageInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    padding: 8,
+    borderRadius: 6,
+    marginRight: 8,
+  },
+  unitInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    padding: 8,
+    borderRadius: 6,
+  },
+  button: {
+    backgroundColor: "#1F62E8",
+    padding: 12,
+    borderRadius: 8,
+    alignItems: "center",
+    marginVertical: 8,
+  },
+  smallButton: {
+    backgroundColor: "#1F62E8",
+    padding: 6,
+    borderRadius: 6,
+    alignItems: "center",
+    alignSelf: "flex-start",
+    marginVertical: 4,
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "500",
+  },
+   pickerContainer: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+  },
+  picker: {
+    height: 50,
+    width: "100%",
+  },
+  rowDatesContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginVertical: -25,
+
+  },
+  rowDate: {
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  Timesection:{
+marginTop:35
+  },
+  Text:{
+    fontSize:25,
+    marginLeft:10,
+    color:"#1E60FF",
+    fontWeight:"700"
+  },
+  buttonTime:{
+    borderRadius: 12,
+    alignItems: "center",
+    alignSelf: "flex-start",
+    marginVertical: 4,
+  },
+
 });
 
-export default styles
+export default styles;

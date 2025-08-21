@@ -31,6 +31,10 @@ const EditProfile: React.FC<EditProfileProps> = ({ userId }) => {
 
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
+import ProfileHeader from "../../Components/Profile/Profile";
+const EditProfile: React.FC = () => {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [dob, setDob] = useState<Date | null>(null);
@@ -189,6 +193,9 @@ const EditProfile: React.FC<EditProfileProps> = ({ userId }) => {
             }}
           />
         )}
+    <View style={styles.container}>
+   
+<ProfileHeader />
 
         <Input
           placeholder="Update weight"

@@ -12,6 +12,7 @@ const PORT = process.env.PORT || 5000;
 connectDB();
 app.use(cors());
 app.use(express.json());
+app.use("/uploads", express.static("uploads"));
 app.use('/api/users', userRoutes);
 app.use('/api/medicines', medicineRoutes);
 app.use('/api/doselog' , doselog)

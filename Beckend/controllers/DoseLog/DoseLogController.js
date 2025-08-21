@@ -2,25 +2,50 @@ import DoseLog from "../../models/DoseLog/DoseLog.js";
 
 export const createDoseLog = async (req, res) => {
   try {
-    const { medicineId, dependentId, date, status } = req.body;
+    const { medicineId, userId, dependentId, time, status } = req.body;
 
-    if (!medicineId || !dependentId || !date || !status) {
-      return res.status(400).json({ message: "All fields are required" });
+    if (!medicineId || !userId || !time || !status) {
+      return res.status(400).json({ error: true, message: "Missing required fields" });
     }
 
-    const doseLog = new DoseLog({
+    // Normalize date (store only date part for easier querying)
+    const logDate = new Date(time);
+    logDate.setHours(0, 0, 0, 0);
+
+    // Check if log already exists
+    const existingLog = await DoseLog.findOne({
       medicineId,
-      dependentId,
-      date,
-      status
+      userId,
+      dependentId: dependentId || null,
+      date: logDate,
     });
 
-    const savedLog = await doseLog.save();
-    res.status(201).json(savedLog);
-  } catch (error) {
-    res.status(500).json({ message: "Failed to create dose log", error: error.message });
+    if (existingLog) {
+      // Update status if already exists
+      existingLog.status = status; // "Taken" or "Missed"
+      existingLog.time = time; // store exact time if needed
+      await existingLog.save();
+      return res.json({ success: true, log: existingLog });
+    }
+
+    // Create new log
+    const newLog = await DoseLog.create({
+      medicineId,
+      userId,
+      dependentId: dependentId || null,
+      time,
+      status, // "Taken" or "Missed"
+      date: logDate,
+    });
+
+    res.json({ success: true, log: newLog });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: true, message: "Something went wrong" });
   }
 };
+
+
 
 export const getAllDoseLogs = async (req, res) => {
   try {

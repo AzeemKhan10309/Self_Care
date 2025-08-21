@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { apiRequest } from "../Services/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface AuthState {
   user: any | null;
@@ -43,6 +44,7 @@ export const registerUser = createAsyncThunk(
       if ("error" in res) {
         return rejectWithValue(res.message);
       }
+      await AsyncStorage.setItem("token", res.token);
 
       return res.user;
     } catch (error: any) {
@@ -67,6 +69,7 @@ export const loginUser = createAsyncThunk(
       if ("error" in res) {
         return rejectWithValue(res.message);
       }
+      await AsyncStorage.setItem("token", res.token);
 
       return res.user;
     } catch (error: any) {

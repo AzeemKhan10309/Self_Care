@@ -1,115 +1,91 @@
-import React, { useState } from "react";
+import React from "react";
 import {
-    View,
-    Text,
-    TouchableOpacity,
-    Switch,
+  View,
+  Text,
+  Image,
+  Platform,
+  ScrollView,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
+
+import MedicineInfo from "./Components/MedicineInfo/MedicineInfo";
+import Reminder from "./Components/Reminder/Reminder";
+import Schedule from "./Components/Schedule/Schedule";
 import Input from "../../Components/Input/Input";
+import Button from "../../Components/Button/Button";
 import styles from "./AddMedicine.styles";
-import TimePicker from "./Components/TimePicker/TimePicker";
-import WeekDays from "./Components/WeekDays/WeekDays";
+
+import { useAddMedicine } from "./Hook/useAddMedicine";
 
 const AddMedicineScreen: React.FC = () => {
-    const [time, setTime] = useState(new Date());
-    const [medicine, setMedicine] = useState("");
-    const [dose, setDose] = useState(1);
-    const [alarm, setAlarm] = useState(true);
-    const [vibration, setVibration] = useState(true);
-    const [snooze, setSnooze] = useState(true);
+  const hook = useAddMedicine();
 
-    return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Add Medicine</Text>
+  return (
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={80}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1, padding: 20 }}
+          keyboardShouldPersistTaps="handled"
+        >
+          <Text style={styles.title}>Add Medicine</Text>
 
-            <View style={styles.timepicker}>
+          <MedicineInfo
+            medicine={hook.medicine}
+            setMedicine={hook.setMedicine}
+            description={hook.description}
+            setDescription={hook.setDescription}
+            type={hook.type}
+            handleTypeSelect={hook.handleTypeSelect}
+            dosage={hook.dosage}
+            setDosage={hook.setDosage}
+            unit={hook.unit}
+          />
 
-                <TimePicker value={time} onChange={setTime} />
-            </View>
+          <Schedule
+            startDate={hook.startDate}
+            setStartDate={hook.setStartDate}
+            endDate={hook.endDate}
+            setEndDate={hook.setEndDate}
+            times={hook.times}
+            handleAddTime={hook.handleAddTime}
+            handleEditTime={hook.handleEditTime}
+            removeTime={hook.removeTime}
+            showTimePicker={hook.showTimePicker}
+            currentIndex={hook.currentIndex}
+            handleTimeChange={hook.handleTimeChange}
+            selectedDays={hook.selectedDays}
+            onToggleDay={hook.toggleDay}
+          />
 
+          <Reminder
+            reminderEnabled={hook.reminderEnabled}
+            setReminderEnabled={hook.setReminderEnabled}
+            reminderBefore={hook.reminderBefore}
+            setReminderBefore={hook.setReminderBefore}
+            repeat={hook.repeat}
+            setRepeat={hook.setRepeat}
+          />
 
-            {/* Date & Days */}
-      
-<WeekDays
-  selectedDay={5} // Saturday
-  onSelectDay={(i) => console.log("Selected Day:", i)}
-  showDate="Today - Sat, 4 Dec"
-/>
-            {/* Medicine Name */}
-            <Input
-                placeholder="Add Medicine Name"
-                value={medicine}
-                onChangeText={setMedicine}
+          <Input placeholder="Notes" value={hook.notes} onChangeText={hook.setNotes} />
+          <Button title="Select Image" onPress={hook.pickImage} />
+          {hook.image && (
+            <Image
+              source={{ uri: hook.image }}
+              style={{ width: 100, height: 100, marginTop: 10 }}
             />
+          )}
 
-            {/* Dose */}
-            <View style={styles.doseContainer}>
-                <TouchableOpacity
-                    onPress={() => setDose(Math.max(1, dose - 1))}
-                    style={styles.doseButton}
-                >
-                    <Text style={styles.doseButtonText}>-</Text>
-                </TouchableOpacity>
-                <Text style={styles.doseValue}>{dose}</Text>
-                <TouchableOpacity
-                    onPress={() => setDose(dose + 1)}
-                    style={styles.doseButton}
-                >
-                    <Text style={styles.doseButtonText}>+</Text>
-                </TouchableOpacity>
-            </View>
-
-            {/* Alarm Toggle */}
-<View style={styles.row}>
-  <Text style={styles.label}>
-    Alarm sound{"\n"}
-    <Text style={styles.subLabel}>Homecoming</Text>
-  </Text>
-  <Switch
-    value={snooze}
-    onValueChange={setSnooze}
-    trackColor={{ false: "#F6F6F6", true: "#2563eb" }}
-    thumbColor={snooze ? "#f4f3f4" : "#f4f3f4"}
-    ios_backgroundColor="#F6F6F6"
-  />
-</View>
-
-{/* Vibration Toggle */}
-<View style={styles.row}>
-  <Text style={styles.label}>
-    Vibration{"\n"}
-    <Text style={styles.subLabel}>Basic call</Text>
-  </Text>
-  <Switch
-    value={snooze}
-    onValueChange={setSnooze}
-    trackColor={{ false: "#F6F6F6", true: "#2563eb" }}
-    thumbColor={snooze ? "#f4f3f4" : "#f4f3f4"}
-    ios_backgroundColor="#F6F6F6"
-  />
-</View>
-
-{/* Snooze Toggle */}
-<View style={styles.row}>
-  <Text style={styles.label}>
-    Snooze{"\n"}
-    <Text style={styles.subLabel}>5 minutes, 3 times</Text>
-  </Text>
-  <Switch
-    value={snooze}
-    onValueChange={setSnooze}
-    trackColor={{ false: "#F6F6F6", true: "#2563eb" }}
-    thumbColor={snooze ? "#f4f3f4" : "#f4f3f4"}
-    ios_backgroundColor="#F6F6F6"
-  />
-</View>
-
-            {/* Submit Button */}
-            <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText}>Add Medicine</Text>
-            </TouchableOpacity>
-        </View>
-    );
+          <Button title="Save Medicine" onPress={hook.handleSave} />
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
+  );
 };
 
 export default AddMedicineScreen;

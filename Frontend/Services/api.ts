@@ -6,6 +6,7 @@ const BASE_URL =
   Platform.OS === "web"
     ? "http://localhost:5000/api"
     : "http://192.168.106.212:5000/api";
+    : "http://192.168.11.245:5000/api";
 
 type Method = "GET" | "POST" | "PUT" | "DELETE";
 

@@ -1,37 +1,37 @@
-// WeekDays.styles.ts
 import { StyleSheet } from "react-native";
-import BottomTab from "../../../../Components/BottomNavbar/BottomNavbar";
 
-const styles = StyleSheet.create({
+export default StyleSheet.create({
   container: {
-    paddingVertical: 10,
+    marginTop: 15,
   },
   dateText: {
-    fontSize: 20,
-    fontWeight: "500",
-    marginBottom: 13,
+    fontSize: 14,
+    marginBottom: 10,
     textAlign: "center",
-    color: "#030303ff",
   },
   daysRow: {
     flexDirection: "row",
+    justifyContent: "space-around",
   },
-  day: {
-    width: 35,
-    height: 35,
-    borderRadius: 17.5,
-    textAlign: "center",
+  dayButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 24,
+    backgroundColor: "#eee",
+    height: 50,
+    width: 50,
+    alignItems: "center",
     justifyContent: "center",
-    alignItems: "center",  
-     lineHeight: 35,
-    marginHorizontal: 10.5,
-     marginVertical: 10.5,
-    fontSize: 20,
-    color: "#2563eb",
-    borderWidth: 2,
-    borderColor: "#2563eb",
-    fontWeight:"bold"
+  },
+  selectedDay: {
+    backgroundColor: "#1F62E8",
+  },
+  dayText: {
+    fontSize: 14,
+    color: "#333",
+  },
+  selectedDayText: {
+    color: "#fff",
+    fontWeight: "bold",
   },
 });
-
-export default styles;
