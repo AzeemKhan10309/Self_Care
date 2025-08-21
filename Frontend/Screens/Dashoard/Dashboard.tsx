@@ -1,4 +1,4 @@
-// Frontend/Screens/Dashboard/Dashboard.tsx
+
 import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import MedicationReminder from "./Component/MedicineReminder/MedicineReminder";
@@ -19,7 +19,7 @@ interface Medicine {
   name: string;
   dosage: number;
   unit: string;
-  status?: "Taken" | "Missed";   // 👈 optional banaya
+  status: "Taken" | "Missed";
   times: (string | { $date: string })[];
   startDate?: string;
   endDate?: string;
@@ -71,6 +71,9 @@ const Dashboard: React.FC = () => {
   }, []);
 
   // --- Next Dose Logic ---
+  // ----------------------
+  // Next Dose Calculation
+  // ----------------------
   const now = new Date();
   const nowTS = now.getTime();
 
@@ -83,11 +86,14 @@ const Dashboard: React.FC = () => {
 
       if (med.repeat && med.selectedDays?.length) {
         const today = now.getDay();
+=======
+        const today = now.getDay(); // 0=Sun, 1=Mon ...
         let nextDoseDate = new Date(doseDate);
 
         if (med.selectedDays.includes(today) && nextDoseDate.getTime() > nowTS) {
           doseDate = nextDoseDate;
         } else {
+
           let daysAhead = 1;
           while (!med.selectedDays.includes((today + daysAhead) % 7)) {
             daysAhead++;
@@ -104,10 +110,15 @@ const Dashboard: React.FC = () => {
   });
 
   const futureDoses = allDoses.filter((d) => d.doseDate.getTime() > nowTS);
+  // Filter future doses
+  const futureDoses = allDoses.filter((d) => d.doseDate.getTime() > nowTS);
+
+
   const sortedDoses = futureDoses.sort(
     (a, b) => a.doseDate.getTime() - b.doseDate.getTime()
   );
   const nextDose = sortedDoses[0];
+
 
   let doseDayLabel = "";
   if (nextDose) {
@@ -122,7 +133,7 @@ const Dashboard: React.FC = () => {
     }
   }
 
-  // --- Today's Upcoming ---
+
   const todayUpcomingMedicines = medicines
     .filter((med) =>
       med.times.some((t: string | { $date: string }) => {
@@ -158,8 +169,7 @@ const Dashboard: React.FC = () => {
         <Text style={styles.feeling}>How are you feeling today?</Text>
       </View>
 
-      {/* Upcoming Dose */}
-     {/* Upcoming Dose */}
+   
 {nextDose ? (
   <UpComingDose
     title="Upcoming Dose"
@@ -181,6 +191,19 @@ const Dashboard: React.FC = () => {
   </View>
 )}
 
+      {nextDose && (
+        <UpComingDose
+          title="Upcoming Dose"
+          image={require("../../assets/pills.png")}
+          doseName={nextDose.med.name}
+          doseDetails={`${nextDose.med.dosage} ${nextDose.med.unit}${doseDayLabel}`}
+          doseDate={nextDose.doseDate.toLocaleDateString()}
+          doseTime={nextDose.doseDate.toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
+        />
+      )}
 
       {/* Today's Reminders */}
       <View style={styles.todayReminderContainer}>
@@ -201,6 +224,7 @@ const Dashboard: React.FC = () => {
                       typeof med.times[0] === "string"
                         ? med.times[0]
                         : med.times[0].$date
+                      typeof med.times[0] === "string" ? med.times[0] : med.times[0].$date
                     ).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
                   : ""
               }
@@ -213,7 +237,7 @@ const Dashboard: React.FC = () => {
         )}
       </View>
 
-      {/* Add Medicine */}
+
       <View style={styles.addButtonContainer}>
         <TouchableOpacity
           style={styles.addButton}

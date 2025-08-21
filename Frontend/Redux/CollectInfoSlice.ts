@@ -7,6 +7,8 @@ interface CollectInfoState {
   weight: number | null;
    height: number |null;
    dob: Date | null;  
+  height: number | null;   
+  dob: string | null;      
 }
 
 const initialState: CollectInfoState = {
@@ -15,6 +17,7 @@ const initialState: CollectInfoState = {
   weight: null,
   height: null,
   dob: null,
+  dob: null,    
 };
 
 const collectInfoSlice = createSlice({

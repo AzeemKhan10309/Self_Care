@@ -1,4 +1,4 @@
-// Frontend/Screens/Dashboard/Component/MedicineReminder/MedicineReminder.tsx
+
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { apiRequest } from "../../../../Services/api";
@@ -11,6 +11,11 @@ interface MedicationReminderProps {
   time: string;
   pills: string;
   status?: "Taken" | "Missed";  
+  id: string;          // medicineId
+  name: string;
+  time: string;
+  pills: string;
+  status: "Taken" | "Missed" | undefined;  
   onComplete: (id: string) => void;
   onCancel: (id: string) => void;
 }
@@ -36,6 +41,18 @@ const MedicationReminder: React.FC<MedicationReminderProps> = ({
     setLoading(true);
     try {
       onComplete(id); // parent state update
+  // Get user from Redux
+  const { user } = useSelector((state: RootState) => state.auth);
+  const userId = user?._id;
+
+  // Disable buttons if userId missing, loading, or already Taken/Missed
+  const isDisabled = loading || !userId || status === "Taken" || status === "Missed";
+
+  const handleComplete = async () => {
+    if (status || !userId) return; // prevent double marking or missing user
+    setLoading(true);
+    try {
+      onComplete(id);
       const payload = {
         medicineId: id,
         userId,
@@ -43,6 +60,7 @@ const MedicationReminder: React.FC<MedicationReminderProps> = ({
         time: new Date().toISOString(),
         status: "Taken",
       };
+      console.log("Sending dose log:", payload);
       await apiRequest("/doselog/", "POST", payload);
     } catch (err) {
       console.error("Error logging dose:", err);
@@ -56,6 +74,10 @@ const MedicationReminder: React.FC<MedicationReminderProps> = ({
     setLoading(true);
     try {
       onCancel(id); // parent state update
+    if (status || !userId) return; // prevent double marking or missing user
+    setLoading(true);
+    try {
+      onCancel(id);
       const payload = {
         medicineId: id,
         userId,
@@ -63,6 +85,7 @@ const MedicationReminder: React.FC<MedicationReminderProps> = ({
         time: new Date().toISOString(),
         status: "Missed",
       };
+      console.log("Sending dose log:", payload);
       await apiRequest("/doselog/", "POST", payload);
     } catch (err) {
       console.error("Error logging dose:", err);

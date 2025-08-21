@@ -12,6 +12,7 @@ const UserSchema = new mongoose.Schema(
     weight: { type: Number, default: null },
     height: { type: Number, default: null },
     dob: { type: Date, default: null },
+    dob: { type: Date, default: null },
     isProfileComplete: { type: Boolean, default: false },
   },
   { timestamps: true }

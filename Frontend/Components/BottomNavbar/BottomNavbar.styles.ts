@@ -15,6 +15,8 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 10,
+=======
+    marginTop: 370,
     height: 75,
   },
   tabItem: {

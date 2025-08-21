@@ -30,6 +30,7 @@ export const registerUser = async (req, res) => {
       weight: collectInfo?.weight || null,
       height: collectInfo?.height || null,
       dob: collectInfo?.dob ? new Date(collectInfo.dob) : null,
+      dob: collectInfo?.dob ? new Date(collectInfo.dob) : null,
       isProfileComplete: collectInfo ? true : false,
     });
 
@@ -110,6 +111,28 @@ export const UserInfo = async (req, res) => {
   }
 };
 
+export const updateUserProfile = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const updates = req.body; // contains name, email, phone, dob, weight, height, etc.
+
+    const user = await User.findByIdAndUpdate(userId, updates, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({
+      message: "Profile updated successfully",
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
 
 
 function generateSuggestions(username) {

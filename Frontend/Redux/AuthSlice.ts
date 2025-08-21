@@ -42,6 +42,12 @@ export const registerUser = createAsyncThunk(
       );
       if ("error" in res) return rejectWithValue(res.message);
       await AsyncStorage.setItem("token", res.token);
+
+      if ("error" in res) {
+        return rejectWithValue(res.message);
+      }
+      await AsyncStorage.setItem("token", res.token);
+
       return res.user;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || error.message);
@@ -60,6 +66,12 @@ export const loginUser = createAsyncThunk(
       );
       if ("error" in res) return rejectWithValue(res.message);
       await AsyncStorage.setItem("token", res.token);
+
+      if ("error" in res) {
+        return rejectWithValue(res.message);
+      }
+      await AsyncStorage.setItem("token", res.token);
+
       return res.user;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || error.message);
@@ -83,6 +95,31 @@ export const fetchUserInfo = createAsyncThunk(
 );
 
 
+
+export const updateUserProfile = createAsyncThunk(
+  "auth/updateUserProfile",
+  async (
+    { userId, data }: { userId: string; data: any },
+    { rejectWithValue }
+  ) => {
+    try {
+      const res = await apiRequest<{ user: any }>(
+        `/users/${userId}`,
+        "PUT",   
+        data
+      );
+
+      if ("error" in res) {
+        return rejectWithValue(res.message);
+      }
+
+      return res.user; 
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -95,6 +132,7 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -132,7 +170,21 @@ const authSlice = createSlice({
       .addCase(fetchUserInfo.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
-      });
+      })
+
+      .addCase(updateUserProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateUserProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload; // update redux user with latest data
+      })
+      .addCase(updateUserProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
   },
 });
 

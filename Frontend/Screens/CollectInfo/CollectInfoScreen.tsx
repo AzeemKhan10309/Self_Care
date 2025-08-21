@@ -52,6 +52,8 @@ const CollectInfoScreen: React.FC = () => {
         weight,
         height,
         dob: dob, 
+=======
+        dob: dob ? dob.toISOString() : null, 
       })
     );
     navigation.navigate("Register");
