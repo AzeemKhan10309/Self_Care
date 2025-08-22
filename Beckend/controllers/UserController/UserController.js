@@ -29,40 +29,31 @@ export const registerUser = async (req, res) => {
       password: passwordHash,
       phone,
       age: collectInfo?.age || null,
-       gender: collectInfo?.gender ? collectInfo.gender.toLowerCase() : null,
+      gender: collectInfo?.gender ? collectInfo.gender.toLowerCase() : null,
       weight: collectInfo?.weight || null,
       height: collectInfo?.height || null,
-      dob: collectInfo?.dob ? new Date(collectInfo.dob) : null,
       dob: collectInfo?.dob ? new Date(collectInfo.dob) : null,
       isProfileComplete: collectInfo ? true : false,
     });
 
     await newUser.save();
 
-    const userResponse = {
-      id: newUser._id,
-      name: newUser.name,
-      username: newUser.username,
-      email: newUser.email,
-      phone: newUser.phone,
-      age: newUser.age,
-      gender: newUser.gender,
-      weight: newUser.weight,
-      height: newUser.height,
-      dob: newUser.dob,
-      isProfileComplete: newUser.isProfileComplete,
-    };
+    // Generate JWT token
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
 
-    res.status(201).json({ user: userResponse });
+    const { password: pwd, ...userData } = newUser.toObject();
+
+    res.status(201).json({ 
+      message: "Registration successful",
+      token, 
+      user: userData 
+    });
 
   } catch (error) {
-    console.error("Registration errorr:", error);
+    console.error("Registration error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
-
-
-
 
 export const loginUser = async (req, res) => {
   try {
@@ -79,7 +70,7 @@ export const loginUser = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
 
     const { password: pwd, ...userData } = user.toObject();
 

@@ -36,13 +36,20 @@ export const registerUser = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const res = await apiRequest<{ user: any; token: string }>(
+      const res = await apiRequest<{ user: any; token?: string }>(
         "/users/register",
         "POST",
         { name, username, email, password, phone, collectInfo }
       );
+
       if ("error" in res) return rejectWithValue(res.message);
-      await AsyncStorage.setItem("token", res.token);
+
+      if (res.token) {
+        await AsyncStorage.setItem("token", res.token);
+        console.log("Token for API:", res.token);
+      } else {
+        console.warn("No token returned from API on registration");
+      }
 
       return res.user;
     } catch (error: any) {
@@ -55,14 +62,21 @@ export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async ({ email, password }: any, { rejectWithValue }) => {
     try {
-      const res = await apiRequest<{ user: any; token: string }>(
+      const res = await apiRequest<{ user: any; token?: string }>(
         "/users/login",
         "POST",
         { email, password }
       );
+
       if ("error" in res) return rejectWithValue(res.message);
-      await AsyncStorage.setItem("token", res.token);
-console.log("📌 fetchUserInfo raw response:", res);
+
+      if (res.token) {
+        await AsyncStorage.setItem("token", res.token);
+                console.log("Token for API:", res.token);
+
+      } else {
+        console.warn("No token returned from API on login");
+      }
 
       return res.user;
     } catch (error: any) {

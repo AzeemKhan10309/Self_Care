@@ -1,40 +1,38 @@
-import React from 'react';
-import { View, Text } from 'react-native';
-import styles from './DoseTab.styles';
-interface Props {
-  day: string;
-  weekday: string;
-  isActive?: boolean;
-}
+import React from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  GestureResponderEvent,
+} from "react-native";
+import styles from "./DoseTab.styles";
+type DoseTabProps = {
+  day: string; 
+  weekday: string; 
+  isActive: boolean;
+  onPress: (event: GestureResponderEvent) => void;
+};
 
-const DateTab: React.FC<Props> = ({ day, weekday, isActive }) => {
+const DoseTab: React.FC<DoseTabProps> = ({ day, weekday, isActive, onPress }) => {
   return (
-  <View
+    <TouchableOpacity
+      onPress={onPress}
       style={[
-        styles.dateTab,
+        styles.tab,
         isActive ? styles.activeTab : styles.inactiveTab,
       ]}
     >
-      <Text
-        style={[
-          styles.dateNumber,
-          isActive ? styles.activeText : styles.inactiveTab,
-        ]}
-      >
-        {day}
-      </Text>
-      <Text
-        style={[
-          styles.dayText,
-          isActive ? styles.activeText : styles.inactiveTab,
-        ]}
-      >
-        {weekday}
-      </Text>
-    </View>
+      <View style={styles.content}>
+        <Text style={[styles.weekday, isActive && styles.activeText]}>
+          {weekday}
+        </Text>
+        <Text style={[styles.day, isActive && styles.activeText]}>
+          {day}
+        </Text>
+      </View>
+    </TouchableOpacity>
   );
 };
 
 
-
-export default DateTab;
+export default DoseTab;

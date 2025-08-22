@@ -1,71 +1,168 @@
-import React,{useState} from 'react';
-import { View, Text, ScrollView } from 'react-native';
-import DateTab from './Component/DoseTab/DoseTab';
-import DoseItem from './Component/DoesItem/DoesItem';
-import BottomTab from '../../Components/BottomNavbar/BottomNavbar';
+import React, { useState, useEffect, useRef } from "react";
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  ScrollView,
+  FlatList,
+} from "react-native";
+import DateTab from "./Component/DoseTab/DoseTab";
+import DoseItem from "./Component/DoesItem/DoesItem";
+import BottomTab from "../../Components/BottomNavbar/BottomNavbar";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../../Types/navigation";
+import { tabs } from "../../src/Constants/TabConfig";
+import NotificationCard from "./Component/NotificationCard/NotificationCard";
+import styles from "./Summary.styles";
+import { apiRequest } from "../../Services/api";
+
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
-import { tabs } from '../../src/Constants/TabConfig';
-import NotificationCard from './Component/NotificationCard/NotificationCard';
-import styles from './Summary.styles';
+
+const getWeekday = (dateString: string) => {
+  const d = new Date(dateString);
+  return ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][d.getDay()];
+};
+
+const generateMonthDates = (year: number, month: number) => {
+  const dates: string[] = [];
+  const d = new Date(year, month, 1);
+
+  while (d.getMonth() === month) {
+    dates.push(d.toISOString().split("T")[0]);
+    d.setDate(d.getDate() + 1);
+  }
+
+  return dates;
+};
+
+const formatTime = (isoTime: string) => {
+  const date = new Date(isoTime);
+  if (isNaN(date.getTime())) return "N/A"; 
+  return date.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+};
+
+
+const sortLogsByTime = (logs: any[]) => {
+  return logs.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+};
 
 const Summary: React.FC = () => {
-    const [activeTab, setActiveTab] = useState("Summary");
-    const navigation = useNavigation<NavigationProp>();
-      const doseData = [
-    { time: '8am', taken: false, medicine: 'Paracetamol 250mg', quantity: 2 },
-    { time: '8am', taken: true, medicine: 'Paracetamol 250mg', quantity: 1, showPillLabel: true },
-    { time: '7pm', taken: true, medicine: 'Paracetamol 250mg', quantity: 2, showPillLabel: true },
-    { time: '8pm', taken: true, medicine: 'Paracetamol 250mg', quantity: 1, showPillLabel: true },
-  ];
+  const today = new Date();
+  const [activeTab, setActiveTab] = useState("Summary");
+  const [selectedDate, setSelectedDate] = useState(today.toISOString().split("T")[0]);
+  const [doseLogs, setDoseLogs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const navigation = useNavigation<NavigationProp>();
+  const dateRange = generateMonthDates(today.getFullYear(), today.getMonth());
+  const flatListRef = useRef<FlatList<string>>(null);
+
+  const fetchDoseLogs = async (date: string) => {
+    setLoading(true);
+    try {
+      const res = await apiRequest(`/doselog/by-date?date=${date}`, "GET");
+      const sorted = sortLogsByTime(res || []);
+      setDoseLogs(sorted);
+    } catch (err) {
+      console.error("Failed to fetch dose logs", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDoseLogs(selectedDate);
+  }, [selectedDate]);
+
+  useEffect(() => {
+    const todayIndex = dateRange.findIndex(d => d === today.toISOString().split("T")[0]);
+    if (todayIndex !== -1 && flatListRef.current) {
+      setTimeout(() => {
+        flatListRef.current?.scrollToIndex({
+          index: todayIndex,
+          animated: true,
+          viewPosition: 0.01,
+        });
+      }, 200);
+    }
+  }, []);
+
   const handleTabPress = (tabKey: string) => {
-    setActiveTab(tabKey);   
+    setActiveTab(tabKey);
     navigation.navigate(tabKey as keyof RootStackParamList);
-  };    
+  };
+
   return (
     <View style={{ flex: 1 }}>
-      <Text style={styles.summary}>Today’s Summary</Text>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 20 }}>
+        <Text style={styles.summary}>Daily Summary</Text>
 
-      <View style={styles.dateTabs}>
-        {['27', '28', '29', '30', '1'].map((day, idx) => (
-          <DateTab
-            key={day}
-            day={day}
-            weekday={['Mon', 'Tue', 'Wed', 'Thu', 'Fri'][idx]}
-            isActive={idx === 2}
-            
-          />
-        ))}
-      </View>
-   
-   
-   <Text style={styles.TodaysDose}>Today’s Dose</Text>
-  <NotificationCard
-        date="Sep 14th"
-        weekday="Thu"
-        message="You’ve skipped one dose of your medicine!"
-      />
-        {doseData.map((item, index) => (
-        <DoseItem
-          key={index}
-          time={item.time}
-          taken={item.taken}
-          medicine={item.medicine}
-          quantity={item.quantity}
-          showPillLabel={item.showPillLabel}
-        />
-      ))}
-      <View style={styles.line} >
-       <BottomTab
-                activeTab={activeTab}
-                onTabPress={handleTabPress}
-                tabs={tabs}
+        <FlatList
+          ref={flatListRef}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.dateTabs}
+          data={dateRange}
+          keyExtractor={day => day}
+          renderItem={({ item: day }) => (
+            <DateTab
+              day={day.split("-")[2]}
+              weekday={getWeekday(day)}
+              isActive={selectedDate === day}
+              onPress={() => {
+                setSelectedDate(day);
+                const index = dateRange.findIndex(d => d === day);
+                if (index !== -1) {
+                  flatListRef.current?.scrollToIndex({ index, animated: true, viewPosition: 0.5 });
+                }
+              }}
             />
-      </View>
-    
+          )}
+          getItemLayout={(_, index) => ({ length: 80, offset: 80 * index, index })}
+        />
 
+        <Text style={styles.TodaysDose}>
+          {selectedDate === today.toISOString().split("T")[0]
+            ? "Today’s Dose"
+            : `Doses on ${selectedDate}`}
+        </Text>
+
+        {doseLogs.some(log => log.status === "Missed") && (
+          <NotificationCard
+            date={selectedDate}
+            weekday={getWeekday(selectedDate)}
+            message="You’ve skipped one or more doses!"
+          />
+        )}
+
+        {loading ? (
+          <ActivityIndicator size="large" />
+        ) : doseLogs.length > 0 ? (
+          doseLogs.map((log, index) => (
+          <DoseItem
+  key={index}
+  time={log.time} 
+  taken={log.status === "Taken"}
+  medicine={log.medicineId?.name || "Unknown"}
+  quantity={log.quantity || 0}
+  showPillLabel
+/>
+          ))
+        ) : (
+          <Text style={{ textAlign: "center", marginTop: 20, color: "gray" }}>
+            No doses scheduled for {selectedDate}
+          </Text>
+        )}
+      </ScrollView>
+
+      <View style={styles.line}>
+        <BottomTab activeTab={activeTab} onTabPress={handleTabPress} tabs={tabs} />
+      </View>
     </View>
   );
 };

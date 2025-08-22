@@ -4,13 +4,14 @@ import {
   getAllDoseLogs,
   getDoseLogsByDependent,
   updateDoseLog,
-  deleteDoseLog
+  deleteDoseLog,
+  getDoseLogsByDate
 } from "../../controllers/DoseLog/DoseLogController.js";
 import authMiddleware from "../../middlewares/authMiddleware.js"
 const router = express.Router();
 
 router.post("/", authMiddleware, createDoseLog);
-
+router.get("/by-date", authMiddleware, getDoseLogsByDate);
 router.get("/", authMiddleware,getAllDoseLogs);
 
 router.get("/dependent/:dependentId", getDoseLogsByDependent);

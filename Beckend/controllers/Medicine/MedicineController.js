@@ -1,5 +1,5 @@
 import Medicine from "../../models/Medicine/Medicine.js";
-
+import DoseLog from "../../models/DoseLog/DoseLog.js";
 
 export const createMedicine = async (req, res) => {
  try {
@@ -52,7 +52,7 @@ export const createMedicine = async (req, res) => {
 
 export const getAllMedicines = async (req, res) => {
   try {
-    const medicines = await Medicine.find()
+const medicines = await Medicine.find({ userId: req.user.id })
       .populate("dependentId", "name") 
       .populate("userId", "username email"); 
     res.status(200).json(medicines);
@@ -114,5 +114,46 @@ export const deleteMedicine = async (req, res) => {
   }
 };
 
+export const getTodaysMedicines = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // start of today
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1); // start of tomorrow
+
+    // Fetch all medicines of user
+    let medicines = await Medicine.find({ userId })
+      .populate("dependentId", "name")
+      .populate("userId", "username email");
+
+    // Filter out medicines already logged today
+    const doseLogsToday = await DoseLog.find({
+      userId,
+      date: today,
+    });
+
+    const loggedMedicineIds = doseLogsToday.map(d => d.medicineId.toString());
+
+    const todaysMedicines = medicines.filter(med => {
+      const medTimes = med.times.map(t => new Date(typeof t === "string" ? t : t.$date));
+      const isToday = medTimes.some(t => t >= today && t < tomorrow);
+      
+      // check repeating days
+      let shouldShow = isToday;
+      if (med.repeat && med.selectedDays?.length) {
+        const todayDay = today.getDay(); // 0=Sunday
+        shouldShow = med.selectedDays.includes(todayDay);
+      }
+
+      return shouldShow && !loggedMedicineIds.includes(med._id.toString());
+    });
+
+    res.status(200).json(todaysMedicines);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to fetch today's medicines", error: error.message });
+  }
+};
 
 

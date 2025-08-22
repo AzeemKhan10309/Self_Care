@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../../Types/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "../../Redux/Store";
 
 import { MedicationReminder } from "./Component/MedicineReminder/MedicineReminder";
 import UpComingDose from "./Component/UpComingDose/UpcomingDose";
@@ -20,45 +22,97 @@ interface Medicine {
   name: string;
   dosage: number;
   unit: string;
-  status: "Taken" | "Missed";
+  status: "Taken" | "Missed" | "Pending";
   times: (string | { $date: string })[];
-  startDate?: string;
-  endDate?: string;
   repeat?: boolean;
   selectedDays?: number[];
 }
 
+interface DoseLog {
+  _id: string;
+  name: string;
+  dosage: number;
+  unit: string;
+  status: "Taken" | "Missed";
+  time: Date;
+}
+
+const parseTime = (t: string | { $date: string }): Date => {
+  return new Date(typeof t === "string" ? t : t.$date);
+};
+
 const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState("Dashboard");
   const [medicines, setMedicines] = useState<Medicine[]>([]);
+  const [doseLog, setDoseLog] = useState<DoseLog[]>([]);
   const [loading, setLoading] = useState(true);
 
   const navigation = useNavigation<NavigationProp>();
+  const { user } = useSelector((state: RootState) => state.auth);
+  const userId = user?.id;
 
   const handleTabPress = (tabKey: string) => {
     setActiveTab(tabKey);
     navigation.navigate(tabKey as keyof RootStackParamList);
   };
 
-  const handleComplete = (id: string) => {
-    setMedicines((prev) =>
-      prev.map((m) => (m._id === id ? { ...m, status: "Taken" } : m))
+  // Log dose for the specific scheduled time
+  const logDose = async (med: Medicine, status: "Taken" | "Missed", scheduledTime: Date) => {
+    if (!userId) return;
+
+    // Add to local log
+    setDoseLog(prev => [
+      ...prev,
+      {
+        _id: med._id,
+        name: med.name,
+        dosage: med.dosage,
+        unit: med.unit,
+        status,
+        time: scheduledTime,
+      },
+    ]);
+
+    // Remove the specific time from medicine times
+    setMedicines(prev =>
+      prev
+        .map(m =>
+          m._id === med._id
+            ? { ...m, times: m.times.filter(t => parseTime(t).getTime() !== scheduledTime.getTime()) }
+            : m
+        )
+        .filter(m => m.times.length > 0)
     );
+
+    // Send log to backend
+    try {
+      await apiRequest("/doselog/", "POST", {
+        medicineId: med._id,
+        userId,
+        dependentId: null,
+        status,
+        time: scheduledTime.toISOString(),
+      });
+    } catch (err) {
+      console.error("API Error:", err);
+    }
   };
 
-  const handleCancel = (id: string) => {
-    setMedicines((prev) =>
-      prev.map((m) => (m._id === id ? { ...m, status: "Missed" } : m))
-    );
+  const handleComplete = (med: Medicine, scheduledTime: Date) => {
+    logDose(med, "Taken", scheduledTime);
   };
 
-  // Fetch medicines from API
+  const handleCancel = (med: Medicine, scheduledTime: Date) => {
+    logDose(med, "Missed", scheduledTime);
+  };
+
   useEffect(() => {
-    const fetchReminders = async () => {
+    const fetchTodaysMedicines = async () => {
       try {
-        const data = await apiRequest<Medicine[]>("/medicines/", "GET");
+   
+        const data = await apiRequest<Medicine[]>("/medicines/today", "GET");
         if (!("error" in data)) {
-          setMedicines(data);
+          setMedicines(data.map(m => ({ ...m, status: "Pending" })));
         } else {
           console.error("API Error:", data.message);
         }
@@ -68,51 +122,29 @@ const Dashboard: React.FC = () => {
         setLoading(false);
       }
     };
-    fetchReminders();
+    fetchTodaysMedicines();
   }, []);
 
   const now = new Date();
   const nowTS = now.getTime();
 
-  const allDoses: { doseDate: Date; med: Medicine }[] = [];
+  // Flatten all upcoming times for today
+  const upcomingDoses = useMemo(() => {
+    return medicines
+      .flatMap(med => {
+        const medTimesToday = med.times
+          .map(t => parseTime(t))
+          .filter(t => t.getTime() >= nowTS); // only future times
+        return medTimesToday.map(time => ({ med, time }));
+      })
+      .sort((a, b) => a.time.getTime() - b.time.getTime());
+  }, [medicines, nowTS]);
 
-  medicines.forEach((med) => {
-    med.times.forEach((t: string | { $date: string }) => {
-      const timeStr = typeof t === "string" ? t : t.$date;
-      let doseDate = new Date(timeStr);
-
-      if (med.repeat && med.selectedDays?.length) {
-        const today = now.getDay(); // 0=Sun, 1=Mon, ...
-        let nextDoseDate = new Date(doseDate);
-
-        if (med.selectedDays.includes(today) && nextDoseDate.getTime() > nowTS) {
-          doseDate = nextDoseDate;
-        } else {
-          let daysAhead = 1;
-          while (!med.selectedDays.includes((today + daysAhead) % 7)) {
-            daysAhead++;
-          }
-          doseDate.setDate(now.getDate() + daysAhead);
-          doseDate.setHours(nextDoseDate.getHours());
-          doseDate.setMinutes(nextDoseDate.getMinutes());
-          doseDate.setSeconds(0);
-        }
-      }
-
-      allDoses.push({ doseDate, med });
-    });
-  });
-
-  // Future doses
-  const futureDoses = allDoses.filter((d) => d.doseDate.getTime() > nowTS);
-  const sortedDoses = futureDoses.sort(
-    (a, b) => a.doseDate.getTime() - b.doseDate.getTime()
-  );
-  const nextDose = sortedDoses[0];
-
+  const nextDoseEntry = upcomingDoses[0];
+  const nextDose = nextDoseEntry?.med;
   let doseDayLabel = "";
-  if (nextDose) {
-    const doseDate = nextDose.doseDate;
+  if (nextDoseEntry) {
+    const doseDate = nextDoseEntry.time;
     if (
       doseDate.getDate() !== now.getDate() ||
       doseDate.getMonth() !== now.getMonth() ||
@@ -123,53 +155,24 @@ const Dashboard: React.FC = () => {
     }
   }
 
-  const todayUpcomingMedicines = medicines
-    .filter((med) =>
-      med.times.some((t: string | { $date: string }) => {
-        const medTime = new Date(typeof t === "string" ? t : t.$date);
-        return (
-          medTime.getDate() === now.getDate() &&
-          medTime.getMonth() === now.getMonth() &&
-          medTime.getFullYear() === now.getFullYear() &&
-          medTime.getTime() >= nowTS
-        );
-      })
-    )
-    .sort((a, b) => {
-      const timeA = new Date(
-        typeof a.times[0] === "string" ? a.times[0] : a.times[0].$date
-      ).getTime();
-      const timeB = new Date(
-        typeof b.times[0] === "string" ? b.times[0] : b.times[0].$date
-      ).getTime();
-      return timeA - timeB;
-    });
-
   return (
     <View style={styles.container}>
-      {/* Header Section */}
+      {/* Header */}
       <View style={styles.headerContainer}>
-        <Image
-          source={require("../../assets/Home-bg.png")}
-          style={styles.headerBackground}
-          resizeMode="cover"
-        />
+        <Image source={require("../../assets/Home-bg.png")} style={styles.headerBackground} resizeMode="cover" />
         <ProfileHeader />
         <Text style={styles.feeling}>How are you feeling today?</Text>
       </View>
 
       {/* Next Dose */}
-      {nextDose ? (
+      {nextDoseEntry ? (
         <UpComingDose
           title="Upcoming Dose"
           image={require("../../assets/pills.png")}
-          doseName={nextDose.med.name}
-          doseDetails={`${nextDose.med.dosage} ${nextDose.med.unit}${doseDayLabel}`}
-          doseDate={nextDose.doseDate.toLocaleDateString()}
-          doseTime={nextDose.doseDate.toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
+          doseName={nextDose.name}
+          doseDetails={`${nextDose.dosage} ${nextDose.unit}${doseDayLabel}`}
+          doseDate={nextDoseEntry.time.toLocaleDateString()}
+          doseTime={nextDoseEntry.time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
         />
       ) : (
         <View style={styles.upcomingDoseContainer}>
@@ -185,26 +188,21 @@ const Dashboard: React.FC = () => {
         <Text style={styles.reminderTitle}>Today's Reminders</Text>
         {loading ? (
           <Text>Loading...</Text>
-        ) : todayUpcomingMedicines.length === 0 ? (
+        ) : upcomingDoses.length === 0 ? (
           <Text>No medicines for today</Text>
         ) : (
-          todayUpcomingMedicines.map((med) => {
-            const medTime = med.times[0]
-              ? new Date(
-                  typeof med.times[0] === "string" ? med.times[0] : med.times[0].$date
-                ).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-              : "";
-
+          upcomingDoses.map(({ med, time }) => {
+            const medTimeStr = time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
             return (
               <MedicationReminder
-                key={med._id}
+                key={`${med._id}-${time.getTime()}`}
                 id={med._id}
                 name={med.name}
-                time={medTime}
+                time={medTimeStr}
                 pills={`${med.dosage} ${med.unit}`}
                 status={med.status}
-                onComplete={handleComplete}
-                onCancel={handleCancel}
+                onComplete={() => handleComplete(med, time)}
+                onCancel={() => handleCancel(med, time)}
               />
             );
           })
@@ -213,15 +211,8 @@ const Dashboard: React.FC = () => {
 
       {/* Add Medicine Button */}
       <View style={styles.addButtonContainer}>
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => navigation.navigate("AddMedicine")}
-        >
-          <Image
-            source={require("../../assets/Add.png")}
-            style={styles.addicon}
-            resizeMode="contain"
-          />
+        <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("AddMedicine")}>
+          <Image source={require("../../assets/Add.png")} style={styles.addicon} resizeMode="contain" />
         </TouchableOpacity>
       </View>
 

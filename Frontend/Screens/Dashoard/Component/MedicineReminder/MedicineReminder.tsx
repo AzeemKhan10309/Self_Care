@@ -1,15 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
-import { apiRequest } from "../../../../Services/api";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../Redux/Store";
 
 interface MedicationReminderProps {
   id: string;
   name: string;
   time: string;
   pills: string;
-  status?: "Taken" | "Missed";
+  status?: "Taken" | "Missed" | "Pending";
   onComplete: (id: string) => void;
   onCancel: (id: string) => void;
 }
@@ -23,33 +20,12 @@ export const MedicationReminder: React.FC<MedicationReminderProps> = ({
   onComplete,
   onCancel,
 }) => {
-  const [loading, setLoading] = useState(false);
-  const { user } = useSelector((state: RootState) => state.auth);
-  const userId = user?._id;
+  const isDisabled = status === "Taken" || status === "Missed";
 
-  const isDisabled = loading || !userId || status === "Taken" || status === "Missed";
-
-  const handleAction = async (action: "Taken" | "Missed") => {
-    if (status || !userId) return;
-    setLoading(true);
-    try {
-      if (action === "Taken") onComplete(id);
-      if (action === "Missed") onCancel(id);
-
-      const payload = {
-        medicineId: id,
-        userId,
-        dependentId: null,
-        time: new Date().toISOString(),
-        status: action,
-      };
-      console.log("Sending dose log:", payload);
-      await apiRequest("/doselog/", "POST", payload);
-    } catch (err) {
-      console.error("Error logging dose:", err);
-    } finally {
-      setLoading(false);
-    }
+  const handleAction = (action: "Taken" | "Missed") => {
+    if (isDisabled) return;
+    if (action === "Taken") onComplete(id);
+    if (action === "Missed") onCancel(id);
   };
 
   return (
