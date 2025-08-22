@@ -14,7 +14,7 @@ export const useEditProfile = () => {
   const { user, loading, error } = useSelector((state: RootState) => state.auth);
 
   const userId = user?.id;
-
+  console.log("User ID:", userId);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -26,7 +26,6 @@ export const useEditProfile = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [updating, setUpdating] = useState(false);
 
-  // Load user info into state
   useEffect(() => {
     if (!user) return;
     setName(user.name || "");
@@ -38,7 +37,6 @@ export const useEditProfile = () => {
     setProfileImage(user.profileImage || null);
   }, [user]);
 
-  // Detect location
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -93,6 +91,7 @@ export const useEditProfile = () => {
       }
 
       const res = await apiRequest(`/users/${userId}`, "PUT", formData);
+      console.log("Profile update response:", res);
       if ("error" in res) {
         Alert.alert("Error", res.message || "Failed to update profile");
         return;

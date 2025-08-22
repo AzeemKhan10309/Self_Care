@@ -1,4 +1,3 @@
-// components/NotificationCard.tsx
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';

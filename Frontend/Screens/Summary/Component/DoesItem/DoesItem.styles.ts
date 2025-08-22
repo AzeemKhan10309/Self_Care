@@ -11,12 +11,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
     color: '#2979FF',
+    marginRight: 1,
   },
   statusIcon: {
     backgroundColor: '#E0E0E0',
     borderRadius: 6,
     padding: 6,
-    marginRight: 10,
+    marginRight: 12,
   },
   doseInfo: {
     flex: 1,

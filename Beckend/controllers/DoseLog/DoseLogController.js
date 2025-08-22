@@ -1,4 +1,5 @@
 import DoseLog from "../../models/DoseLog/DoseLog.js";
+import Medicine from "../../models/Medicine/Medicine.js";
 
 export const createDoseLog = async (req, res) => {
   try {
@@ -8,23 +9,26 @@ export const createDoseLog = async (req, res) => {
       return res.status(400).json({ error: true, message: "Missing required fields" });
     }
 
-    // Normalize date (store only date part for easier querying)
-    const logDate = new Date(time);
-    logDate.setHours(0, 0, 0, 0);
+    if (!["Taken", "Missed"].includes(status)) {
+      return res.status(400).json({ error: true, message: "Invalid status" });
+    }
 
-    // Check if log already exists
-    const existingLog = await DoseLog.findOne({
+    const logTime = new Date(time);
+    const logDate = new Date(time);
+    logDate.setHours(0, 0, 0, 0); // normalize to start of day
+
+    // Check if log already exists for this exact time
+    let existingLog = await DoseLog.findOne({
       medicineId,
       userId,
       dependentId: dependentId || null,
-      date: logDate,
+      time: logTime,
     });
 
     if (existingLog) {
-      // Update status if already exists
-      existingLog.status = status; // "Taken" or "Missed"
-      existingLog.time = time; // store exact time if needed
+      existingLog.status = status;
       await existingLog.save();
+      await existingLog.populate("medicineId userId dependentId");
       return res.json({ success: true, log: existingLog });
     }
 
@@ -33,10 +37,42 @@ export const createDoseLog = async (req, res) => {
       medicineId,
       userId,
       dependentId: dependentId || null,
-      time,
-      status, // "Taken" or "Missed"
+      time: logTime,
+      status,
       date: logDate,
     });
+    await newLog.populate("medicineId userId dependentId");
+
+    // Update medicine times if it repeats
+    const medicine = await Medicine.findById(medicineId);
+    if (medicine && medicine.repeat) {
+      const updatedTimes = medicine.times.map(t => {
+        let doseTime = new Date(typeof t === "string" ? t : t.$date);
+
+        // Only update the logged time
+        if (doseTime.getTime() === logTime.getTime()) {
+          let nextTime = new Date(doseTime);
+
+          if (medicine.selectedDays?.length) {
+            // Weekly repeat
+            const today = doseTime.getDay(); // 0 = Sunday
+            let daysAhead = 1;
+            while (!medicine.selectedDays.includes((today + daysAhead) % 7)) daysAhead++;
+            nextTime.setDate(doseTime.getDate() + daysAhead);
+          } else {
+            // Daily repeat
+            nextTime.setDate(doseTime.getDate() + 1);
+          }
+
+          return nextTime.toISOString();
+        }
+
+        return doseTime.toISOString();
+      });
+
+      medicine.times = updatedTimes;
+      await medicine.save();
+    }
 
     res.json({ success: true, log: newLog });
   } catch (err) {
@@ -44,7 +80,6 @@ export const createDoseLog = async (req, res) => {
     res.status(500).json({ error: true, message: "Something went wrong" });
   }
 };
-
 
 
 export const getAllDoseLogs = async (req, res) => {
@@ -100,3 +135,32 @@ export const deleteDoseLog = async (req, res) => {
     res.status(500).json({ message: "Failed to delete dose log", error: error.message });
   }
 };
+export const getDoseLogsByDate = async (req, res) => {
+  try {
+    const { date } = req.query;
+    if (!date) {
+      return res.status(400).json({ message: "Date is required" });
+    }
+
+    // start and end of selected date
+    const selectedDate = new Date(date);
+    const startOfDay = new Date(selectedDate.setHours(0, 0, 0, 0));
+    const endOfDay = new Date(selectedDate.setHours(23, 59, 59, 999));
+
+    const logs = await DoseLog.find({
+      userId: req.user.id,
+      date: { $gte: startOfDay, $lte: endOfDay }, // ✅ use "date" instead of createdAt
+    })
+      .populate("medicineId", "name dose timing repeatPattern")
+      .populate("dependentId", "name");
+
+    res.status(200).json(logs);
+  } catch (error) {
+    console.error("Failed to fetch dose logs", error);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+
+
+

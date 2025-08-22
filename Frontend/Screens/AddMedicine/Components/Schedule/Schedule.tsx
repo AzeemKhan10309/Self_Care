@@ -17,7 +17,6 @@ interface Props {
   currentIndex: number | null;
   handleTimeChange: (e: any, d?: Date) => void;
 
-  // NEW props for days
   selectedDays: number[];
   onToggleDay: (index: number) => void;
 }
@@ -90,7 +89,6 @@ const Schedule: React.FC<Props> = ({
         />
       )}
 
-      {/* Week days selection */}
       <WeekDays selectedDays={selectedDays} onToggleDay={onToggleDay} showDate="" />
     </View>
   );

@@ -1,37 +1,37 @@
-import {StyleSheet} from 'react-native';
-import Summary from './Summary';
+import { StyleSheet } from 'react-native';
+
 const styles = StyleSheet.create({
   dateTabs: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     marginVertical: 10,
+    paddingHorizontal: 10,
   },
-
-doseList: {
-  marginTop: 16,
-},
-summary: {
+  doseList: {
+    flex: 1,
+    marginTop: 10,
+    paddingHorizontal: 10,
+  },
+  summary: {
     marginTop: 20,
-  fontSize: 24,
- fontWeight: 'bold',
+    fontSize: 24,
+    fontWeight: 'bold',
     color: '#000',
     textAlign: 'center',
-}
-,
-    TodaysDose: {
-        fontSize: 27,
-        fontWeight: 'bold',
-        color: "#1E5EFF",
-        marginTop: 0,
-        marginBottom: 10,
-        marginLeft: 24,
-    },
- 
-    line:{
- backgroundColor: '#fff',
-  padding: 0.10,
-  borderBottomWidth: 1,
-  borderBottomColor: '#ccc'
-    }
+  },
+  TodaysDose: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: "#1E5EFF",
+    marginTop: 16,
+    marginBottom: 10,
+    marginLeft: 24,
+  },
+  line: {
+    backgroundColor: '#fff',
+    padding: 6,
+    borderTopWidth: 1,
+    borderTopColor: '#ccc',
+  }
 });
+
 export default styles;
