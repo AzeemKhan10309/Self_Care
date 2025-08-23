@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, TouchableOpacity, Image, ActivityIndicator } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../../Types/navigation";
@@ -17,162 +17,209 @@ import styles from "./Dashboard.styles";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-interface Medicine {
+interface TodayMedicine {
   _id: string;
   name: string;
   dosage: number;
   unit: string;
-  status: "Taken" | "Missed" | "Pending";
-  times: (string | { $date: string })[];
-  repeat?: boolean;
-  selectedDays?: number[];
+  times: { time: string; status: "Pending" | "Taken" | "Missed" }[];
 }
 
-interface DoseLog {
-  _id: string;
+interface UpcomingDose {
   name: string;
   dosage: number;
   unit: string;
-  status: "Taken" | "Missed";
-  time: Date;
+  time: string;
 }
-
-const parseTime = (t: string | { $date: string }): Date => {
-  return new Date(typeof t === "string" ? t : t.$date);
-};
 
 const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState("Dashboard");
-  const [medicines, setMedicines] = useState<Medicine[]>([]);
-  const [doseLog, setDoseLog] = useState<DoseLog[]>([]);
+  const [todayMedicines, setTodayMedicines] = useState<TodayMedicine[]>([]);
+  const [upcomingDoses, setUpcomingDoses] = useState<UpcomingDose[]>([]);
+  const [nextDose, setNextDose] = useState<UpcomingDose | null>(null);
   const [loading, setLoading] = useState(true);
 
   const navigation = useNavigation<NavigationProp>();
   const { user } = useSelector((state: RootState) => state.auth);
-  const userId = user?.id;
 
   const handleTabPress = (tabKey: string) => {
     setActiveTab(tabKey);
     navigation.navigate(tabKey as keyof RootStackParamList);
   };
 
-  // Log dose for the specific scheduled time
-  const logDose = async (med: Medicine, status: "Taken" | "Missed", scheduledTime: Date) => {
-    if (!userId) return;
+const handleMarkDose = async (
+  id: string,
+  time: string, // expected format: "HH:mm AM/PM"
+  status: "Taken" | "Missed"
+) => {
+  if (!user) return;
 
-    // Add to local log
-    setDoseLog(prev => [
-      ...prev,
-      {
-        _id: med._id,
-        name: med.name,
-        dosage: med.dosage,
-        unit: med.unit,
-        status,
-        time: scheduledTime,
-      },
-    ]);
+  try {
+    // Parse "HH:mm AM/PM" into Date object
+    const now = new Date();
+    const timeParts = time.match(/(\d{1,2}):(\d{2})\s?(AM|PM)?/i);
 
-    // Remove the specific time from medicine times
-    setMedicines(prev =>
-      prev
-        .map(m =>
-          m._id === med._id
-            ? { ...m, times: m.times.filter(t => parseTime(t).getTime() !== scheduledTime.getTime()) }
-            : m
-        )
-        .filter(m => m.times.length > 0)
+    if (!timeParts) throw new Error("Invalid time format");
+
+    let hours = parseInt(timeParts[1], 10);
+    const minutes = parseInt(timeParts[2], 10);
+    const meridiem = timeParts[3]?.toUpperCase();
+
+    if (meridiem === "PM" && hours !== 12) hours += 12;
+    if (meridiem === "AM" && hours === 12) hours = 0;
+
+    const doseTime = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      hours,
+      minutes
     );
 
-    // Send log to backend
-    try {
-      await apiRequest("/doselog/", "POST", {
-        medicineId: med._id,
-        userId,
-        dependentId: null,
-        status,
-        time: scheduledTime.toISOString(),
-      });
-    } catch (err) {
-      console.error("API Error:", err);
-    }
-  };
+    // Send payload to backend
+    await apiRequest("/dose-log/create", "POST", {
+      medicineId: id,
+      dependentId: null,
+      status,       // "Taken" or "Missed"
+      time: doseTime.toISOString(), // send ISO string
+    });
 
-  const handleComplete = (med: Medicine, scheduledTime: Date) => {
-    logDose(med, "Taken", scheduledTime);
-  };
-
-  const handleCancel = (med: Medicine, scheduledTime: Date) => {
-    logDose(med, "Missed", scheduledTime);
-  };
-
-  useEffect(() => {
-    const fetchTodaysMedicines = async () => {
-      try {
-   
-        const data = await apiRequest<Medicine[]>("/medicines/today", "GET");
-        if (!("error" in data)) {
-          setMedicines(data.map(m => ({ ...m, status: "Pending" })));
-        } else {
-          console.error("API Error:", data.message);
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchTodaysMedicines();
-  }, []);
-
-  const now = new Date();
-  const nowTS = now.getTime();
-
-  // Flatten all upcoming times for today
-  const upcomingDoses = useMemo(() => {
-    return medicines
-      .flatMap(med => {
-        const medTimesToday = med.times
-          .map(t => parseTime(t))
-          .filter(t => t.getTime() >= nowTS); // only future times
-        return medTimesToday.map(time => ({ med, time }));
-      })
-      .sort((a, b) => a.time.getTime() - b.time.getTime());
-  }, [medicines, nowTS]);
-
-  const nextDoseEntry = upcomingDoses[0];
-  const nextDose = nextDoseEntry?.med;
-  let doseDayLabel = "";
-  if (nextDoseEntry) {
-    const doseDate = nextDoseEntry.time;
-    if (
-      doseDate.getDate() !== now.getDate() ||
-      doseDate.getMonth() !== now.getMonth() ||
-      doseDate.getFullYear() !== now.getFullYear()
-    ) {
-      const options: Intl.DateTimeFormatOptions = { weekday: "long" };
-      doseDayLabel = ` (Next: ${doseDate.toLocaleDateString(undefined, options)})`;
-    }
+    // Update local state after marking
+    setTodayMedicines((prev) =>
+      prev
+        .map((med) => ({
+          ...med,
+          times: med.times?.filter((t) => t.time !== time),
+        }))
+        .filter((med) => (med.times?.length ?? 0) > 0)
+    );
+  } catch (err) {
+    console.error("Error logging dose:", err);
   }
+};
+
+
+
+
+useEffect(() => {
+  const fetchData = async () => {
+    setLoading(true);
+
+    try {
+      // Fetch data from API
+      const data = await apiRequest<
+        | { error: true; message: string }
+        | {
+            todayMedicines: any[];
+            upcomingDoses: any[];
+            nextDose: any | null;
+          }
+      >("/medicines/today", "GET");
+
+      console.log("Fetched data:", data);
+
+      // Handle API error
+      if ("error" in data) {
+        console.error("API Error:", data.message);
+        setTodayMedicines([]);
+        setUpcomingDoses([]);
+        setNextDose(null);
+        return;
+      }
+
+      // 1️⃣ Group todayMedicines by medId and create `times` array
+      const groupedMeds: TodayMedicine[] = data.todayMedicines.reduce(
+        (acc: TodayMedicine[], med) => {
+          const existing = acc.find((m) => m._id === med.medId);
+          if (existing) {
+            existing.times.push({ time: med.time, status: med.status });
+          } else {
+            acc.push({
+              _id: med.medId,
+              name: med.name,
+              dosage: med.dosage,
+              unit: med.unit,
+              times: [{ time: med.time, status: med.status }],
+            });
+          }
+          return acc;
+        },
+        []
+      );
+
+      setTodayMedicines(groupedMeds);
+
+      // 2️⃣ Set upcoming doses as-is
+      setUpcomingDoses(data.upcomingDoses || []);
+
+      // 3️⃣ Set nextDose with formatted time
+      if (data.nextDose) {
+        const doseTimeParts = data.nextDose.time.match(/(\d{1,2}):(\d{2})/);
+        let formattedTime = data.nextDose.time;
+
+        if (doseTimeParts) {
+          let hours = parseInt(doseTimeParts[1], 10);
+          const minutes = parseInt(doseTimeParts[2], 10);
+          const meridiem = data.nextDose.time.match(/AM|PM/i)?.[0]?.toUpperCase();
+
+          if (meridiem === "PM" && hours !== 12) hours += 12;
+          if (meridiem === "AM" && hours === 12) hours = 0;
+
+          const date = new Date();
+          date.setHours(hours, minutes);
+          formattedTime = date.toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+        }
+
+        setNextDose({
+          name: data.nextDose.name,
+          dosage: data.nextDose.dosage,
+          unit: data.nextDose.unit,
+          time: formattedTime,
+        });
+      } else {
+        setNextDose(null);
+      }
+    } catch (err) {
+      console.error("Error fetching medicines:", err);
+      setTodayMedicines([]);
+      setUpcomingDoses([]);
+      setNextDose(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, []);
+
+
+
 
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.headerContainer}>
-        <Image source={require("../../assets/Home-bg.png")} style={styles.headerBackground} resizeMode="cover" />
+        <Image
+          source={require("../../assets/Home-bg.png")}
+          style={styles.headerBackground}
+          resizeMode="cover"
+        />
         <ProfileHeader />
         <Text style={styles.feeling}>How are you feeling today?</Text>
       </View>
 
       {/* Next Dose */}
-      {nextDoseEntry ? (
+      {nextDose ? (
         <UpComingDose
           title="Upcoming Dose"
           image={require("../../assets/pills.png")}
           doseName={nextDose.name}
-          doseDetails={`${nextDose.dosage} ${nextDose.unit}${doseDayLabel}`}
-          doseDate={nextDoseEntry.time.toLocaleDateString()}
-          doseTime={nextDoseEntry.time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+      doseDetails={`${nextDose.dosage} ${nextDose.unit}`}     
+     doseDate={new Date().toLocaleDateString()}
+          doseTime={nextDose.time}
         />
       ) : (
         <View style={styles.upcomingDoseContainer}>
@@ -183,41 +230,51 @@ const Dashboard: React.FC = () => {
         </View>
       )}
 
-      {/* Today's Reminders */}
+      {/* Today’s Reminders */}
       <View style={styles.todayReminderContainer}>
         <Text style={styles.reminderTitle}>Today's Reminders</Text>
         {loading ? (
-          <Text>Loading...</Text>
-        ) : upcomingDoses.length === 0 ? (
+          <ActivityIndicator size="small" />
+        ) : todayMedicines.length === 0 ? (
           <Text>No medicines for today</Text>
         ) : (
-          upcomingDoses.map(({ med, time }) => {
-            const medTimeStr = time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-            return (
-              <MedicationReminder
-                key={`${med._id}-${time.getTime()}`}
-                id={med._id}
-                name={med.name}
-                time={medTimeStr}
-                pills={`${med.dosage} ${med.unit}`}
-                status={med.status}
-                onComplete={() => handleComplete(med, time)}
-                onCancel={() => handleCancel(med, time)}
-              />
-            );
-          })
+          todayMedicines.flatMap((med) =>
+  (med.times ?? []).map((t) => (
+    <MedicationReminder
+      key={`${med._id}-${t.time}`}
+      id={med._id}
+      name={med.name}
+      time={t.time || "Invalid Time"}
+      pills={`${med.dosage} ${med.unit}`}
+      status={t.status}
+      onComplete={() => handleMarkDose(med._id, t.time, "Taken")}
+      onCancel={() => handleMarkDose(med._id, t.time, "Missed")}
+    />
+  ))
+)
         )}
       </View>
 
-      {/* Add Medicine Button */}
+      {/* Add Button */}
       <View style={styles.addButtonContainer}>
-        <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("AddMedicine")}>
-          <Image source={require("../../assets/Add.png")} style={styles.addicon} resizeMode="contain" />
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => navigation.navigate("AddMedicine")}
+        >
+          <Image
+            source={require("../../assets/Add.png")}
+            style={styles.addicon}
+            resizeMode="contain"
+          />
         </TouchableOpacity>
       </View>
 
       {/* Bottom Tabs */}
-      <BottomTab activeTab={activeTab} onTabPress={handleTabPress} tabs={tabs} />
+      <BottomTab
+        activeTab={activeTab}
+        onTabPress={handleTabPress}
+        tabs={tabs}
+      />
     </View>
   );
 };

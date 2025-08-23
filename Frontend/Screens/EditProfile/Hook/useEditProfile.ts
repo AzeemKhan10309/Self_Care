@@ -14,7 +14,6 @@ export const useEditProfile = () => {
   const { user, loading, error } = useSelector((state: RootState) => state.auth);
 
   const userId = user?.id;
-  console.log("User ID:", userId);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -55,7 +54,6 @@ export const useEditProfile = () => {
     })();
   }, []);
 
-  // Pick profile image
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -68,7 +66,6 @@ export const useEditProfile = () => {
     }
   };
 
-  // Update profile
   const handleUpdateProfile = async () => {
     if (!userId) return;
     try {
@@ -89,7 +86,16 @@ export const useEditProfile = () => {
           type: "image/jpeg",
         } as any);
       }
-
+  console.log("Updating profile with data:", {
+      name,
+      phone,
+      email,
+      dob,
+      weight,
+      height,
+      location,
+      profileImage,
+  });
       const res = await apiRequest(`/users/${userId}`, "PUT", formData);
       console.log("Profile update response:", res);
       if ("error" in res) {

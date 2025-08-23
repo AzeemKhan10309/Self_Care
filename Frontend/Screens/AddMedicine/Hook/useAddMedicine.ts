@@ -83,48 +83,56 @@ const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, "
     if (!result.canceled) setImage(result.assets[0].uri);
   };
 
-  const handleSave = async () => {
-    try {
-      const formData = new FormData();
-      formData.append("medicine", medicine);
-      formData.append("description", description);
-      formData.append("type", type);
-      formData.append("dosage", String(dosage));
-      formData.append("unit", unit);
-      formData.append("startDate", startDate.toISOString());
-      if (endDate) formData.append("endDate", endDate.toISOString());
-      formData.append("times", JSON.stringify(times.map((t) => t.toISOString())));
-      formData.append("reminderEnabled", String(reminderEnabled));
-      formData.append("reminderBefore", String(reminderBefore));
-      formData.append("repeat", String(repeat));
-      formData.append("notes", notes);
-      formData.append("selectedDays", JSON.stringify(selectedDays));
+ const handleSave = async () => {
+  try {
+    const formData = new FormData();
 
-      if (image) {
-        const filename = image.split("/").pop() || "photo.jpg";
-        const ext = filename.split(".").pop();
-        const mimeType = ext ? `image/${ext}` : "image/jpeg";
+    // Append all text fields
+    formData.append("medicine", medicine);
+    formData.append("description", description);
+    formData.append("type", type);
+    formData.append("dosage", String(dosage));
+    formData.append("unit", unit);
+    formData.append("startDate", startDate.toISOString());
+    if (endDate) formData.append("endDate", endDate.toISOString());
+    formData.append("times", JSON.stringify(times.map((t) => t.toISOString())));
+    formData.append("reminderEnabled", String(reminderEnabled));
+    formData.append("reminderBefore", String(reminderBefore));
+    formData.append("repeat", String(repeat));
+    formData.append("notes", notes);
+    formData.append("selectedDays", JSON.stringify(selectedDays));
 
-        formData.append("image", {
-          uri: image,
-          name: filename,
-          type: mimeType,
-        } as any);
-      }
+    // Append image
+if (image) {
+  const filename = image.split("/").pop() || "photo.jpg";
+  const ext = filename.split(".").pop();
+  const mimeType = ext ? `image/${ext}` : "image/jpeg";
 
-      const res = await apiRequest("/medicines/", "POST", formData);
+  const uri = Platform.OS === "ios" ? image.replace("file://", "") : image;
 
-      if ("error" in res) {
-        alert("Failed: " + res.message);
-      } else {
-        alert("✅ Medicine saved successfully!");
-        navigation.navigate("Dashboard");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("❌ Something went wrong");
+  formData.append("image", {
+    uri,
+    name: filename,
+    type: mimeType,
+  } as any);
+}
+
+console.log("FormData:", formData);
+   const res = await apiRequest("/medicines/addMedicine", "POST", formData);
+console.log("Response:", res);
+
+    if ("error" in res) {
+      alert("Failed: " + res.message);
+    } else {
+      alert("✅ Medicine saved successfully!");
+      navigation.navigate("Dashboard");
     }
-  };
+  } catch (err) {
+    console.error(err);
+    alert("❌ Something went wrong");
+  }
+};
+
 
   return {
     // state
