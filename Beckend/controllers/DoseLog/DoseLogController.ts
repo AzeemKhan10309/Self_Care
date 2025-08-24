@@ -138,8 +138,8 @@ const doses = await ScheduledDose.find({
     unit: med.unit,
     times: [
       { 
-        time: formatTime(dose.dateTime), // scheduled dose time
-        status: dose.status,             // <-- use actual status
+        time: formatTime(dose.dateTime), 
+        status: dose.status,             
       }
     ],
   };
@@ -173,12 +173,12 @@ export const getNextDose = async (req: Request, res: Response) => {
       .populate<{ medicineId: IMedicine }>(
         "medicineId",
         "name dosage unit type description"
-      ) // 👈 tell TS: medicineId is IMedicine
+      ) 
       .lean();
 
     if (!next) return res.json({ nextDose: null });
 
-    const med = next.medicineId as unknown as IMedicine; // 👈 safely cast
+    const med = next.medicineId as unknown as IMedicine; 
 
     const formatted = {
       _id: next._id,
