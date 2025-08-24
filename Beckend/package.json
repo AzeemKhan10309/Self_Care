@@ -1,20 +1,20 @@
 {
-  "name": "beckend",
+  "name": "healthreminder-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Express + TypeScript backend with ESM",
+  "type": "module",
   "scripts": {
-    "dev": "nodemon --watch './**/*.ts' --exec \"node --loader ts-node/esm\" ./index.ts",
+    "dev": "nodemon --watch ./ --ext ts,json --exec \"node --loader ts-node/esm index.ts\"",
     "build": "tsc",
-    "start": "node ./dist/index.js"
+    "start": "node dist/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
+    "date-fns": "^4.1.0",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
@@ -24,6 +24,7 @@
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.19",
+    "@types/date-fns": "^2.5.3",
     "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/multer": "^2.0.0",

@@ -7,8 +7,8 @@ interface MedicationReminderProps {
   time: string;
   pills: string;
   status?: "Taken" | "Missed" | "Pending";
-  onComplete: (id: string) => void;
-  onCancel: (id: string) => void;
+  onComplete: (id: string, time: string) => void;
+  onCancel: (id: string, time: string) => void;
 }
 
 export const MedicationReminder: React.FC<MedicationReminderProps> = ({
@@ -24,8 +24,8 @@ export const MedicationReminder: React.FC<MedicationReminderProps> = ({
 
   const handleAction = (action: "Taken" | "Missed") => {
     if (isDisabled) return;
-    if (action === "Taken") onComplete(id);
-    if (action === "Missed") onCancel(id);
+    if (action === "Taken") onComplete(id, time);
+    if (action === "Missed") onCancel(id, time);
   };
 
   return (
