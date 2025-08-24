@@ -6,6 +6,8 @@ import connectDB from './config/db.js';
 import userRoutes from './Routes/User/UserRoutes.js';
 import medicineRoutes from './Routes/Medicine/MedicineRoutes.js'
 import DoseLog from './Routes/DoseLog/DoseLogRoutes.js';
+import { startRollingWindowExtender } from "./jobs/extend-window.js";
+
 import cors from 'cors';
 import path from 'path';
 
@@ -13,6 +15,8 @@ const app = express();
 
 const connectDBFn = connectDB as () => Promise<void>;
 connectDBFn()
+startRollingWindowExtender();
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
