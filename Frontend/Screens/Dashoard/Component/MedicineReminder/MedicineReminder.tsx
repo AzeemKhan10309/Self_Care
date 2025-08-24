@@ -27,6 +27,8 @@ export const MedicationReminder: React.FC<MedicationReminderProps> = ({
     if (action === "Taken") onComplete(id, time);
     if (action === "Missed") onCancel(id, time);
   };
+  console.log("Rendering dose:", name, time, pills, status);
+
 
   return (
     <View style={styles.container}>
@@ -123,10 +125,10 @@ const styles = StyleSheet.create({
   medTime: { fontSize: 14, color: "#888" },
   PillContainer: { flexDirection: "row", alignItems: "center", marginTop: 4 },
   PillIcon: { width: 16, height: 16, marginRight: 5 },
-  inRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "80%",
-  },
+inRow: {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  flex: 1, // use flex instead of fixed width
+}
 });

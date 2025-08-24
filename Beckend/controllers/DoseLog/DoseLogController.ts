@@ -1,9 +1,16 @@
 import { Request, Response } from "express";
 import DoseLog from "../../Models/DoseLog/DoseLog.js";
-import Medicine, { IMedicine } from "../../Models/Medicine/ModelMedicine.js";
+import  { IMedicine } from "../../Models/Medicine/ModelMedicine.js";
 import { AuthRequest } from "../../middleware/authMiddleware.js";
 import { ScheduledDose } from "../../Models/SheduleDose/ScheduledDose.js";
-
+import { format } from "date-fns";
+interface TodayMedicine {
+  _id: string;
+  name: string;
+  dosage: number;
+  unit: string;
+  times: { time: string; status: "Pending" | "Taken" | "Missed" }[];
+}
 
 const formatTime = (date: Date): string => {
   return date.toLocaleTimeString("en-US", {
@@ -112,7 +119,6 @@ export const markDoseMissed = async (req: Request, res: Response) => {
   }
 };
 
-import { format } from "date-fns";
 
 export const getTodayDoses = async (req: AuthRequest, res: Response) => {
   try {
@@ -129,21 +135,20 @@ const doses = await ScheduledDose.find({
   status: "Pending",
 }).populate("medicineId", "name type dosage unit");
     // Map response
-   const todayDoses = doses.map((dose) => {
-  const med: any = dose.medicineId;
-  return {
-    _id: dose._id, // scheduled dose id
-    name: med.name,
-    dosage: med.dosage,
-    unit: med.unit,
-    times: [
-      { 
-        time: formatTime(dose.dateTime), 
-        status: dose.status,             
-      }
-    ],
-  };
-});
+const todayDoses: TodayMedicine[] = (doses ?? []).map((dose: any) => ({
+  _id: dose._id,
+  name: dose.medicineId?.name,
+  dosage: dose.medicineId?.dosage,
+  unit: dose.medicineId?.unit,
+  times: [
+    {
+      time: formatTime(dose.dateTime),
+      status: dose.status || "Pending",
+    },
+  ],
+}));
+
+
 
     res.json({ todayDoses });
   } catch (err) {
@@ -152,10 +157,7 @@ const doses = await ScheduledDose.find({
   }
 };
 
-
-
-
-export const getNextDose = async (req: Request, res: Response) => {
+ export const getNextDose = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user?._id;
     console.log("Fetching next dose for user:", userId);

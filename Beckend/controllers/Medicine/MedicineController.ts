@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import Medicine, { IMedicine } from "../../Models/Medicine/ModelMedicine.js";
 import mongoose from "mongoose";
 import { AuthRequest } from "../../types/express.js";
-import DoseLog, { IDoseLog } from "../../Models/DoseLog/DoseLog.js";
 import { ScheduledDose } from "../../Models/SheduleDose/ScheduledDose.js";
 import { generateScheduleForMedicine, recomputeFutureSchedule } from "../../Services/scheduler.js";
 const ROLLING_DAYS = 14;

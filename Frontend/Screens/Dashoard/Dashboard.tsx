@@ -55,13 +55,17 @@ const Dashboard: React.FC = () => {
         console.error("API Error (today):", todayRes.message);
         setTodayMedicines([]);
       } else {
-        const todayDoses: TodayMedicine[] = (todayRes.todayDoses ?? []).map(dose => ({
-          _id: dose._id,
-          name: dose.name,
-          dosage: dose.dosage,
-          unit: dose.unit,
-          times: [{ time: dose.time, status: "Pending" }]
-        }));
+       const todayDoses: TodayMedicine[] = (todayRes.todayDoses ?? []).map(dose => ({
+  _id: dose._id,
+  name: dose.name,
+  dosage: dose.dosage,
+  unit: dose.unit,
+  times: (dose.times ?? []).map((t: { time: string; status?: "Pending" | "Taken" | "Missed" }) => ({
+    time: t.time,
+    status: t.status || "Pending",
+  })),
+}));
+
         setTodayMedicines(todayDoses);
       }
     } catch (err) {
