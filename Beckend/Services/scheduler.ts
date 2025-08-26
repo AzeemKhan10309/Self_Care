@@ -3,43 +3,51 @@ import { ScheduledDose, IScheduledDose } from "../Models/SheduleDose/ScheduledDo
 import mongoose from "mongoose";
 import Medicine from "../Models/Medicine/ModelMedicine.js";
 
+export const generateScheduleForMedicine = async (
+  med: IMedicine,
+  fromDate: Date,
+  toDate: Date
+) => {
+  const doses: Partial<IScheduledDose>[] = [];
 
-export async function generateScheduleForMedicine(medicine: any, fromDate: Date, toDate: Date) {
-  const { startDate, endDate, times, selectedDays } = medicine;
-  const doses: any[] = [];
+  const startDate = med.startDate
+    ? (typeof med.startDate === "string" ? new Date(med.startDate) : med.startDate)
+    : fromDate;
 
-  let current = new Date(Math.max(new Date(startDate).getTime(), fromDate.getTime()));
-  const end = new Date(Math.min(new Date(endDate).getTime(), toDate.getTime()));
+  const start = new Date(Math.max(fromDate.getTime(), startDate.getTime()));
 
-  current.setHours(0, 0, 0, 0);
-  end.setHours(23, 59, 59, 999);
+  const endDate = med.endDate
+    ? (typeof med.endDate === "string" ? new Date(med.endDate) : med.endDate)
+    : toDate;
 
-  while (current <= end) {
-    const dow = current.getDay();
-    if (!selectedDays.includes(dow)) {
-      current.setDate(current.getDate() + 1);
-      continue;
+  const end = new Date(Math.min(toDate.getTime(), endDate.getTime()));
+
+  if (start > end) return [];
+
+  for (
+    let day = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+    day <= end;
+    day.setDate(day.getDate() + 1)
+  ) {
+    const dow = day.getDay();
+    if (!med.selectedDays.includes(dow)) continue;
+
+    for (const t of med.times) {
+      const dateTime = new Date(day);
+      const [hh, mm] = t.split(":").map(Number);
+      dateTime.setHours(hh ?? 0, mm ?? 0, 0, 0);
+
+      doses.push({
+        userId: med.userId as any,
+        medicineId: med._id as any,
+        dateTime,
+        status: "Pending",
+        reminderEnabled: med.reminderEnabled,
+        reminderBefore: med.reminderBefore,
+      });
+
+      console.log("Generated dose:", dateTime.toString(), "for medicine:", med.name);
     }
-
-   for (const time of times) {
-  const [hours, minutes] = time.split(":").map(Number);
-  const doseDate = new Date(current);
-  doseDate.setHours(hours, minutes, 0, 0);
-
-  doses.push({
-    userId: medicine.userId,
-    medicineId: medicine._id,
-    dateTime: doseDate,
-    status: "Pending",
-    reminderEnabled: medicine.reminderEnabled,
-    reminderBefore: medicine.reminderBefore,
-  });
-
-  console.log("Generated dose:", doseDate.toString(), "for medicine:", medicine.name); // ✅ inside loop
-}
-
-
-    current.setDate(current.getDate() + 1);
   }
 
   if (doses.length > 0) {
@@ -47,8 +55,7 @@ export async function generateScheduleForMedicine(medicine: any, fromDate: Date,
   }
 
   return doses;
-}
-
+};
 
 export const recomputeFutureSchedule = async (
   medicineId: mongoose.Types.ObjectId,
@@ -71,6 +78,7 @@ export const recomputeFutureSchedule = async (
   await generateScheduleForMedicine(med, now, toDate);
 };
 
+// Extend rolling window for medicine
 export const extendRollingWindowForMedicine = async (
   medicineId: mongoose.Types.ObjectId,
   daysAhead = 14
@@ -84,10 +92,14 @@ export const extendRollingWindowForMedicine = async (
     .sort({ dateTime: -1 })
     .limit(1);
 
+  const medStartDate = med.startDate
+    ? (typeof med.startDate === "string" ? new Date(med.startDate) : med.startDate)
+    : now;
+
   const fromDate =
     maxExisting.length > 0
-      ? new Date(new Date(maxExisting[0].dateTime).setDate(maxExisting[0].dateTime.getDate() + 1))
-      : new Date(Math.max(now.getTime(), med.startDate.getTime()));
+      ? new Date(maxExisting[0].dateTime.getTime() + 24 * 60 * 60 * 1000)
+      : new Date(Math.max(now.getTime(), medStartDate.getTime()));
 
   const toDate = new Date(now);
   toDate.setDate(toDate.getDate() + daysAhead);
