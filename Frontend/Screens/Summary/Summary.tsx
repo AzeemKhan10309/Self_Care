@@ -65,7 +65,8 @@ const Summary: React.FC = () => {
   const fetchDoseLogs = async (date: string) => {
     setLoading(true);
     try {
-      const res = await apiRequest(`/doselog/by-date?date=${date}`, "GET");
+      const res = await apiRequest(`/dose-log/logs/?date=${date}`, "GET");
+          console.log("API Response:", res);
       const sorted = sortLogsByTime(res || []);
       setDoseLogs(sorted);
     } catch (err) {

@@ -47,13 +47,51 @@ export const generateScheduleForMedicine = async (
         reminderEnabled: med.reminderEnabled,
         reminderBefore: med.reminderBefore,
       });
+
+export async function generateScheduleForMedicine(medicine: any, fromDate: Date, toDate: Date) {
+  const { startDate, endDate, times, selectedDays } = medicine;
+  const doses: any[] = [];
+
+  let current = new Date(Math.max(new Date(startDate).getTime(), fromDate.getTime()));
+  const end = new Date(Math.min(new Date(endDate).getTime(), toDate.getTime()));
+
+  current.setHours(0, 0, 0, 0);
+  end.setHours(23, 59, 59, 999);
+
+  while (current <= end) {
+    const dow = current.getDay();
+    if (!selectedDays.includes(dow)) {
+      current.setDate(current.getDate() + 1);
+      continue;
     }
+
+   for (const time of times) {
+  const [hours, minutes] = time.split(":").map(Number);
+  const doseDate = new Date(current);
+  doseDate.setHours(hours, minutes, 0, 0);
+
+  doses.push({
+    userId: medicine.userId,
+    medicineId: medicine._id,
+    dateTime: doseDate,
+    status: "Pending",
+    reminderEnabled: medicine.reminderEnabled,
+    reminderBefore: medicine.reminderBefore,
+  });
+
+  console.log("Generated dose:", doseDate.toString(), "for medicine:", medicine.name); // ✅ inside loop
+}
+
+
+    current.setDate(current.getDate() + 1);
   }
 
-  if (docs.length) {
-    await ScheduledDose.insertMany(docs, { ordered: false });
+  if (doses.length > 0) {
+    await ScheduledDose.insertMany(doses, { ordered: false });
   }
-};
+
+  return doses;
+}
 
 export const recomputeFutureSchedule = async (
   medicineId: mongoose.Types.ObjectId,
