@@ -13,7 +13,6 @@ export const updateMedicine = async (req: Request, res: Response) => {
     const med = await Medicine.findByIdAndUpdate(id, req.body, { new: true });
     if (!med) return res.status(404).json({ error: "Medicine not found" });
 
-    // Recompute future schedule window
     await recomputeFutureSchedule(new mongoose.Types.ObjectId(id), ROLLING_DAYS);
 
     res.json({ medicine: med });
@@ -43,7 +42,6 @@ export const addMedicine = async (req: AuthRequest, res: Response) => {
     const userId = req.user?._id;
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
-    // Process selectedDays
     let selectedDaysArray: number[] = [];
     if (req.body.selectedDays) {
       selectedDaysArray =
@@ -53,7 +51,6 @@ export const addMedicine = async (req: AuthRequest, res: Response) => {
       selectedDaysArray = selectedDaysArray.map(Number);
     }
 
-    // Process times: convert to "HH:mm"
     let timesArray: string[] = [];
     if (req.body.times) {
       const rawTimes =
@@ -67,7 +64,6 @@ export const addMedicine = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    // Prepare medicine data
     const medData: Partial<IMedicine> = {
       ...req.body,
       userId: new mongoose.Types.ObjectId(userId),
@@ -75,18 +71,14 @@ export const addMedicine = async (req: AuthRequest, res: Response) => {
       times: timesArray,
     };
 
-    // Create medicine
     const med = await Medicine.create(medData);
 
-    // Generate schedule
     const from = new Date();
     const to = new Date();
     to.setDate(to.getDate() + ROLLING_DAYS);
 
-    // Call schedule generator
     const createdDoses = await generateScheduleForMedicine(med, from, to);
 
-    console.log("Scheduled doses created:", createdDoses.length);
 
     res.status(201).json({ medicine: med, scheduledDoses: createdDoses.length });
   } catch (err: any) {
