@@ -7,6 +7,7 @@ import EditProfile from "../Screens/EditProfile/EditProfile";
 import Alarm from "../Screens/Alarm/Alarm";
 import HealthTracker from "../Screens/HealthTracker/HealthTracker";
 import AddMedicineScreen from "../Screens/AddMedicine/AddMedicine";
+import ForgotPassword from "../Screens/ForgotPassword/ForgotPassword";
 const Stack = createNativeStackNavigator();
 
 export default function AppStack() {
@@ -19,6 +20,7 @@ export default function AppStack() {
       <Stack.Screen name="Alarm" component={Alarm} />
       <Stack.Screen name="HealthTracker" component={HealthTracker} />
       <Stack.Screen name="AddMedicine" component={AddMedicineScreen} />
+      <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
 
     </Stack.Navigator>
   );

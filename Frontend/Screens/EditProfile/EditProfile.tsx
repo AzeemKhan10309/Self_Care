@@ -6,6 +6,17 @@ import Input from "../../Components/Input/Input";
 import Button from "../../Components/Button/Button";
 import { useEditProfile } from "./Hook/useEditProfile";
 
+// ✅ React Navigation
+import { useNavigation } from "@react-navigation/native";
+import type { StackNavigationProp } from "@react-navigation/stack";
+
+type RootStackParamList = {
+  EditProfile: undefined;
+  ForgotPassword: undefined;
+};
+
+type NavigationProp = StackNavigationProp<RootStackParamList, "EditProfile">;
+
 const EditProfile: React.FC = () => {
   const {
     name, setName, phone, setPhone, email, setEmail,
@@ -15,8 +26,14 @@ const EditProfile: React.FC = () => {
     loading, error,
   } = useEditProfile();
 
+  const navigation = useNavigation<NavigationProp>();
+
   if (loading) return <Text>Loading user info...</Text>;
   if (error) return <Text>Error: {error}</Text>;
+
+  const handleChangePassword = () => {
+    navigation.navigate("ForgotPassword");
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -31,14 +48,17 @@ const EditProfile: React.FC = () => {
 
         <Text style={styles.name}>{name}</Text>
         <View style={{ flexDirection: "row", alignItems: "center", marginTop: 4 }}>
-          <Image source={require("../../assets/Location.png")} style={{ width: 16, height: 16, marginRight: 4 }} resizeMode="contain" />
+          <Image
+            source={require("../../assets/Location.png")}
+            style={{ width: 16, height: 16, marginRight: 4 }}
+            resizeMode="contain"
+          />
           <Text style={styles.location}>{location || "Detecting..."}</Text>
         </View>
 
         <Input placeholder="Name" value={name} onChangeText={setName} />
 
         <View style={phoneStyles.container}>
-        
           <View style={phoneStyles.divider} />
           <Input
             placeholder="Phone number"
@@ -74,6 +94,14 @@ const EditProfile: React.FC = () => {
             title={updating ? "Updating..." : "Update Profile"}
             onPress={handleUpdateProfile}
             disabled={updating}
+          />
+        </View>
+
+        {/* Change Password Button */}
+        <View style={{ marginTop: 12 }}>
+          <Button
+            title="Change Password"
+            onPress={handleChangePassword}
           />
         </View>
       </View>
