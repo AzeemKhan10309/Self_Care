@@ -46,7 +46,6 @@ export const registerUser = createAsyncThunk(
 
       if (res.token) {
         await AsyncStorage.setItem("token", res.token);
-        console.log("Token for API:", res.token);
       } else {
         console.warn("No token returned from API on registration");
       }
@@ -72,7 +71,6 @@ export const loginUser = createAsyncThunk(
 
       if (res.token) {
         await AsyncStorage.setItem("token", res.token);
-                console.log("Token for API:", res.token);
 
       } else {
         console.warn("No token returned from API on login");
