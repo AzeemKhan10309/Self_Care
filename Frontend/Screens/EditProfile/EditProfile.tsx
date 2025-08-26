@@ -6,7 +6,6 @@ import Input from "../../Components/Input/Input";
 import Button from "../../Components/Button/Button";
 import { useEditProfile } from "./Hook/useEditProfile";
 
-// ✅ React Navigation
 import { useNavigation } from "@react-navigation/native";
 import type { StackNavigationProp } from "@react-navigation/stack";
 
@@ -97,7 +96,6 @@ const EditProfile: React.FC = () => {
           />
         </View>
 
-        {/* Change Password Button */}
         <View style={{ marginTop: 12 }}>
           <Button
             title="Change Password"
