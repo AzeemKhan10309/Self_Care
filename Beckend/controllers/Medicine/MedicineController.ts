@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import Medicine, { IMedicine } from "../../Models/Medicine/ModelMedicine.js";
+import Medicine,{IMedicine} from "../../Models/Medicine/ModelMedicine.js";
 import mongoose from "mongoose";
 import { AuthRequest } from "../../types/express.js";
 import { ScheduledDose } from "../../Models/SheduleDose/ScheduledDose.js";
 import { generateScheduleForMedicine, recomputeFutureSchedule } from "../../Services/scheduler.js";
-const ROLLING_DAYS = 14;
+const ROLLING_DAYS = 7;
 
 
 export const updateMedicine = async (req: Request, res: Response) => {
@@ -39,27 +39,62 @@ export const deleteMedicine = async (req: Request, res: Response) => {
 
 
 export const addMedicine = async (req: AuthRequest, res: Response) => {
-  console.log("💊 req.body:", req.body);
-  console.log("📷 req.file:", req.file);
-
   try {
-    const userId = (req as any).user?._id; // from your Auth middleware
+    const userId = req.user?._id;
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
-    const med = await Medicine.create({ ...req.body, userId });
+    // Process selectedDays
+    let selectedDaysArray: number[] = [];
+    if (req.body.selectedDays) {
+      selectedDaysArray =
+        typeof req.body.selectedDays === "string"
+          ? JSON.parse(req.body.selectedDays)
+          : req.body.selectedDays;
+      selectedDaysArray = selectedDaysArray.map(Number);
+    }
 
-    // Pre-generate doses for next 14 days (or until med.endDate)
+    // Process times: convert to "HH:mm"
+    let timesArray: string[] = [];
+    if (req.body.times) {
+      const rawTimes =
+        typeof req.body.times === "string" ? JSON.parse(req.body.times) : req.body.times;
+
+      timesArray = rawTimes.map((t: string) => {
+        const date = new Date(t);
+        const hours = String(date.getHours()).padStart(2, "0");
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+        return `${hours}:${minutes}`;
+      });
+    }
+
+    // Prepare medicine data
+    const medData: Partial<IMedicine> = {
+      ...req.body,
+      userId: new mongoose.Types.ObjectId(userId),
+      selectedDays: selectedDaysArray,
+      times: timesArray,
+    };
+
+    // Create medicine
+    const med = await Medicine.create(medData);
+
+    // Generate schedule
     const from = new Date();
     const to = new Date();
     to.setDate(to.getDate() + ROLLING_DAYS);
-    await generateScheduleForMedicine(med, from, to);
 
-    res.status(201).json({ medicine: med });
+    // Call schedule generator
+    const createdDoses = await generateScheduleForMedicine(med, from, to);
+
+    console.log("Scheduled doses created:", createdDoses.length);
+
+    res.status(201).json({ medicine: med, scheduledDoses: createdDoses.length });
   } catch (err: any) {
     console.error(err);
     res.status(500).json({ error: err.message });
   }
 };
+
 
 
 export const getallmedicinebyid = async (req: Request, res: Response) => {

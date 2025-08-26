@@ -13,11 +13,11 @@ export interface IMedicine extends Document {
   startDate: Date;
   endDate: Date;
 
-  times: string[];          // e.g. ["08:00 AM", "08:00 PM"]
-  selectedDays: number[];   // e.g. [1,2,3,4,5] => Mon-Fri
+  times: string[];          
+  selectedDays: number[];   
 
   reminderEnabled: boolean;
-  reminderBefore: number;   // in minutes
+  reminderBefore: number;   
   repeat: boolean;
 
   notes?: string;
@@ -66,7 +66,6 @@ const MedicineSchema = new Schema<IMedicine>(
   { timestamps: true }
 );
 
-// Index for fast queries (by user + date range)
 MedicineSchema.index({ userId: 1, startDate: 1, endDate: 1 });
 
 const Medicine: Model<IMedicine> = mongoose.model<IMedicine>("Medicine", MedicineSchema);
