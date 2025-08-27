@@ -17,6 +17,10 @@ export type AppStackParamList = {
   HealthTracker: undefined;
   CollectInfo: undefined;
   AddMedicine:undefined;
+    DashboardTab: undefined;     
+  SummaryTab: undefined;        
+  HealthTrackerTab: undefined;  
+  ProfileTab: undefined;
 };
 
 export type RootStackParamList = AuthStackParamList & AppStackParamList;

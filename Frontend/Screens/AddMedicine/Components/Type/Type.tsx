@@ -2,24 +2,32 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity, TextInput } from "react-native";
 import styles from "./Type.styles";
 
-const TypeInputUnitRow: React.FC<{
+interface Props {
   selectedType: string;
   onSelectType: (val: string) => void;
   value: string;
   onChangeValue: (val: string) => void;
   unit: string;
-}> = ({ selectedType, onSelectType, value, onChangeValue, unit }) => {
+  errorType?: string;
+  errorDosage?: string;
+}
+
+const TypeInputUnitRow: React.FC<Props> = ({
+  selectedType,
+  onSelectType,
+  value,
+  onChangeValue,
+  unit,
+  errorType,
+  errorDosage,
+}) => {
   const [open, setOpen] = useState(false);
   const types = ["Tablet", "Syrup", "Injection"];
 
   return (
     <View style={styles.rowContainer}>
-      {/* Dropdown */}
       <View style={{ width: 100, position: "relative", zIndex: 10 }}>
-        <TouchableOpacity
-          onPress={() => setOpen(!open)}
-          style={styles.dropdownButton}
-        >
+        <TouchableOpacity onPress={() => setOpen(!open)} style={styles.dropdownButton}>
           <Text>{selectedType || "Select Type"}</Text>
         </TouchableOpacity>
 
@@ -39,9 +47,9 @@ const TypeInputUnitRow: React.FC<{
             ))}
           </View>
         )}
+        {errorType && <Text style={styles.errorText}>{errorType}</Text>}
       </View>
 
-      {/* Input for Dosage */}
       <TextInput
         style={styles.inputField}
         value={value}
@@ -49,9 +57,8 @@ const TypeInputUnitRow: React.FC<{
         placeholder="Enter value"
         keyboardType="numeric"
       />
-
-      {/* Unit Text */}
       <Text style={styles.unitText}>{unit}</Text>
+      {errorDosage && <Text style={styles.errorText}>{errorDosage}</Text>}
     </View>
   );
 };

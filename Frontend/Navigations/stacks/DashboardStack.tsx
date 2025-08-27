@@ -8,8 +8,8 @@ const Stack = createNativeStackNavigator();
 export default function DashboardStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Dashboard" component={Dashboard} />
-      <Stack.Screen name="AddMedicine" component={AddMedicineScreen} />
+      <Stack.Screen name="DashboardScreen" component={Dashboard} />
+      <Stack.Screen name="AddMedicineScreen" component={AddMedicineScreen} />
     </Stack.Navigator>
   );
 }

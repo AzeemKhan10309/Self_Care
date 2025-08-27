@@ -10,6 +10,7 @@ interface Props {
   setReminderBefore: (val: number) => void;
   repeat: boolean;
   setRepeat: (val: boolean) => void;
+  errors: { [key: string]: string };
 }
 
 const Reminder: React.FC<Props> = ({
@@ -19,6 +20,7 @@ const Reminder: React.FC<Props> = ({
   setReminderBefore,
   repeat,
   setRepeat,
+  errors,
 }) => {
   return (
     <View style={styles.container}>
@@ -29,13 +31,8 @@ const Reminder: React.FC<Props> = ({
         <Switch
           value={reminderEnabled}
           onValueChange={setReminderEnabled}
-          trackColor={{
-            false: switchColors.trackFalse,
-            true: switchColors.trackTrue,
-          }}
-          thumbColor={
-            reminderEnabled ? switchColors.thumbTrue : switchColors.thumbFalse
-          }
+          trackColor={{ false: switchColors.trackFalse, true: switchColors.trackTrue }}
+          thumbColor={reminderEnabled ? switchColors.thumbTrue : switchColors.thumbFalse}
           ios_backgroundColor={switchColors.iosBg}
         />
       </View>
@@ -48,16 +45,14 @@ const Reminder: React.FC<Props> = ({
         keyboardType="numeric"
         containerStyle={styles.input}
       />
+      {errors.reminderBefore && <Text style={{ color: "red" }}>{errors.reminderBefore}</Text>}
 
       <View style={styles.row}>
         <Text style={styles.label}>Repeat</Text>
         <Switch
           value={repeat}
           onValueChange={setRepeat}
-          trackColor={{
-            false: switchColors.trackFalse,
-            true: switchColors.trackTrue,
-          }}
+          trackColor={{ false: switchColors.trackFalse, true: switchColors.trackTrue }}
           thumbColor={repeat ? switchColors.thumbTrue : switchColors.thumbFalse}
           ios_backgroundColor={switchColors.iosBg}
         />
