@@ -68,6 +68,11 @@ const styles = StyleSheet.create({
     backgroundColor: "red",
     borderRadius: 5,
   },
+  errorText: {
+  color: "red",
+  marginTop: 2,
+  fontSize: 12,
+}
 });
 
 export default styles;

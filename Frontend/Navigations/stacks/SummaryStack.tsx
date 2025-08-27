@@ -7,7 +7,7 @@ const Stack = createNativeStackNavigator();
 export default function SummaryStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Summary" component={Summary} />
+      <Stack.Screen name="SummaryScreen" component={Summary} />
     </Stack.Navigator>
   );
 }

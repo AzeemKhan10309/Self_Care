@@ -16,10 +16,9 @@ const Tab = createBottomTabNavigator();
 export default function MainTabs() {
   return (
     <Tab.Navigator
-      initialRouteName="Dashboard"
+      initialRouteName="DashboardTab"
       screenOptions={{ headerShown: false }}
       tabBar={(props: BottomTabBarProps) => {
-        // Currently active tab
         const activeRouteName = props.state.routeNames[props.state.index];
 
         return (
@@ -39,10 +38,10 @@ onTabPress={(key: string) => {
         );
       }}
     >
-      <Tab.Screen name="Dashboard" component={DashboardStack} />
-      <Tab.Screen name="Summary" component={SummaryStack} />
-      <Tab.Screen name="HealthTracker" component={HealthTrackerStack} />
-      <Tab.Screen name="ProfileScreen" component={ProfileStack} />
+      <Tab.Screen name="DashboardTab" component={DashboardStack} />
+      <Tab.Screen name="SummaryTab" component={SummaryStack} />
+      <Tab.Screen name="HealthTrackerTab" component={HealthTrackerStack} />
+      <Tab.Screen name="ProfileTab" component={ProfileStack} />
     </Tab.Navigator>
   );
 }
