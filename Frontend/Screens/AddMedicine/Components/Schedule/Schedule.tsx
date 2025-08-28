@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, TouchableOpacity, Platform } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import WeekDays from "../WeekDays/WeekDays";
+import CustomTimePicker from "../CustomTimePicker/CustomTimePicker";
 import styles from "./Schedule.styles";
 
 interface Props {
@@ -16,9 +17,9 @@ interface Props {
   showTimePicker: boolean;
   currentIndex: number | null;
   handleTimeChange: (e: any, d?: Date) => void;
-
   selectedDays: number[];
   onToggleDay: (index: number) => void;
+  errors: { [key: string]: string };
 }
 
 const Schedule: React.FC<Props> = ({
@@ -35,11 +36,32 @@ const Schedule: React.FC<Props> = ({
   handleTimeChange,
   selectedDays,
   onToggleDay,
+  errors,
 }) => {
+  const [customTimePickerVisible, setCustomTimePickerVisible] = useState(false);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+
+  const openTimePicker = (index: number | null) => {
+    setEditingIndex(index);
+    setCustomTimePickerVisible(true);
+  };
+
+  const onTimeSelected = (date: Date) => {
+    setCustomTimePickerVisible(false);
+    handleTimeChange({ type: "set" }, date);
+    setEditingIndex(null);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.rowContainer}>
-        <TouchableOpacity onPress={handleAddTime} style={styles.addButton}>
+        <TouchableOpacity
+          onPress={() => {
+            openTimePicker(null);
+            handleAddTime();
+          }}
+          style={styles.addButton}
+        >
           <Text style={styles.buttonText}>+ Add Time</Text>
         </TouchableOpacity>
 
@@ -51,6 +73,7 @@ const Schedule: React.FC<Props> = ({
             display="default"
             onChange={(e, d) => d && setStartDate(d)}
           />
+          {errors.startDate && <Text style={styles.errorText}>{errors.startDate}</Text>}
         </View>
 
         <View style={styles.dateContainer}>
@@ -70,7 +93,7 @@ const Schedule: React.FC<Props> = ({
             <Text style={styles.timeText}>
               {t.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
             </Text>
-            <TouchableOpacity onPress={() => handleEditTime(i)} style={styles.editButton}>
+            <TouchableOpacity onPress={() => { openTimePicker(i); handleEditTime(i); }} style={styles.editButton}>
               <Text style={styles.buttonText}>Edit</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => removeTime(i)} style={styles.removeButton}>
@@ -78,18 +101,18 @@ const Schedule: React.FC<Props> = ({
             </TouchableOpacity>
           </View>
         ))}
+        {errors.times && <Text style={styles.errorText}>{errors.times}</Text>}
       </View>
 
-      {showTimePicker && (
-        <DateTimePicker
-          value={currentIndex !== null && times[currentIndex] ? times[currentIndex] : new Date()}
-          mode="time"
-          display={Platform.OS === "ios" ? "spinner" : "default"}
-          onChange={handleTimeChange}
-        />
-      )}
+      <CustomTimePicker
+        visible={customTimePickerVisible}
+        initialTime={editingIndex !== null && times[editingIndex] ? times[editingIndex] : new Date()}
+        onConfirm={onTimeSelected}
+        onCancel={() => setCustomTimePickerVisible(false)}
+      />
 
       <WeekDays selectedDays={selectedDays} onToggleDay={onToggleDay} showDate="" />
+      {errors.selectedDays && <Text style={styles.errorText}>{errors.selectedDays}</Text>}
     </View>
   );
 };

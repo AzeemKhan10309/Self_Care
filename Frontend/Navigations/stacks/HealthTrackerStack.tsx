@@ -7,7 +7,7 @@ const Stack = createNativeStackNavigator();
 export default function HealthTrackerStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="HealthTracker" component={HealthTracker} />
+      <Stack.Screen name="HealthTrackerScreen" component={HealthTracker} />
     </Stack.Navigator>
   );
 }

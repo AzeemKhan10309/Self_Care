@@ -21,6 +21,9 @@ import { useAddMedicine } from "./Hook/useAddMedicine";
 
 const AddMedicineScreen: React.FC = () => {
   const hook = useAddMedicine();
+ const handleSave = async () => {
+  await hook.handleSave(); 
+};
 
   const content = (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -40,6 +43,7 @@ const AddMedicineScreen: React.FC = () => {
           dosage={hook.dosage}
           setDosage={hook.setDosage}
           unit={hook.unit}
+          errors={hook.errors} // <-- pass errors
         />
 
         <Schedule
@@ -56,6 +60,7 @@ const AddMedicineScreen: React.FC = () => {
           handleTimeChange={hook.handleTimeChange}
           selectedDays={hook.selectedDays}
           onToggleDay={hook.toggleDay}
+          errors={hook.errors} // <-- pass errors
         />
 
         <Reminder
@@ -65,6 +70,7 @@ const AddMedicineScreen: React.FC = () => {
           setReminderBefore={hook.setReminderBefore}
           repeat={hook.repeat}
           setRepeat={hook.setRepeat}
+          errors={hook.errors} // <-- pass errors
         />
 
         <Input placeholder="Notes" value={hook.notes} onChangeText={hook.setNotes} />
@@ -76,7 +82,7 @@ const AddMedicineScreen: React.FC = () => {
           />
         )}
 
-        <Button title="Save Medicine" onPress={hook.handleSave} />
+        <Button title="Save Medicine" onPress={handleSave} />
       </ScrollView>
     </TouchableWithoutFeedback>
   );

@@ -7,6 +7,7 @@ const BASE_URL =
     ? "http://localhost:5000/api"
     : "http://192.168.11.123:5000/api";
 
+
 type Method = "GET" | "POST" | "PUT" | "DELETE"| "PATCH";
 
 type RequestBody = Record<string, any> | FormData | null;

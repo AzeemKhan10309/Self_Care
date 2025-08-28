@@ -13,7 +13,6 @@ const Stack = createNativeStackNavigator();
 export default function AppStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {/* Main Tabs */}
       <Stack.Screen name="Main" component={MainTabs} />
       
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} />

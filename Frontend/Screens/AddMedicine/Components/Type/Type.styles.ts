@@ -49,4 +49,9 @@ export default StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
+  errorText: {
+  color: "red",
+  marginTop: 2,
+  fontSize: 12,
+}
 });

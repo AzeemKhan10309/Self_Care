@@ -37,7 +37,7 @@ const LoginScreen: React.FC = () => {
 
   useEffect(() => {
     if (user) {
-      navigation.navigate("Dashboard");
+    navigation.navigate("Dashboard");
     }
 
     if (error) {
