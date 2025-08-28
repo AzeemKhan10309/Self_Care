@@ -4,14 +4,18 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from "react-native";
 import Input from "../../Components/Input/Input";
 import Button from "../../Components/Button/Button";
+import styles from "./Otp.styles";
+import { apiRequest } from "../../Services/api"; // 👈 your API helper
 
-const OTPCodeScreen = ({ navigation }: any) => {
+const OTPCodeScreen = ({ route, navigation }: any) => {
+  const { email } = route.params; 
+    const [enteredOtp] = useState("");
   const numberOfDigits = 6;
   const [otp, setOtp] = useState<string[]>(Array(numberOfDigits).fill(""));
   const inputs = useRef<Array<TextInput | null>>([]);
@@ -26,10 +30,46 @@ const OTPCodeScreen = ({ navigation }: any) => {
     }
   };
 
-  const handleVerify = () => {
+  const handleVerify = async () => {
     const code = otp.join("");
     console.log("Entered OTP:", code);
-    navigation.navigate("CreateNewPassword");
+
+    if (code.length !== numberOfDigits) {
+      Alert.alert("Error", "Please enter the full OTP code");
+      return;
+    }
+
+    try {
+      const response = await apiRequest("/users/verify-otp", "POST", {
+        email,
+        otp: code,
+      });
+
+      if ("error" in response) {
+        Alert.alert("Error", response.message);
+        return;
+      }
+
+      Alert.alert("Success", response.message);
+      navigation.navigate("CreateNewPassword", { email});
+    } catch (error) {
+      Alert.alert("Error", "Something went wrong");
+    }
+  };
+
+  const handleResend = async () => {
+    try {
+      const response = await apiRequest("/users/send-otp", "POST", { email });
+
+      if ("error" in response) {
+        Alert.alert("Error", response.message);
+        return;
+      }
+
+      Alert.alert("Success", "OTP has been resent to your email");
+    } catch (error) {
+      Alert.alert("Error", "Failed to resend OTP");
+    }
   };
 
   return (
@@ -57,7 +97,7 @@ const OTPCodeScreen = ({ navigation }: any) => {
 
       <Button title="Verify" onPress={handleVerify} />
 
-      <TouchableOpacity onPress={() => console.log("Resend Code")}>
+      <TouchableOpacity onPress={handleResend}>
         <Text style={styles.resendText}>
           Didn’t receive the code? <Text style={styles.resendLink}>Resend</Text>
         </Text>
@@ -67,5 +107,3 @@ const OTPCodeScreen = ({ navigation }: any) => {
 };
 
 export default OTPCodeScreen;
-
-import styles from "./Otp.styles";

@@ -2,19 +2,19 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  TouchableOpacity,
-  StyleSheet,
+  TouchableWithoutFeedback,
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
-  Keyboard,
-  TouchableWithoutFeedback,
   Alert,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Input from "../../Components/Input/Input";
 import Button from "../../Components/Button/Button";
+import styles from "./Reset.styles";
+import { apiRequest } from "../../Services/api";
+
 type RootStackParamList = {
   Login: undefined;
   PasswordChanged: undefined;
@@ -27,11 +27,48 @@ type CreateNewPasswordScreenNavigationProp = NativeStackNavigationProp<
 
 export default function CreateNewPassword() {
   const navigation = useNavigation<CreateNewPasswordScreenNavigationProp>();
+  const route = useRoute<any>();
+  const { email } = route.params || {};
+console.log("Received email:", email);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleResetPassword = () => {
-    navigation.navigate("PasswordChanged");
+  const handleResetPassword = async () => {
+    if (!password || !confirmPassword) {
+      Alert.alert("Error", "Please fill in all fields");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Alert.alert("Error", "Passwords do not match");
+      return;
+    }
+
+    try {
+      console.log("🔑 Resetting password for:", email);
+      console.log("Password:", password ? "****" : null); 
+      const response = await apiRequest("/users/reset-password", "PUT", {
+        email,
+        newPassword: password,
+      });
+
+      console.log("🔑 Reset Password API Response:", response);
+
+      if (!response || response.error) {
+        Alert.alert("Error", response?.message || "Password reset failed");
+        return;
+      }
+
+      Alert.alert("Success", response.message || "Password changed successfully", [
+        {
+          text: "OK",
+          onPress: () => navigation.navigate("PasswordChanged"),
+        },
+      ]);
+    } catch (error: any) {
+      console.error("❌ Reset Password Error:", error);
+      Alert.alert("Error", "Something went wrong, please try again later");
+    }
   };
 
   return (
@@ -48,6 +85,7 @@ export default function CreateNewPassword() {
               Your new password must be unique from those previously used.
             </Text>
           </View>
+
           <Input
             placeholder="New Password"
             placeholderTextColor="#999"
@@ -70,4 +108,3 @@ export default function CreateNewPassword() {
     </KeyboardAvoidingView>
   );
 }
-import styles from "./Reset.styles";
