@@ -7,7 +7,7 @@ import { fetchUserInfo } from "../../../Redux/AuthSlice";
 import { apiRequest } from "../../../Services/api";
 import { Alert } from "react-native";
 
-const BACKEND_IP = "192.168.11.123:5000"; // Replace with your LAN IP
+const BACKEND_IP = "192.168.106.212:5000"; // Replace with your LAN IP
 
 export const useEditProfile = () => {
   const dispatch = useDispatch<AppDispatch>();

@@ -19,7 +19,8 @@ export type AppStackParamList = {
   AddMedicine:undefined;
     DashboardTab: undefined;     
   SummaryTab: undefined;        
-  HealthTrackerTab: undefined;  
+  HealthTrackerTab: undefined; 
+  AddDependent: undefined; 
   ProfileTab: undefined;
 };
 

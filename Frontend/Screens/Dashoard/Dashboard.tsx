@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Image, ActivityIndicator, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  ActivityIndicator,
+  FlatList,
+  ScrollView,
+  Linking,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../../Types/navigation";
@@ -14,19 +23,30 @@ import styles from "./Dashboard.styles";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
+// Example dependents data
+const dependentsSample = [
+  { id: "1", avatar: "https://randomuser.me/api/portraits/men/1.jpg" },
+  { id: "2", avatar: "https://randomuser.me/api/portraits/women/2.jpg" },
+];
+
 const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState("Dashboard");
+  const [openFloating, setOpenFloating] = useState(false);
   const navigation = useNavigation<NavigationProp>();
 
-  const { todayMedicines, nextDose, flatTimes, loading, markDose } = useDashboardData();
+  const { todayMedicines, nextDose, flatTimes, loading, markDose } =
+    useDashboardData();
 
   const handleTabPress = (tabKey: string) => {
     setActiveTab(tabKey);
     navigation.navigate(tabKey as keyof RootStackParamList);
   };
 
+  const toggleFloatingButtons = () => setOpenFloating(!openFloating);
+
   return (
     <View style={styles.container}>
+      {/* Header */}
       <View style={styles.headerContainer}>
         <Image
           source={require("../../assets/Home-bg.png")}
@@ -37,6 +57,61 @@ const Dashboard: React.FC = () => {
         <Text style={styles.feeling}>How are you feeling today?</Text>
       </View>
 
+      {/* Dependents Section */}
+      <View style={{ marginVertical: 20, paddingHorizontal: 15 }}>
+        <Text
+          style={{
+            fontSize: 20,
+            fontWeight: "600",
+            color: "#1F62E8",
+            marginBottom: 10,
+          }}
+        >
+          Dependents
+        </Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {/* + Button */}
+          <TouchableOpacity
+            style={{
+              width: 70,
+              height: 70,
+              borderRadius: 35,
+              backgroundColor: "#E0E0E0",
+              justifyContent: "center",
+              alignItems: "center",
+              marginRight: 10,
+            }}
+            onPress={() => navigation.navigate("AddDependent")}
+          >
+            <Text style={{ fontSize: 30, color: "#1976D2" }}>+</Text>
+          </TouchableOpacity>
+
+          {/* Existing dependents */}
+          {dependentsSample.map((dep) => (
+            <View
+              key={dep.id}
+              style={{
+                width: 70,
+                height: 70,
+                borderRadius: 35,
+                backgroundColor: "#fff",
+                justifyContent: "center",
+                alignItems: "center",
+                marginRight: 10,
+                borderWidth: 1,
+                borderColor: "#ddd",
+              }}
+            >
+              <Image
+                source={{ uri: dep.avatar }}
+                style={{ width: 65, height: 65, borderRadius: 32.5 }}
+              />
+            </View>
+          ))}
+        </ScrollView>
+      </View>
+
+      {/* Upcoming Dose Section */}
       {nextDose ? (
         <UpComingDose
           title="Upcoming Dose"
@@ -55,6 +130,7 @@ const Dashboard: React.FC = () => {
         </View>
       )}
 
+      {/* Today's Reminders */}
       <View style={styles.todayReminderContainer}>
         <Text style={styles.reminderTitle}>Today's Reminders</Text>
         {loading ? (
@@ -80,19 +156,47 @@ const Dashboard: React.FC = () => {
         )}
       </View>
 
-      <View style={styles.addButtonContainer}>
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => navigation.navigate("AddMedicine")}
-        >
+      {/* Floating Buttons */}
+      <View style={[styles.fabContainer, { bottom: 100 }]}>
+        {openFloating && (
+          <>
+            <TouchableOpacity
+              style={[styles.childButton, { bottom: 140 }]}
+              onPress={() => navigation.navigate("AddMedicine")}
+            >
+              <Image
+                source={require("../../assets/Plus.png")}
+                style={styles.childIcon}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.childButton, { bottom: 70 }]}
+              onPress={() => {
+                const phoneNumber = "03054369480";
+                Linking.openURL(`tel:${phoneNumber}`);
+              }}
+            >
+              <Image
+                source={require("../../assets/Call.png")}
+                style={styles.childIcon}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+          </>
+        )}
+
+        <TouchableOpacity style={styles.mainButton} onPress={toggleFloatingButtons}>
           <Image
-            source={require("../../assets/Add.png")}
-            style={styles.addicon}
+            source={require("../../assets/OpenClose.png")}
+            style={styles.mainIcon}
             resizeMode="contain"
           />
         </TouchableOpacity>
       </View>
 
+      {/* Bottom Tab */}
       <BottomTab activeTab={activeTab} onTabPress={handleTabPress} tabs={tabs} />
     </View>
   );
