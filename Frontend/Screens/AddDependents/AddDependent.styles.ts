@@ -30,4 +30,21 @@ export const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
   },
+  imagePicker: {
+  width: 120,
+  height: 120,
+  borderRadius: 60,
+  borderWidth: 1,
+  borderColor: "#ccc",
+  alignItems: "center",
+  justifyContent: "center",
+  alignSelf: "center",
+  marginBottom: 20,
+},
+imagePreview: {
+  width: 120,
+  height: 120,
+  borderRadius: 60,
+},
+
 });

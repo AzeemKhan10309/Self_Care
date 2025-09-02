@@ -112,7 +112,6 @@ export const useEditProfile = () => {
     }
   };
 
-  // Return image URI (for display)
   const imageUri = profileImage
     ? profileImage.startsWith("http")
       ? profileImage

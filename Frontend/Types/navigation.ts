@@ -5,7 +5,7 @@ export type AuthStackParamList = {
   OTPCode: undefined;
   CreateNewPassword: undefined;
   PasswordChanged: undefined;
-  Splash:undefined;
+  Splash: undefined;
 };
 
 export type AppStackParamList = {
@@ -16,12 +16,15 @@ export type AppStackParamList = {
   Alarm: undefined;
   HealthTracker: undefined;
   CollectInfo: undefined;
-  AddMedicine:undefined;
-    DashboardTab: undefined;     
-  SummaryTab: undefined;        
-  HealthTrackerTab: undefined; 
-  AddDependent: undefined; 
+  AddMedicine: undefined;
+  DashboardTab: undefined;
+  SummaryTab: undefined;
+  HealthTrackerTab: undefined;
+  AddDependent: undefined;
   ProfileTab: undefined;
+  
 };
+
+
 
 export type RootStackParamList = AuthStackParamList & AppStackParamList;
