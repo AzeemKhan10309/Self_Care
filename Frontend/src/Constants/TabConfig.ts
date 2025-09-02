@@ -1,4 +1,11 @@
-export const tabs = [
+import type { RootStackParamList } from "../../Types/navigation";
+
+export const tabs: { 
+  key: keyof RootStackParamList; 
+  label: string; 
+  icon: any; 
+  focusedIcon: any; 
+}[] = [
   {
     key: "DashboardTab",   
     label: "Home",

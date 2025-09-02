@@ -19,7 +19,7 @@ const HomeScreen: React.FC = () => {
   };
 
   const handleEditProfile = () => {
-    navigation.navigate("EditProfile"); // <-- Make sure EditProfile is in RootStackParamList
+    navigation.navigate("EditProfile"); 
   };
 
   return (

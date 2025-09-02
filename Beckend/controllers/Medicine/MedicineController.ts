@@ -91,14 +91,31 @@ export const addMedicine = async (req: AuthRequest, res: Response) => {
 
 export const getallmedicinebyid = async (req: Request, res: Response) => {
   try {
-    const userId = req.params.id;
-    if (!userId) return res.status(400).json({ error: "User ID missing" });
+    const { ownerType, ownerId, medicineId } = req.query;
 
-    const medicines = await Medicine.find({ userId });
-    res.status(200).json({ medicines });
+    if (!ownerType || !ownerId || !medicineId) {
+      return res.status(400).json({ error: "Missing ownerType, ownerId, or medicineId" });
+    }
+
+    let medicine;
+
+    if (ownerType === "user") {
+      medicine = await Medicine.findOne({ _id: medicineId, userId: ownerId });
+    } else if (ownerType === "dependent") {
+      medicine = await Medicine.findOne({ _id: medicineId, dependentId: ownerId });
+    } else {
+      return res.status(400).json({ error: "Invalid owner type" });
+    }
+
+    if (!medicine) {
+      return res.status(404).json({ error: "Medicine not found" });
+    }
+
+    res.status(200).json({ medicine });
   } catch (error) {
-    console.error("Error fetching medicines:", error);
+    console.error("Error fetching medicine:", error);
     res.status(500).json({ error: "Server error" });
   }
 };
+
 

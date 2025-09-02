@@ -2,36 +2,41 @@ import { useState } from "react";
 import { Platform } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { apiRequest } from "../../../Services/api";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../../Types/navigation";
+import { DashboardStackParamList } from "../../../Navigations/stacks/DashboardStack";
+
+type AddMedicineRouteProp = RouteProp<DashboardStackParamList, "AddMedicine">;
+type AddMedicineNavigationProp = NativeStackNavigationProp<DashboardStackParamList, "AddMedicine">;
 
 export const useAddMedicine = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, "AddMedicine">>();
+  const navigation = useNavigation<AddMedicineNavigationProp>();
+  const route = useRoute<AddMedicineRouteProp>();
+  const dependentId = route.params?.dependent?.id; 
 
-  const [medicine, setMedicine] = useState("");
-  const [description, setDescription] = useState("");
-  const [type, setType] = useState("");
-  const [dosage, setDosage] = useState(1);
-  const [unit, setUnit] = useState("");
+  const [medicine, setMedicine] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [type, setType] = useState<string>("");
+  const [dosage, setDosage] = useState<number>(1);
+  const [unit, setUnit] = useState<string>("");
 
-  const [startDate, setStartDate] = useState(new Date());
+  const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [times, setTimes] = useState<Date[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number | null>(null);
-  const [showTimePicker, setShowTimePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState<boolean>(false);
   const [selectedDays, setSelectedDays] = useState<number[]>([]);
 
-  const [reminderEnabled, setReminderEnabled] = useState(true);
-  const [reminderBefore, setReminderBefore] = useState(10);
-  const [repeat, setRepeat] = useState(true);
+  const [reminderEnabled, setReminderEnabled] = useState<boolean>(true);
+  const [reminderBefore, setReminderBefore] = useState<number>(10);
+  const [repeat, setRepeat] = useState<boolean>(true);
 
-  const [notes, setNotes] = useState("");
+  const [notes, setNotes] = useState<string>("");
   const [image, setImage] = useState<string | null>(null);
 
-  const [errors, setErrors] = useState<{ [key: string]: string }>({}); 
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const typeUnitMap: { [key: string]: string } = {
+  const typeUnitMap: Record<string, string> = {
     Tablet: "Tablet",
     Syrup: "ml",
     Injection: "CC",
@@ -40,14 +45,14 @@ export const useAddMedicine = () => {
   const handleTypeSelect = (selectedType: string) => {
     setType(selectedType);
     setUnit(typeUnitMap[selectedType] || "");
-    setErrors((prev) => ({ ...prev, type: "" })); 
+    setErrors((prev) => ({ ...prev, type: "" }));
   };
 
   const toggleDay = (dayIndex: number) => {
     setSelectedDays((prev) =>
       prev.includes(dayIndex) ? prev.filter((d) => d !== dayIndex) : [...prev, dayIndex]
     );
-    setErrors((prev) => ({ ...prev, selectedDays: "" })); 
+    setErrors((prev) => ({ ...prev, selectedDays: "" }));
   };
 
   const handleAddTime = () => {
@@ -68,7 +73,7 @@ export const useAddMedicine = () => {
       else newTimes[currentIndex] = selectedTime;
       setTimes(newTimes);
       setCurrentIndex(null);
-      setErrors((prev) => ({ ...prev, times: "" })); 
+      setErrors((prev) => ({ ...prev, times: "" }));
     } else {
       setShowTimePicker(false);
       setCurrentIndex(null);
@@ -87,35 +92,34 @@ export const useAddMedicine = () => {
     if (!result.canceled) setImage(result.assets[0].uri);
   };
 
-const validate = () => {
-  const newErrors: { [key: string]: string } = {};
+  const validate = (): boolean => {
+    const newErrors: Record<string, string> = {};
 
-  if (!medicine.trim()) newErrors.medicine = "Medicine name is required";
-  if (!type) newErrors.type = "Medicine type is required";
-  if (dosage <= 0) newErrors.dosage = "Dosage must be greater than 0";
+    if (!medicine.trim()) newErrors.medicine = "Medicine name is required";
+    if (!type) newErrors.type = "Medicine type is required";
+    if (dosage <= 0) newErrors.dosage = "Dosage must be greater than 0";
 
-  if (!startDate) {
-    newErrors.startDate = "Start date is required";
-  }
+    if (!startDate) newErrors.startDate = "Start date is required";
 
-  if (endDate && startDate && endDate < startDate) {
-    newErrors.endDate = "End date cannot be before start date";
-  }
+    if (endDate && startDate && endDate < startDate) {
+      newErrors.endDate = "End date cannot be before start date";
+    }
 
-  if (times.length === 0) newErrors.times = "Add at least one time";
-  if (selectedDays.length === 0) newErrors.selectedDays = "Select at least one day";
+    if (times.length === 0) newErrors.times = "Add at least one time";
+    if (selectedDays.length === 0) newErrors.selectedDays = "Select at least one day";
 
-  setErrors(newErrors);
+    setErrors(newErrors);
 
-  return Object.keys(newErrors).length === 0;
-};
-
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSave = async () => {
-    if (!validate()) return; 
+    if (!validate()) return;
 
     try {
       const formData = new FormData();
+
+      if (dependentId) formData.append("dependentId", dependentId);
 
       formData.append("name", medicine);
       formData.append("description", description || "");
@@ -138,20 +142,15 @@ const validate = () => {
         const mimeType = ext ? `image/${ext}` : "image/jpeg";
         const uri = Platform.OS === "ios" ? image.replace("file://", "") : image;
 
-        formData.append("image", {
-          uri,
-          name: filename,
-          type: mimeType,
-        } as any);
+        formData.append("image", { uri, name: filename, type: mimeType } as any);
       }
 
       const res = await apiRequest("/medicines/addMedicine", "POST", formData);
 
-      if ("error" in res) {
-        alert("Failed: " + res.message);
-      } else {
+      if ("error" in res) alert("Failed: " + res.message);
+      else {
         alert("✅ Medicine saved successfully!");
-        navigation.navigate("Dashboard");
+        navigation.navigate("DashboardScreen");
       }
     } catch (err) {
       console.error(err);
@@ -192,7 +191,8 @@ const validate = () => {
     setNotes,
     image,
     pickImage,
-    errors,          
+    errors,
     handleSave,
+    dependentId, 
   };
 };

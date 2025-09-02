@@ -7,16 +7,14 @@ import userRoutes from './Routes/User/UserRoutes.js';
 import medicineRoutes from './Routes/Medicine/MedicineRoutes.js';
 import doseLogRoutes from './Routes/DoseLog/DoseLogRoutes.js';
 import { startRollingWindowExtender } from './jobs/extend-window.js';
-
+import Dependent from './Routes/Dependent/DependentRoutes.js';
 import cors from 'cors';
 import path from 'path';
 
 async function startServer() {
   try {
-    // Connect to DB
     await connectDB();
 
-    // Start background jobs
     try {
       startRollingWindowExtender();
     } catch (err) {
@@ -25,24 +23,21 @@ async function startServer() {
 
     const app = express();
 
-    // Middleware
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
     app.use(cors());
     app.use('/uploads', express.static(path.join(path.resolve(), 'uploads')));
 
-    // Logging middleware
     app.use((req, res, next) => {
       console.log(req.method, req.url, req.body);
       next();
     });
 
-    // Routes
     app.use('/api/users', userRoutes);
     app.use('/api/medicines', medicineRoutes);
     app.use('/api/dose-log', doseLogRoutes);
-
-    // Start server
+    app.use('/api/dependents', Dependent);
+    
     const PORT = process.env.PORT || 5000;
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   } catch (err) {
