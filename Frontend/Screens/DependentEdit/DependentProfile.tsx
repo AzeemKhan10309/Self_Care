@@ -1,84 +1,45 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   View,
   ScrollView,
-  StyleSheet,
   Text,
-  Alert,
   ActivityIndicator,
   TouchableOpacity,
   Image,
+  Alert,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import DependentCard from "./DependentCard/DependentCard";
 import MedicineCard from "./MedicenCard/MedicenCard";
-import type { DashboardStackParamList } from "../../Navigations/stacks/DashboardStack"; 
-import { apiRequest } from "../../Services/api";
-
-interface Medicine {
-  _id: string;
-  name: string;
-  dose: string;       
-  time: string;      
-  quantity: string;   
-}
-
-interface Dependent {
-  _id: string;
-  name: string;
-  relation: string;
-  age: number;
-  picture?: string;
-  medicines: Medicine[];
-}
+import type { DashboardStackParamList } from "../../Navigations/stacks/DashboardStack";
+import { useDependent } from "./Hook/useDependent";
+import styles from "./DependentProfile.styles";
+const BACKEND_IP = "192.168.18.223:5000";
 
 type Props = NativeStackScreenProps<DashboardStackParamList, "DependentEdit">;
 
 const DependentEdit = ({ route, navigation }: Props) => {
   const { id } = route.params;
 
-  const [dependent, setDependent] = useState<Dependent | null>(null);
-  const [medicines, setMedicines] = useState<Medicine[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { dependent, medicines, loading, deleteMedicine } = useDependent(id);
 
-  useEffect(() => {
-    const fetchDependent = async () => {
-      try {
-        const response = await apiRequest(`/dependents/${id}`);
+  const getImageUri = (path?: string) => {
+    if (!path) return "https://via.placeholder.com/100";
 
-        setDependent(response);
+    let cleanPath = path.replace(/\\/g, "/");
+    if (!cleanPath.includes("/dependents/")) {
+      cleanPath = cleanPath.replace("/uploads/", "");
+      cleanPath = `/uploads/dependents/${cleanPath}`;
+    }
 
-        const transformedMedicines = (response.medicines || []).map((med: any) => ({
-          _id: med._id,
-          name: med.name,
-          dose: med.dosage.toString(),       
-          quantity: med.unit,
-          time: med.times && med.times.length > 0
-            ? med.times
-                .map((t: string) => {
-                  const date = new Date(t);
-                  return isNaN(date.getTime()) ? t : date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-                })
-                .join(", ")
-            : "No time",
-        }));
+    return `http://${BACKEND_IP}${cleanPath}`;
+  };
 
-        setMedicines(transformedMedicines);
-      } catch (error) {
-        console.error(error);
-        Alert.alert("Error", "Failed to fetch dependent data");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchDependent();
-  }, [id]);
-
-  if (loading) return <ActivityIndicator style={{ flex: 1 }} size="large" color="#0000ff" />;
+  if (loading) return <ActivityIndicator style={styles.loader} size="large" color="#0000ff" />;
 
   if (!dependent)
     return (
-      <View style={styles.container}>
+      <View style={styles.centered}>
         <Text>No dependent found</Text>
       </View>
     );
@@ -89,57 +50,43 @@ const DependentEdit = ({ route, navigation }: Props) => {
         name={dependent.name}
         relationship={dependent.relation}
         age={dependent.age}
-        imageUri={dependent.picture}
+        imageUri={getImageUri(dependent.picture)}
       />
 
-      <View style={styles.medicineSection}>
-{medicines.map((med) => (
-  <MedicineCard
-    key={med._id}
-    name={med.name}
-    dose={med.dose}        
-    time={med.time}        
-    quantity={med.quantity}
-    onUpdate={() =>
-    navigation.navigate("UpdateMedicineScreen", {
-        medicineId: med._id,
-        dependentId: dependent._id, 
-      })
-    }
-    onDelete={() => Alert.alert("Delete Medicine", med.name)}
-  />
-))}
-
-
+      <View style={styles.medicinesContainer}>
+        {medicines.map((med) => (
+          <MedicineCard
+            key={med._id}
+            name={med.name}
+            dose={med.dose}
+            time={med.time}
+            quantity={med.quantity}
+            onUpdate={() =>
+              navigation.navigate("UpdateMedicineScreen", {
+                medicineId: med._id,
+                dependentId: dependent._id,
+              })
+            }
+            onDelete={() =>
+              Alert.alert("Delete Medicine", `Are you sure you want to delete ${med.name}?`, [
+                { text: "Cancel", style: "cancel" },
+                { text: "Delete", style: "destructive", onPress: () => deleteMedicine(med._id) },
+              ])
+            }
+          />
+        ))}
       </View>
 
       <TouchableOpacity
-        style={styles.mainButton}
+        style={styles.addButton}
         onPress={() => navigation.navigate("AddMedicine", { dependent: { id: dependent._id } })}
       >
-        <Image
-          source={require("../../assets/OpenClose.png")}
-          style={styles.mainIcon}
-          resizeMode="contain"
-        />
+        <Image source={require("../../assets/OpenClose.png")} style={styles.addButtonImage} />
       </TouchableOpacity>
     </ScrollView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: "#f5f5f5" },
-  medicineSection: { marginTop: 24 },
-  mainButton: {
-    position: "absolute",
-    bottom: 20,
-    right: 20,
-    backgroundColor: "#007bff",
-    borderRadius: 30,
-    padding: 12,
-    elevation: 5,
-  },
-  mainIcon: { width: 24, height: 24, tintColor: "#fff" },
-});
+
 
 export default DependentEdit;

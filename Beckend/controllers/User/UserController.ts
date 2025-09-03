@@ -8,7 +8,6 @@ import nodemailer from "nodemailer";
 import bcrypt from "bcryptjs";
 
 export const checkUsername = async (req: Request, res: Response) => {
-    console.log("Check username request params:", req.params);
   try {
     const username = req.params.username;
     if (!username) return res.status(400).json({ error: true, message: "Username is required" });
@@ -102,7 +101,7 @@ interface UpdateUserBody {
 }
 
 export const updateUser = async (
-  req: Request<{ id: string }, any, UpdateUserBody>, // params, res body type, req body
+  req: Request<{ id: string }, any, UpdateUserBody>, 
   res: Response
 ) => {
   try {

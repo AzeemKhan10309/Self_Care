@@ -3,24 +3,42 @@ import Medicine,{IMedicine} from "../../Models/Medicine/ModelMedicine.js";
 import mongoose from "mongoose";
 import { AuthRequest } from "../../types/express.js";
 import { ScheduledDose } from "../../Models/SheduleDose/ScheduledDose.js";
+import Dependent from "../../Models/Dependent/DependentModel.js";
 import { generateScheduleForMedicine, recomputeFutureSchedule } from "../../Services/scheduler.js";
 const ROLLING_DAYS = 7;
 
 
-export const updateMedicine = async (req: Request, res: Response) => {
+export const updateMedicine = async (req: AuthRequest, res: Response) => {
   try {
-    const id = req.params.id;
-    const med = await Medicine.findByIdAndUpdate(id, req.body, { new: true });
-    if (!med) return res.status(404).json({ error: "Medicine not found" });
+    const medicineId = req.params.id;
+    const userId = req.user?._id;
+if (!userId) return res.status(401).json({ error: "User not authenticated" });
 
-    await recomputeFutureSchedule(new mongoose.Types.ObjectId(id), ROLLING_DAYS);
+    const medicine = await Medicine.findById(medicineId);
+    if (!medicine) return res.status(404).json({ error: "Medicine not found" });
 
-    res.json({ medicine: med });
+    const isUserMedicine = medicine.userId.equals(userId);
+
+    let isDependentMedicine = false;
+    if (medicine.dependentId) {
+      isDependentMedicine = !!(await Dependent.exists({ _id: medicine.dependentId, userId }));
+    }
+
+    if (!isUserMedicine && !isDependentMedicine) {
+      return res.status(403).json({ error: "Not authorized to update this medicine" });
+    }
+
+    const updatedMed = await Medicine.findByIdAndUpdate(medicineId, req.body, { new: true });
+
+    await recomputeFutureSchedule(new mongoose.Types.ObjectId(medicineId), ROLLING_DAYS);
+
+    res.json({ medicine: updatedMed });
   } catch (err: any) {
     console.error(err);
     res.status(500).json({ error: err.message });
   }
 };
+
 
 export const deleteMedicine = async (req: Request, res: Response) => {
   try {

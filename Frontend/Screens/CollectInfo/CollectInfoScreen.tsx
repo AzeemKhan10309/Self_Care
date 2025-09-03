@@ -137,6 +137,7 @@ const CollectInfoScreen: React.FC = () => {
             keyboardType="numeric"
           />
 
+
        
           <TouchableOpacity onPress={() => setDobPickerVisible(true)}>
             <Input
