@@ -6,8 +6,9 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootState } from "../../../../Redux/Store";
 import { apiRequest } from "../../../../Services/api";
 import styles from "./Dependents.styles";
-const BACKEND_IP = "192.168.11.245:5000";
 import type { DashboardStackParamList } from "../../../../Navigations/stacks/DashboardStack";
+
+const BACKEND_IP = "192.168.18.223:5000";
 
 type Dependent = {
   id: string;
@@ -29,18 +30,27 @@ const Dependents: React.FC<DependentsProps> = ({ showTitle = true, showAddButton
 
   const navigation = useNavigation<NativeStackNavigationProp<DashboardStackParamList>>();
 
-  const getImageUri = (path?: string) => {
-    if (!path) return "https://via.placeholder.com/100";
-    return path.startsWith("http")
-      ? path
-      : `http://${BACKEND_IP}${path.replace(/\\/g, "/")}`;
-  };
+const getImageUri = (path?: string) => {
+  if (!path) return "https://via.placeholder.com/100";
+
+  let cleanPath = path.replace(/\\/g, "/");
+
+  if (!cleanPath.includes("/dependents/")) {
+    cleanPath = cleanPath.replace("/uploads/", "");
+    cleanPath = `/uploads/dependents/${cleanPath}`;
+  }
+
+  return `http://${BACKEND_IP}${cleanPath}`;
+};
+
+
 
   useEffect(() => {
     const fetchDependents = async () => {
       try {
         const response = await apiRequest(`/dependents/user/${userId}`, "GET");
         setDependents(response);
+        console.log("✅ Fetched dependents:", response);
       } catch (error) {
         console.error("❌ Error fetching dependents:", error);
       } finally {
@@ -68,11 +78,16 @@ const Dependents: React.FC<DependentsProps> = ({ showTitle = true, showAddButton
         data={dependents}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
+            
           <TouchableOpacity
             style={styles.card}
             onPress={() => navigation.navigate("DependentEdit", { id: item.id })}
           >
-            <Image source={{ uri: getImageUri(item.picture) }} style={styles.image} />
+           <Image
+  source={{ uri: getImageUri(item.picture) }}
+  style={styles.image}
+/>
+            
             <Text style={styles.name} numberOfLines={1}>
               {item.name}
             </Text>
