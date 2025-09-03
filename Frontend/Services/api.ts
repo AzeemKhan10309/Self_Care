@@ -2,19 +2,14 @@ import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// API base URL
 export const BASE_URL =
   Platform.OS === "web"
     ? "http://localhost:5000/api"
-    : "http://192.168.18.223:5000/api"; // LAN IP for development
+    : "http://192.168.18.223:5000/api";
 
-// Static files base URL
-export const BASE_STATIC_URL =
-  Platform.OS === "web"
-    ? "http://localhost:5000"
-    : "http://192.168.18.223:5000";
 
-type Method = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
+type Method = "GET" | "POST" | "PUT" | "DELETE"| "PATCH";
+
 type RequestBody = Record<string, any> | FormData | null;
 
 export const apiRequest = async <T = any>(
@@ -48,6 +43,7 @@ export const apiRequest = async <T = any>(
   } catch (error: any) {
     const message = error?.response?.data?.message || "Something went wrong";
     console.error("❌ API Error:", message);
+
     return { error: true, message };
   }
 };
