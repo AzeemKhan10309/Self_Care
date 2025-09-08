@@ -8,7 +8,7 @@ import { apiRequest } from "../../../../Services/api";
 import styles from "./Dependents.styles";
 import type { DashboardStackParamList } from "../../../../Navigations/stacks/DashboardStack";
 
-const BACKEND_IP = "192.168.18.223:5000";
+const BACKEND_IP = "192.168.106.97:5000";
 
 type Dependent = {
   id: string;

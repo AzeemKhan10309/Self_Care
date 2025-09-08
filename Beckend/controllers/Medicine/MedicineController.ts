@@ -137,3 +137,20 @@ export const getallmedicinebyid = async (req: Request, res: Response) => {
 };
 
 
+export const getAllMedicinesByOwnerId = async (req: Request, res: Response) => {
+  try {
+    const { ownerId } = req.query;
+
+    if (!ownerId) {
+      return res.status(400).json({ error: "Missing ownerId" });
+    }
+
+    const medicines = await Medicine.find({ userId: new mongoose.Types.ObjectId(ownerId as string) });
+    console.log("Medicines fetched for ownerId:", ownerId, medicines);
+
+    res.status(200).json({ medicines });
+  } catch (error) {
+    console.error("Error fetching medicines:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+};

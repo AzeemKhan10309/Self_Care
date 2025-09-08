@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Alert } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { apiRequest } from "../../../Services/api"; 
-import { useSelector} from "react-redux";
+import { apiRequest } from "../../../Services/api";
+import { useSelector } from "react-redux";
 import { RootState } from "../../../Redux/Store";
 
 
@@ -65,58 +65,62 @@ export const useAddDependent = () => {
     }
   };
 
- const handleSubmit = async () => {
-  const isNameValid = validateField("name", name);
-  const isAgeValid = validateField("age", age);
-  const isRelationshipValid = validateField("relationship", relationship);
+  const handleSubmit = async () => {
+    const isNameValid = validateField("name", name);
+    const isAgeValid = validateField("age", age);
+    const isRelationshipValid = validateField("relationship", relationship);
 
-  if (!isNameValid || !isAgeValid || !isRelationshipValid) {
-    Alert.alert("Validation Error", "Please fix the errors before submitting");
-    return;
-  }
-
-  try {
-    const formData = new FormData();
-    formData.append("userId", userId);
-    formData.append("name", name.trim());
-    formData.append("age", String(Number(age))); 
-    formData.append("relation", relationship.trim()); 
-
-    if (image) {
-      formData.append("Dependentpicture", {
-        uri: image,
-        name: "dependent.jpg",
-        type: "image/jpeg",
-      } as any);
-    }
-
-    console.log("Submitting Dependent with data:", {
-      userId,
-      name: name.trim(),
-      age: Number(age),
-      relation: relationship.trim(),
-    });
-
-    const res = await apiRequest("/dependents/", "POST", formData);
-
-    if ("error" in res) {
-      Alert.alert("Error", res.message);
+    if (!isNameValid || !isAgeValid || !isRelationshipValid) {
+      Alert.alert("Validation Error", "Please fix the errors before submitting");
       return;
     }
 
-    Alert.alert("Success", "Dependent added successfully");
-    console.log("✅ Dependent Added:", res);
+    try {
+      const formData = new FormData();
+      if (!userId) {
+        Alert.alert("Error", "User ID is missing");
+        return;
+      }
+      formData.append("userId", userId);
+      formData.append("name", name.trim());
+      formData.append("age", String(Number(age)));
+      formData.append("relation", relationship.trim());
 
-    setName("");
-    setAge("");
-    setRelationship("");
-    setImage(null);
-    setErrors({});
-  } catch (error) {
-    console.error("❌ Submit Error:", error);
-    Alert.alert("Error", "Failed to add dependent");
-  }
-};
+      if (image) {
+        formData.append("Dependentpicture", {
+          uri: image,
+          name: "dependent.jpg",
+          type: "image/jpeg",
+        } as any);
+      }
+
+      console.log("Submitting Dependent with data:", {
+        userId,
+        name: name.trim(),
+        age: Number(age),
+        relation: relationship.trim(),
+      });
+
+      const res = await apiRequest("/dependents/", "POST", formData);
+
+      if ("error" in res) {
+        Alert.alert("Error", res.message);
+        return;
+      }
+
+      Alert.alert("Success", "Dependent added successfully");
+      console.log("✅ Dependent Added:", res);
+
+      setName("");
+      setAge("");
+      setRelationship("");
+      setImage(null);
+      setErrors({});
+    } catch (error) {
+      console.error("❌ Submit Error:", error);
+      Alert.alert("Error", "Failed to add dependent");
+    }
+  };
 
 
   return {
@@ -138,6 +142,6 @@ export const useAddDependent = () => {
     image,
     pickImage,
     handleSubmit,
-    errors, 
+    errors,
   };
 };
