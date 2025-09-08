@@ -14,14 +14,14 @@ export type AppStackParamList = {
   Summary: undefined;
   EditProfile: undefined;
   Alarm: undefined;
-  HealthTracker: undefined;
+  Doctor: undefined;
   CollectInfo: undefined;
   AddMedicine: undefined;
   DashboardTab: undefined;
   SummaryTab: undefined;
-  HealthTrackerTab: undefined;
   AddDependent: undefined;
   ProfileTab: undefined;
+  DoctorTab:undefined
   
 };
 

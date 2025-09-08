@@ -1,7 +1,6 @@
 import React from "react";
 import { createBottomTabNavigator, BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import { ParamListBase } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
 
 import DashboardStack from "./stacks/DashboardStack";
 import SummaryStack from "./stacks/SummaryStack";
@@ -40,7 +39,7 @@ onTabPress={(key: string) => {
     >
       <Tab.Screen name="DashboardTab" component={DashboardStack} />
       <Tab.Screen name="SummaryTab" component={SummaryStack} />
-      <Tab.Screen name="HealthTrackerTab" component={HealthTrackerStack} />
+      <Tab.Screen name="DoctorTab" component={HealthTrackerStack} />
       <Tab.Screen name="ProfileTab" component={ProfileStack} />
     </Tab.Navigator>
   );

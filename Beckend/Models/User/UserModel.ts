@@ -15,7 +15,13 @@ export interface IUser extends Document {
   profileImage?: string;
   resetOtp?: string;
   resetOtpExpire?: Date;
-  
+
+  role: "user" | "doctor" | "trainer" | "admin";
+  approved: boolean;
+  assignedDoctor?: mongoose.Types.ObjectId;
+  assignedTrainer?: mongoose.Types.ObjectId;
+
+  comparePassword(enteredPassword: string): Promise<boolean>;
 }
 
 const UserSchema: Schema<IUser> = new Schema(
@@ -32,14 +38,22 @@ const UserSchema: Schema<IUser> = new Schema(
     height: { type: Number },
     profileImage: { type: String },
 
-    // 🔹 Forgot password fields
     resetOtp: { type: String },
     resetOtpExpire: { type: Date },
+
+    role: {
+      type: String,
+      enum: ["user", "doctor", "trainer", "admin"],
+      default: "user",
+    },
+    approved: { type: Boolean, default: false },
+
+    assignedDoctor: { type: Schema.Types.ObjectId, ref: "User" },
+    assignedTrainer: { type: Schema.Types.ObjectId, ref: "User" },
   },
   { timestamps: true }
 );
 
-// Hash password before saving
 UserSchema.pre<IUser>("save", async function (next) {
   if (!this.isModified("password")) return next();
   const salt = await bcrypt.genSalt(10);
@@ -47,7 +61,10 @@ UserSchema.pre<IUser>("save", async function (next) {
   next();
 });
 
-// Compare entered password with hashed one
-
+UserSchema.methods.comparePassword = async function (
+  enteredPassword: string
+): Promise<boolean> {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
 
 export default mongoose.model<IUser>("User", UserSchema);

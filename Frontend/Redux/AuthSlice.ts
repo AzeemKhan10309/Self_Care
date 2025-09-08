@@ -2,8 +2,23 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { apiRequest } from "../Services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+interface User {
+  id: string | null;
+  name: string;
+  username: string;
+  email: string;
+  phone: string;
+  dob: Date | null;
+  weight: number | null;
+  height: number | null;
+  age: number | null;
+  gender: string | null;
+  isProfileComplete: boolean;
+  profileImage: string | null;
+}
+
 interface AuthState {
-  user: any | null;
+  user: User | null;
   loading: boolean;
   error: string | null;
 }
@@ -14,7 +29,7 @@ const initialState: AuthState = {
   error: null,
 };
 
-const mapUser = (u: any) => ({
+const mapUser = (u: any): User => ({
   id: u._id || u.id || null,
   name: u.name || "",
   username: u.username || "",
@@ -26,8 +41,9 @@ const mapUser = (u: any) => ({
   age: u.age ?? null,
   gender: u.gender ?? null,
   isProfileComplete: u.isProfileComplete ?? false,
-   profileImage: u.profileImage || null,
+  profileImage: u.profileImage || null,
 });
+
 
 export const registerUser = createAsyncThunk(
   "auth/registerUser",

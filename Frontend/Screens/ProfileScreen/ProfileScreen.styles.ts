@@ -1,90 +1,41 @@
 import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    },
+  container: { flex: 1, backgroundColor: "#fff" },
 
-    fixedContent: {
-  flex: 1,
-  padding: 10,
-  justifyContent: "flex-start",
-},
-  scrollContent: {
-    padding: 10,
-    paddingBottom: 90,
-  },
+  profile: { alignItems: "center", paddingVertical: 20 },
 
-  editProfileBtn: {
-    backgroundColor: "#d1d9ff",
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 10,
-    marginTop: 4,
-    alignSelf: "flex-start",
-    marginLeft: 8,
-  },
-  editProfileText: {
-    fontSize: 12,
-    color: "#0B5FFF",
-  },
+  section: { paddingHorizontal: 20, marginTop: 12 },
+  sectionTitle: { fontSize: 16, fontWeight: "700", color: "#2563eb" },
+  aboutText: { fontSize: 14, color: "#444", marginTop: 6 },
 
-  descriptionBox: {
-    borderWidth: 2,
-    borderColor: "#0B5FFF",
-    borderRadius: 10,
-    padding: 10,
-    position: "relative",
-    marginBottom: 20,
-    width: "96%",
-    height:"25%",
-    alignSelf: "center",
-  },
-  descriptionText: {
-    color: "#888",
-    fontSize: 15,
-    
-  },
-  penIcon: {
-    position: "absolute",
-    bottom: 5,
-    right: 10,
-    fontSize: 30,
-    color: "#0B5FFF",
-  },
-  metricsContainer: {
+  buttonRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    marginTop: 12,
   },
-  metricCard: {
-    backgroundColor: "#0B5FFF",
-    borderRadius: 12,
-    paddingVertical: 20,
-    paddingHorizontal: 15,
-    alignItems: "center",
-    flex: 1,
-    marginHorizontal: 5,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 5,
-    elevation: 4,
+  editButton: {
+    backgroundColor: "#e0e7ff",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 10,
+    marginRight: 10,
   },
-  metricLabel: {
-    color: "white",
-    fontSize: 14,
-    marginBottom: 5,
+  editButtonText: {
+    color: "#2563eb",
+    fontWeight: "500",
   },
-  metricValue: {
-    color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
+  logoutButton: {
+    backgroundColor: "#fee2e2",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 10,
+  },
+  logoutButtonText: {
+    color: "#dc2626",
+    fontWeight: "500",
   },
 
-  profileSection: {
-    marginBottom: 20,
-  },
 
-  
+
 });
 export default styles;
 
