@@ -1,8 +1,10 @@
 import express from "express";
-import {  approveUser, assignDoctorOrTrainer } from "../../controllers/Admin/AdminController";
-import { authMiddleware, authorizeRoles } from "../../middleware/authMiddleware";
+import {  approveUser, assignDoctorOrTrainer  } from "../../controllers/Admin/AdminController.js";
+import { authMiddleware, authorizeRoles } from "../../middleware/authMiddleware.js";
 
 const router = express.Router();
+
+
 
 
 // Admin approves doctor/trainer

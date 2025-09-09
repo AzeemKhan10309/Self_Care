@@ -13,7 +13,7 @@ import ProfileHeader from "../../Components/Profile/Profile";
 import MedicineCard from "../DependentEdit/MedicenCard/MedicenCard";
 import { RootState } from "../../Redux/Store";
 import { useUserMedicines } from "./Hook/ProfileHook";
-import { ProfileStackParamList } from "../../Navigations/stacks/ProfileStack";
+import { ProfileStackParamList } from "../../Navigations/User/stacks/ProfileStack";
 import { logout } from "../../Redux/AuthSlice";
 import styles from "./ProfileScreen.styles";
 export default function ProfileScreen() {

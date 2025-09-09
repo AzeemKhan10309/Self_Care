@@ -1,5 +1,5 @@
 import express from "express";
-import authMiddleware from "../../middleware/authMiddleware.js"; 
+import { authMiddleware } from "../../middleware/authMiddleware.js";
 import {createDoseLog,getTodayDoses,markDoseTaken,markDoseMissed,getDoseLogsByDate} from "../../controllers/DoseLog/DoseLogController.js";
 
 const router = express.Router();

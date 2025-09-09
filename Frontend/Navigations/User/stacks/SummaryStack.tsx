@@ -1,13 +1,13 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HealthTracker from "../../Screens/HealthTracker/Doctor";
+import Summary from "../../../Screens/Summary/Summary";
 
 const Stack = createNativeStackNavigator();
 
-export default function HealthTrackerStack() {
+export default function SummaryStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="DoctorScreen" component={HealthTracker} />
+      <Stack.Screen name="SummaryScreen" component={Summary} />
     </Stack.Navigator>
   );
 }

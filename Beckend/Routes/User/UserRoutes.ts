@@ -7,12 +7,17 @@ import {
     updateUser,
     sendOtpForPasswordReset,
     verifyOtp,
-    resetPasswordWithOtp
+    resetPasswordWithOtp,
+    createAdmin
 } from "../../controllers/User/UserController.js";
 import { profileUpload } from "../../middleware/upload.js";
 
 
 const router = Router();
+
+
+router.post("/create-admin", createAdmin);
+
 
 router.get("/check-username/:username", checkUsername);
 

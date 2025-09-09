@@ -1,18 +1,17 @@
 import React from "react";
 import { createBottomTabNavigator, BottomTabBarProps } from "@react-navigation/bottom-tabs";
 
+import DashboardStack from "../User/stacks/DashboardStack";
+import SummaryStack from "../User/stacks/SummaryStack";
+import HealthTrackerStack from "../User/stacks/HealthTrackerStack";
+import ProfileStack from "../User/stacks/ProfileStack";
 
-import DashboardStack from "./stacks/DashboardStack";
-import SummaryStack from "./stacks/SummaryStack";
-import HealthTrackerStack from "./stacks/HealthTrackerStack";
-import ProfileStack from "./stacks/ProfileStack";
-
-import BottomTab from "../Components/BottomNavbar/BottomNavbar";
-import { tabs } from "../src/Constants/TabConfig";
+import BottomTab from "../../Components/BottomNavbar/BottomNavbar";
+import { tabs } from "../../src/Constants/TabConfig";
 
 const Tab = createBottomTabNavigator();
 
-export default function MainTabs() {
+export default function UserTabs() {
   return (
     <Tab.Navigator
       initialRouteName="DashboardTab"
@@ -23,15 +22,13 @@ export default function MainTabs() {
         return (
           <BottomTab
             activeTab={activeRouteName}
-onTabPress={(key: string) => {
-  if (activeRouteName === key) {
-    props.navigation.navigate(key, { screen: undefined }); 
-    return;
-  }
-
-  props.navigation.navigate(key);
-}}
-
+            onTabPress={(key: string) => {
+              if (activeRouteName === key) {
+                props.navigation.navigate(key, { screen: undefined });
+                return;
+              }
+              props.navigation.navigate(key);
+            }}
             tabs={tabs}
           />
         );

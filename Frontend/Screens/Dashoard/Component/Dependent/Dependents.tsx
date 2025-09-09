@@ -6,7 +6,7 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootState } from "../../../../Redux/Store";
 import { apiRequest } from "../../../../Services/api";
 import styles from "./Dependents.styles";
-import type { DashboardStackParamList } from "../../../../Navigations/stacks/DashboardStack";
+import type { DashboardStackParamList } from "../../../../Navigations/User/stacks/DashboardStack";
 
 const BACKEND_IP = "192.168.106.97:5000";
 

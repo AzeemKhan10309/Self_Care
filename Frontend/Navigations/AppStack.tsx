@@ -1,6 +1,6 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import MainTabs from "././MainTabs";
+import MainTabs from "././User/UserTabs";
 import ForgotPassword from "../Screens/ForgotPassword/ForgotPassword";
 import OTPCodeScreen from "../Screens/OTPCode/OTPCode";
 import CreateNewPassword from "../Screens/CreateNewPassword/CreateNewPassword";
