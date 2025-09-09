@@ -1,6 +1,8 @@
 import type { Request, Response } from "express";
 import User from "../../Models/User/UserModel.js";
+
 import { Types } from "mongoose";
+
 
 export const approveUser = async (req: Request, res: Response) => {
   try {
@@ -50,3 +52,4 @@ export const assignDoctorOrTrainer = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Server error", error: err });
   }
 };
+

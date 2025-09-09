@@ -4,7 +4,7 @@ import * as ImagePicker from "expo-image-picker";
 import { apiRequest } from "../../../Services/api";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { DashboardStackParamList } from "../../../Navigations/stacks/DashboardStack";
+import { DashboardStackParamList } from "../../../Navigations/User/stacks/DashboardStack";
 
 type AddMedicineRouteProp = RouteProp<DashboardStackParamList, "AddMedicine">;
 type AddMedicineNavigationProp = NativeStackNavigationProp<DashboardStackParamList, "AddMedicine">;

@@ -11,7 +11,7 @@ import {
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import DependentCard from "./DependentCard/DependentCard";
 import MedicineCard from "./MedicenCard/MedicenCard";
-import type { DashboardStackParamList } from "../../Navigations/stacks/DashboardStack";
+import type { DashboardStackParamList } from "../../Navigations/User/stacks/DashboardStack";
 import { useDependent } from "./Hook/useDependent";
 import styles from "./DependentProfile.styles";
 const BACKEND_IP = "192.168.18.223:5000";

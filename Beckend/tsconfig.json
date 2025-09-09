@@ -5,6 +5,7 @@
     "moduleResolution": "Node",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
+    "allowImportingTsExtensions": false,
     "strict": true,
     "skipLibCheck": true,
     "outDir": "dist"

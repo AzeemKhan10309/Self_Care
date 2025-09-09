@@ -8,6 +8,7 @@ import medicineRoutes from './Routes/Medicine/MedicineRoutes.js';
 import doseLogRoutes from './Routes/DoseLog/DoseLogRoutes.js';
 import { startRollingWindowExtender } from './jobs/extend-window.js';
 import Dependent from './Routes/Dependent/DependentRoutes.js';
+import admin from './Routes/Admin/AdminRoutes.js'
 import cors from 'cors';
 import path from 'path';
 
@@ -37,7 +38,7 @@ async function startServer() {
     app.use('/api/medicines', medicineRoutes);
     app.use('/api/dose-log', doseLogRoutes);
     app.use('/api/dependents', Dependent);
-    
+    app.use('/api/admin',admin)
     const PORT = process.env.PORT || 5000;
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   } catch (err) {

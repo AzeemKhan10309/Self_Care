@@ -1,7 +1,7 @@
 import express from "express";
 import { addMedicine ,updateMedicine, deleteMedicine,getallmedicinebyid ,getAllMedicinesByOwnerId} from "../../controllers/Medicine/MedicineController.js";
 import { medicineUpload } from "../../middleware/upload.js";
-import authMiddleware from "../../middleware/authMiddleware.js"; 
+import { authMiddleware } from "../../middleware/authMiddleware.js";
 
 const router = express.Router();
 

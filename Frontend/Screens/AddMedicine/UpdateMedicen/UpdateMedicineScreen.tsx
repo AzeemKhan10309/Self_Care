@@ -20,7 +20,7 @@ import styles from "../AddMedicine.styles";
 
 import { useUpdateMedicine } from "./UpdateMedicenHook/UpdatedHook";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { DashboardStackParamList } from "../../../Navigations/stacks/DashboardStack";
+import { DashboardStackParamList } from "../../../Navigations/User/stacks/DashboardStack";
 
 type Props = NativeStackScreenProps<DashboardStackParamList, "UpdateMedicineScreen">;
 

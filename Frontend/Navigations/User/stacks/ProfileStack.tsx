@@ -1,8 +1,8 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import ProfileScreen from "../../Screens/ProfileScreen/ProfileScreen";
-import EditProfile from "../../Screens/EditProfile/EditProfile";
-import MedicineScreen from "../../Screens/AddMedicine/UpdateMedicen/UpdateMedicineScreen";
+import ProfileScreen from "../../../Screens/ProfileScreen/ProfileScreen";
+import EditProfile from "../../../Screens/EditProfile/EditProfile";
+import MedicineScreen from "../../../Screens/AddMedicine/UpdateMedicen/UpdateMedicineScreen";
 export type ProfileStackParamList = {
   Profile: undefined;
   EditProfile: undefined;

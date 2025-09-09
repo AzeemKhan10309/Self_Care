@@ -1,10 +1,9 @@
 import type { Request, Response } from "express";
-import type { IUser } from "../../Models/User/UserModel.ts";
+import type { IUser } from "../../Models/User/UserModel.js";
 import User from "../../Models/User/UserModel.js";
 import { generateToken } from "../../utils/apiResponse.js";
 import mongoose from "mongoose";
 import DoctorProfile from "../../Models/DoctorProfile/DoctorProfileModel.js";
-import TrainerProfile from "../../Models/TrainerProfile/TrainerProfile.js";
 import nodemailer from "nodemailer";
 import { AuthRequest } from "../../types/express.js";
 import bcrypt from "bcryptjs";
@@ -288,6 +287,30 @@ export const resetPasswordWithOtp = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
+export const createAdmin = async (req: Request, res: Response) => {
+  try {
+    const { name, email, username, password } = req.body;
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const user = new User({
+      name,
+      email,
+      username,
+      password: hashedPassword,
+      role: "admin",
+      approved: true
+    });
+
+    await user.save();
+    res.json({ message: "Admin created", user });
+  } catch (err) {
+    res.status(500).json({ message: err instanceof Error ? err.message : "Server error" });
+  }
+};
+
+
 
 
 

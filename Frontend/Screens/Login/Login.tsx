@@ -41,32 +41,16 @@ const LoginScreen: React.FC = () => {
     dispatch(loginUser({ email, password }))
       .unwrap()
       .then((loggedInUser) => {
-        console.log("✅ Login API Response:", loggedInUser);
-
         const userId = loggedInUser?._id || loggedInUser?.id;
         if (userId) {
           dispatch(fetchUserInfo(userId));
         }
 
-        switch (loggedInUser?.role) {
-          case "doctor":
-            navigation.reset({
-              index: 0,
-              routes: [{ name: "DoctorDashboard" }],
-            });
-            break;
-          default:
-            navigation.reset({
-              index: 0,
-              routes: [{ name: "Dashboard" }],
-            });
-        }
+        
       })
       .catch((err) => {
-        console.error("❌ Login API Error:", err);
-        Alert.alert("Login Failed", err || "Something went wrong", [
-          { text: "OK" },
-        ]);
+        console.error("Login API Error:", err);
+        Alert.alert("Login Failed", err?.message || "Something went wrong");
       });
   };
 
@@ -127,25 +111,14 @@ const LoginScreen: React.FC = () => {
           </View>
 
           <View style={styles.socialIcons}>
-            <Image
-              source={require("../../assets/apple.png")}
-              style={styles.icon}
-            />
-            <Image
-              source={require("../../assets/google.png")}
-              style={styles.icon}
-            />
-            <Image
-              source={require("../../assets/facebook.png")}
-              style={styles.icon}
-            />
+            <Image source={require("../../assets/apple.png")} style={styles.icon} />
+            <Image source={require("../../assets/google.png")} style={styles.icon} />
+            <Image source={require("../../assets/facebook.png")} style={styles.icon} />
           </View>
 
           <View style={styles.signupContainer}>
             <Text style={styles.signupText}>Don’t have an account?</Text>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("CollectInfo")}
-            >
+            <TouchableOpacity onPress={() => navigation.navigate("CollectInfo")}>
               <Text style={styles.signupLink}> Sign Up</Text>
             </TouchableOpacity>
           </View>

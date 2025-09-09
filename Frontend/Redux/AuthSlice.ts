@@ -15,7 +15,8 @@ interface User {
   gender: string | null;
   isProfileComplete: boolean;
   profileImage: string | null;
-  role: "user" | "doctor" | "trainer" | "admin" | null; 
+  role: "user" | "doctor" | "trainer" | "admin" | null;
+  approved?: boolean; 
 }
 
 interface AuthState {
@@ -43,9 +44,9 @@ const mapUser = (u: any): User => ({
   gender: u?.gender ?? null,
   isProfileComplete: u?.isProfileComplete ?? false,
   profileImage: u?.profileImage || null,
-  role: u?.role ?? null, 
+  role: u?.role ?? null,
+  approved: u?.approved ?? false,
 });
-
 
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
@@ -54,11 +55,20 @@ export const registerUser = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const res = await apiRequest<{ user: any; token?: string; error?: boolean; message?: string }>(
-        "/users/register",
-        "POST",
-        { name, username, email, password, phone, role, collectInfo }
-      );
+      const res = await apiRequest<{
+        user: any;
+        token?: string;
+        error?: boolean;
+        message?: string;
+      }>("/users/register", "POST", {
+        name,
+        username,
+        email,
+        password,
+        phone,
+        role,
+        collectInfo,
+      });
 
       if (res.error === true) return rejectWithValue(res.message);
 
@@ -77,18 +87,19 @@ export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async ({ email, password }: any, { rejectWithValue }) => {
     try {
-      const res = await apiRequest<{ user: any; token?: string; error?: boolean; message?: string }>(
-        "/users/login",
-        "POST",
-        { email, password }
-      );
+      const res = await apiRequest<{
+        user: any;
+        token?: string;
+        error?: boolean;
+        message?: string;
+      }>("/users/login", "POST", { email, password });
 
       if (res.error === true) return rejectWithValue(res.message);
 
       if (res.token) {
         await AsyncStorage.setItem("token", res.token);
       } else {
-        console.warn("No token returned from API on login");
+        console.warn("⚠️ No token returned from API on login");
       }
 
       return res.user;
@@ -102,10 +113,11 @@ export const fetchUserInfo = createAsyncThunk(
   "auth/fetchUserInfo",
   async (userId: string, { rejectWithValue }) => {
     try {
-      const res = await apiRequest<{ user: any; error?: boolean; message?: string }>(
-        `/users/${userId}`,
-        "GET"
-      );
+      const res = await apiRequest<{
+        user: any;
+        error?: boolean;
+        message?: string;
+      }>(`/users/${userId}`, "GET");
 
       if (res.error === true) return rejectWithValue(res.message);
 
@@ -115,7 +127,6 @@ export const fetchUserInfo = createAsyncThunk(
     }
   }
 );
-
 
 const authSlice = createSlice({
   name: "auth",
@@ -129,7 +140,7 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // register
+      // Register
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -143,7 +154,7 @@ const authSlice = createSlice({
         state.error = action.payload as string;
       })
 
-      // login
+      // Login
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -157,7 +168,7 @@ const authSlice = createSlice({
         state.error = action.payload as string;
       })
 
-      // fetchUserInfo
+      // Fetch User Info
       .addCase(fetchUserInfo.pending, (state) => {
         state.loading = true;
         state.error = null;
