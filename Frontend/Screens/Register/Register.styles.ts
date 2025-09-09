@@ -47,7 +47,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 
-  // ✅ Suggestions styles
   suggestions: {
     marginTop: 8,
     flexDirection: "row",
@@ -70,7 +69,6 @@ const styles = StyleSheet.create({
     color: "#007bff",
   },
 
-  // ✅ Username message colors
   usernameMessageSuccess: {
     color: "green",
     marginTop: 4,
@@ -81,6 +79,22 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginBottom: 4,
   },
+  radioButton: {
+  borderWidth: 1,
+  borderColor: "#ccc",
+  borderRadius: 20,
+  paddingVertical: 8,
+  paddingHorizontal: 16,
+  marginRight: 10,
+},
+radioSelected: {
+  backgroundColor: "#007bff",
+  borderColor: "#007bff",
+},
+radioLabel: {
+  color: "#000",
+},
+
 });
 
 export default styles;

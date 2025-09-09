@@ -15,6 +15,7 @@ interface User {
   gender: string | null;
   isProfileComplete: boolean;
   profileImage: string | null;
+  role: "user" | "doctor" | "trainer" | "admin" | null; 
 }
 
 interface AuthState {
@@ -30,40 +31,39 @@ const initialState: AuthState = {
 };
 
 const mapUser = (u: any): User => ({
-  id: u._id || u.id || null,
-  name: u.name || "",
-  username: u.username || "",
-  email: u.email || "",
-  phone: u.phone || "",
-  dob: u.dob ? new Date(u.dob) : null,
-  weight: u.weight ?? null,
-  height: u.height ?? null,
-  age: u.age ?? null,
-  gender: u.gender ?? null,
-  isProfileComplete: u.isProfileComplete ?? false,
-  profileImage: u.profileImage || null,
+  id: u?._id || u?.id || null,
+  name: u?.name || "",
+  username: u?.username || "",
+  email: u?.email || "",
+  phone: u?.phone || "",
+  dob: u?.dob ? new Date(u.dob) : null,
+  weight: u?.weight ?? null,
+  height: u?.height ?? null,
+  age: u?.age ?? null,
+  gender: u?.gender ?? null,
+  isProfileComplete: u?.isProfileComplete ?? false,
+  profileImage: u?.profileImage || null,
+  role: u?.role ?? null, 
 });
 
 
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (
-    { name, username, email, password, phone, collectInfo }: any,
+    { name, username, email, password, phone, role, collectInfo }: any,
     { rejectWithValue }
   ) => {
     try {
-      const res = await apiRequest<{ user: any; token?: string }>(
+      const res = await apiRequest<{ user: any; token?: string; error?: boolean; message?: string }>(
         "/users/register",
         "POST",
-        { name, username, email, password, phone, collectInfo }
+        { name, username, email, password, phone, role, collectInfo }
       );
 
-      if ("error" in res) return rejectWithValue(res.message);
+      if (res.error === true) return rejectWithValue(res.message);
 
       if (res.token) {
         await AsyncStorage.setItem("token", res.token);
-      } else {
-        console.warn("No token returned from API on registration");
       }
 
       return res.user;
@@ -77,17 +77,16 @@ export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async ({ email, password }: any, { rejectWithValue }) => {
     try {
-      const res = await apiRequest<{ user: any; token?: string }>(
+      const res = await apiRequest<{ user: any; token?: string; error?: boolean; message?: string }>(
         "/users/login",
         "POST",
         { email, password }
       );
 
-      if ("error" in res) return rejectWithValue(res.message);
+      if (res.error === true) return rejectWithValue(res.message);
 
       if (res.token) {
         await AsyncStorage.setItem("token", res.token);
-
       } else {
         console.warn("No token returned from API on login");
       }
@@ -103,8 +102,12 @@ export const fetchUserInfo = createAsyncThunk(
   "auth/fetchUserInfo",
   async (userId: string, { rejectWithValue }) => {
     try {
-      const res = await apiRequest(`/users/${userId}`, "GET");
-      if ("error" in res) return rejectWithValue(res.message);
+      const res = await apiRequest<{ user: any; error?: boolean; message?: string }>(
+        `/users/${userId}`,
+        "GET"
+      );
+
+      if (res.error === true) return rejectWithValue(res.message);
 
       return res.user;
     } catch (error: any) {
@@ -112,6 +115,7 @@ export const fetchUserInfo = createAsyncThunk(
     }
   }
 );
+
 
 const authSlice = createSlice({
   name: "auth",
@@ -125,6 +129,7 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // register
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -138,6 +143,7 @@ const authSlice = createSlice({
         state.error = action.payload as string;
       })
 
+      // login
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -151,6 +157,7 @@ const authSlice = createSlice({
         state.error = action.payload as string;
       })
 
+      // fetchUserInfo
       .addCase(fetchUserInfo.pending, (state) => {
         state.loading = true;
         state.error = null;

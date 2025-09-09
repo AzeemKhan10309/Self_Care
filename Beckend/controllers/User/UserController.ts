@@ -3,8 +3,10 @@ import type { IUser } from "../../Models/User/UserModel.ts";
 import User from "../../Models/User/UserModel.js";
 import { generateToken } from "../../utils/apiResponse.js";
 import mongoose from "mongoose";
-import { AuthRequest } from "../../middleware/authMiddleware.js";
+import DoctorProfile from "../../Models/DoctorProfile/DoctorProfileModel.js";
+import TrainerProfile from "../../Models/TrainerProfile/TrainerProfile.js";
 import nodemailer from "nodemailer";
+import { AuthRequest } from "../../types/express.js";
 import bcrypt from "bcryptjs";
 
 export const checkUsername = async (req: Request, res: Response) => {
@@ -28,56 +30,104 @@ export const checkUsername = async (req: Request, res: Response) => {
   }
 };
 
-export const register = async (req: Request, res: Response) => {
-    console.log("Register request body:", req.body);
+
+export const register = async (req: AuthRequest, res: Response) => {
+  console.log("[DEBUG] Incoming registration request body:", req.body);
+
   try {
-    const { name, username, email, password, phone, collectInfo } = req.body;
+    const { name, username, email, password, phone, role, collectInfo } = req.body;
 
-    if (!name || !username || !email || !password) {
-      return res.status(400).json({ error: true, message: "All fields are required" });
-    }
+    console.log("[DEBUG] Incoming role:", role);
 
-    const existingUser = await User.findOne<IUser>({ username });
-    if (existingUser) return res.status(400).json({ error: true, message: "Username already taken" });
+    const userRole: "user" | "doctor" | "trainer" | "admin" =
+      role === "doctor" || role === "trainer" || role === "user" || role === "admin"
+        ? role
+        : "user";
+
+    console.log("[DEBUG] Final userRole to be stored:", userRole);
 
     const user = new User({
-      name,
-      username,
-      email,
-      password,
-      phone,
-      ...collectInfo,
+      name, username, email, password, phone,
+      role: userRole,
+      approved: userRole === "user" || userRole === "admin",
+      age: collectInfo?.age,
+      gender: collectInfo?.gender,
+      weight: collectInfo?.weight,
+      height: collectInfo?.height,
+      dob: collectInfo?.dob,
     });
 
     await user.save();
+    console.log("[DEBUG] Created user:", user);
 
-    const token = generateToken((user._id as mongoose.Types.ObjectId).toString());
+    if (userRole === "doctor") {
+      console.log("[DEBUG] Creating DoctorProfile with collectInfo:", collectInfo);
+      await DoctorProfile.create({
+        user: user._id,
+        specialization: collectInfo?.specialization,
+        clinicAddress: collectInfo?.clinicAddress,
+        experienceYears: collectInfo?.experienceYears,
+        qualifications: collectInfo?.qualifications,
+      });
+      console.log("[DEBUG] DoctorProfile created successfully");
+    }
 
-    res.status(201).json({ user, token });
+const token = generateToken((user._id as mongoose.Types.ObjectId).toString());
+    console.log("[DEBUG] JWT generated");
+
+    res.status(201).json({ error: false, user, token });
   } catch (err: unknown) {
+    console.error("[DEBUG] Register error:", err);
     const message = err instanceof Error ? err.message : "Server error";
     res.status(500).json({ error: true, message });
   }
 };
 
+
+
+
+
 export const login = async (req: Request, res: Response) => {
   try {
-        console.log("Login request body:", req.body); 
+    console.log("Login request body:", req.body);
 
     const { email, password } = req.body;
 
     const user = await User.findOne<IUser>({ email });
-    if (!user) return res.status(400).json({ error: true, message: "Invalid credentials" });
+    if (!user) {
+      return res.status(400).json({ error: true, message: "Invalid credentials" });
+    }
 
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ error: true, message: "Invalid credentials" });
+    }
+
+    // Prevent login if doctor/trainer is not approved
+    if ((user.role === "doctor" || user.role === "trainer") && !user.approved) {
+      return res.status(403).json({ error: true, message: "Account not approved by admin yet" });
+    }
 
     const token = generateToken((user._id as mongoose.Types.ObjectId).toString());
 
-    res.json({ user, token });
+    // Return the whole user (minus password + __v)
+    const userObj = user.toObject();
+    delete userObj.password;
+    delete userObj.__v;
+
+    res.json({
+      error: false,
+      message: "Login successful",
+      user: userObj,
+      token,
+    });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Server error";
     res.status(500).json({ error: true, message });
   }
 };
+
+
 
 export const getUser = async (req: Request, res: Response) => {
   try {

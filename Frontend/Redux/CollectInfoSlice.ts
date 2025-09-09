@@ -5,7 +5,18 @@ interface CollectInfoState {
   gender: string;
   weight: number | null;
   height: number | null;
-  dob: Date | null; 
+  dob: Date | null;
+
+  // Doctor-specific fields
+  specialization?: string;
+  clinicAddress?: string;
+  experienceYears?: number;
+  qualifications?: string;
+
+  // Trainer-specific fields
+  expertise?: string;
+  certification?: string;
+  gymAddress?: string;
 }
 
 const initialState: CollectInfoState = {
@@ -21,7 +32,7 @@ const collectInfoSlice = createSlice({
   initialState,
   reducers: {
     setCollectInfo: (state, action: PayloadAction<CollectInfoState>) => {
-      return action.payload;
+      return { ...state, ...action.payload }; // merge new fields with existing state
     },
     clearCollectInfo: () => initialState,
   },

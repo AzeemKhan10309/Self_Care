@@ -6,20 +6,12 @@ import {
   TextInput,
   KeyboardTypeOptions,
   ViewStyle,
+  TextInputProps,
 } from "react-native";
 
-interface InputProps {
-  value?: string;
-  placeholder?: string;
-  onChangeText?: (text: string) => void;
+interface InputProps extends TextInputProps {
   label?: string;
-  editable?: boolean;
-  secureTextEntry?: boolean;
-  keyboardType?: KeyboardTypeOptions;
-  placeholderTextColor?: string;
-  autoCapitalize?: "none" | "sentences" | "words" | "characters";
-  maxLength?: number;
-  containerStyle?: ViewStyle; // <-- Added
+  containerStyle?: ViewStyle;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -31,7 +23,8 @@ const Input: React.FC<InputProps> = ({
   secureTextEntry,
   keyboardType,
   placeholderTextColor = "#B0B0B0",
-  containerStyle, // <-- Added
+  containerStyle,
+  ...rest   // ✅ forward remaining props
 }) => {
   return (
     <View style={[styles.container, containerStyle]}>
@@ -44,7 +37,8 @@ const Input: React.FC<InputProps> = ({
         secureTextEntry={secureTextEntry}
         keyboardType={keyboardType}
         placeholderTextColor={placeholderTextColor}
-          underlineColorAndroid="transparent" 
+        underlineColorAndroid="transparent"
+        {...rest}   // ✅ VERY IMPORTANT
       />
       {label && <Text style={styles.label}>{label}</Text>}
     </View>
@@ -57,27 +51,24 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   input: {
-  backgroundColor: "#fff",
-  borderRadius: 12,
-  paddingVertical: 14,
-  paddingHorizontal: 16,
-  fontSize: 18,
-  fontWeight: "600",
-  color: "#000",
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#000",
 
-  // Shadow (iOS)
-  shadowColor: "#000",
-  shadowOpacity: 0.08,
-  shadowOffset: { width: 0, height: 2 },
-  shadowRadius: 6,
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
 
-  // Shadow (Android)
-  elevation: 4,
+    elevation: 4,
 
-  // 🔑 Ye dono add karo taake white border na aaye
-  borderWidth: 0, 
-  borderColor: "transparent",
-},
+    borderWidth: 0,
+    borderColor: "transparent",
+  },
   label: {
     position: "absolute",
     right: 16,
