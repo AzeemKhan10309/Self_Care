@@ -10,7 +10,7 @@ export interface AuthRequest extends Request {
   user?: IUser;
 }
 
-const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunction) => {
+export const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -37,4 +37,18 @@ const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunctio
   }
 };
 
-export default authMiddleware;
+export const authorizeRoles = (...roles: string[]) => {
+  return (req: AuthRequest, res: Response, next: NextFunction) => {
+    if (!req.user) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({
+        message: `Access denied: requires one of [${roles.join(", ")}], but you are "${req.user.role}"`,
+      });
+    }
+
+    next();
+  };
+};
