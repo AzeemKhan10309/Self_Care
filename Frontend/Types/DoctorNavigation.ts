@@ -8,6 +8,6 @@ export type DoctorStackParamList = {
 export type DoctorTabParamList = {
   HomeTab: undefined;
   PatientsTab: undefined;
-  Chat: undefined;
   DoctorProfileTab: undefined;
+  ChatTab: undefined;
 };

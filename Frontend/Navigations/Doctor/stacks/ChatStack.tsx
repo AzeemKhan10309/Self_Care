@@ -1,14 +1,13 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React from "react";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Chat from "../../../Screens/DoctorScreens/Chat/Chat";
 
-const PatientsStack = () => {
-  return (
-    <View>
-      <Text>PatientsStack</Text>
-    </View>
-  )
-}
+const Stack = createNativeStackNavigator();
 
-export default PatientsStack
+const PatientsStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="ChatScreen" component={Chat} />
+  </Stack.Navigator>
+);
 
-const styles = StyleSheet.create({})
+export default PatientsStack;

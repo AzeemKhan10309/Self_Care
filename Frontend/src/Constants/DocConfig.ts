@@ -19,7 +19,7 @@ export const doctorTabs: {
     focusedIcon: require("../../assets/patientFocus.png"),
   },
   {
-    key: "Chat",   
+    key: "ChatTab",   
     label: "Chat",
      icon: require("../../assets/Chat.png"),
     focusedIcon: require("../../assets/Chat Focus.png"),
