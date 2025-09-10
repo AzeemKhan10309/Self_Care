@@ -25,6 +25,14 @@ const DoctorDashboard: React.FC = () => {
       time: "3:00 PM",
       avatar: "https://randomuser.me/api/portraits/women/44.jpg",
     },
+     {
+      id: "2",
+      name: "Dr. Sarah Khan",
+      specialty: "Cardiologist",
+      date: "12 Dec",
+      time: "3:00 PM",
+      avatar: "https://randomuser.me/api/portraits/women/44.jpg",
+    },
   ];
 
   const pendingRequests = [
