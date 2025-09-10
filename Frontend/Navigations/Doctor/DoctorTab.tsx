@@ -4,7 +4,7 @@ import { createBottomTabNavigator, BottomTabBarProps } from "@react-navigation/b
 import HomeStack from "./stacks/HomeStack";
 import PatientsStack from "./stacks/PatientsStack";
 import ProfileStack from "../User/stacks/ProfileStack";
-
+import ChatStack   from  "./stacks/ChatStack"; 
 import BottomTab from "../../Components/BottomNavbar/BottomNavbar";
 import { doctorTabs } from "../../src/Constants/DocConfig";
 
@@ -36,6 +36,8 @@ export default function DoctorTabs() {
       <Tab.Screen name="HomeTab" component={HomeStack} />
       <Tab.Screen name="PatientsTab" component={PatientsStack} />
       <Tab.Screen name="ProfileTab" component={ProfileStack} />
+       <Tab.Screen name="ChatTab" component={ChatStack} />
+
     </Tab.Navigator>
   );
 }
