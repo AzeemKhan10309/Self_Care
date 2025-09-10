@@ -5,8 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import AuthStack from "./AuthStack";
 import UserTabs from "./User/UserTabs";
-import DoctorStack from "./Doctor/DoctorStack";
-import TrainerTabs from "./Doctor/DoctorTabs";
+import DoctorStack from "./Doctor/DoctorTab";
 
 import SplashScreen from "../Screens/Splash/Splash";
 import Loader from "../Components/Loader/Loader";
@@ -49,7 +48,7 @@ export default function RootNavigator() {
       ) : user.role === "doctor" ? (
         <DoctorStack />
       ) : user.role === "trainer" ? (
-        <TrainerTabs />
+        <DoctorStack />
       ) : (
         <UserTabs />
       )}

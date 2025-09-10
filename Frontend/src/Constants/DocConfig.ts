@@ -7,13 +7,13 @@ export const doctorTabs: {
   focusedIcon: any; 
 }[] = [
   {
-    key: "Home",   
+    key: "HomeTab",   
     label: "Home",
      icon: require("../../assets/Home.png"),
     focusedIcon: require("../../assets/Home-onclick.png"),
   },
   {
-    key: "Patients",   
+    key: "PatientsTab",   
     label: "Patients",
      icon: require("../../assets/Patient.png"),
     focusedIcon: require("../../assets/patientFocus.png"),
@@ -25,7 +25,7 @@ export const doctorTabs: {
     focusedIcon: require("../../assets/Chat Focus.png"),
   },
   {
-    key: "Profile",   
+    key: "ProfileTab",   
     label: "Profile",
     icon: require("../../assets/Home.png"),
     focusedIcon: require("../../assets/Home-onclick.png"),
