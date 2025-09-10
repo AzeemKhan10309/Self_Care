@@ -9,5 +9,5 @@ export type DoctorTabParamList = {
   HomeTab: undefined;
   PatientsTab: undefined;
   Chat: undefined;
-  ProfileTab: undefined;
+  DoctorProfileTab: undefined;
 };
