@@ -5,8 +5,8 @@ export type DoctorStackParamList = {
 };
 
 export type DoctorTabParamList = {
-  PatientsTab: undefined;
-  AppointmentsTab: undefined;
-  HealthMonitorTab: undefined;
-  ProfileTab: undefined;
+  Home: undefined;           
+  Patients: undefined;       
+  Chat: undefined;           
+  Profile: undefined;        
 };
