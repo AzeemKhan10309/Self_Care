@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const AppointmentsStack = () => {
+const PatientsStack = () => {
   return (
     <View>
-      <Text>AppointmentsStack</Text>
+      <Text>PatientsStack</Text>
     </View>
   )
 }
 
-export default AppointmentsStack
+export default PatientsStack
 
 const styles = StyleSheet.create({})

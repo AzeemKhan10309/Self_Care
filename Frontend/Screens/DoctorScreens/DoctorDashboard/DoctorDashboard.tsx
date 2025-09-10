@@ -12,7 +12,7 @@ type DoctorNavigationProp = NativeStackNavigationProp<DoctorStackParamList, "Doc
 
 const DoctorDashboard: React.FC = () => {
   const navigation = useNavigation<DoctorNavigationProp>();
-  const [activeTab, setActiveTab] = useState<keyof DoctorTabParamList>("PatientsTab");
+  const [activeTab, setActiveTab] = useState<keyof DoctorTabParamList>("Patients");
 
   // Typed handler
   const handleTabPress = (tabKey: keyof DoctorTabParamList) => {

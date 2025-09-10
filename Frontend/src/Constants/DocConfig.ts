@@ -7,25 +7,25 @@ export const doctorTabs: {
   focusedIcon: any; 
 }[] = [
   {
-    key: "PatientsTab",   
+    key: "Home",   
+    label: "Home",
+     icon: require("../../assets/Home.png"),
+    focusedIcon: require("../../assets/Home-onclick.png"),
+  },
+  {
+    key: "Patients",   
     label: "Patients",
-     icon: require("../../assets/Home.png"),
-    focusedIcon: require("../../assets/Home-onclick.png"),
+     icon: require("../../assets/Patient.png"),
+    focusedIcon: require("../../assets/patientFocus.png"),
   },
   {
-    key: "AppointmentsTab",   
-    label: "Appointments",
-     icon: require("../../assets/Home.png"),
-    focusedIcon: require("../../assets/Home-onclick.png"),
+    key: "Chat",   
+    label: "Chat",
+     icon: require("../../assets/Chat.png"),
+    focusedIcon: require("../../assets/Chat Focus.png"),
   },
   {
-    key: "HealthMonitorTab",   
-    label: "Health",
-     icon: require("../../assets/Home.png"),
-    focusedIcon: require("../../assets/Home-onclick.png"),
-  },
-  {
-    key: "ProfileTab",   
+    key: "Profile",   
     label: "Profile",
     icon: require("../../assets/Home.png"),
     focusedIcon: require("../../assets/Home-onclick.png"),
