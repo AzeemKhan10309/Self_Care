@@ -1,12 +1,13 @@
-// types/DoctorNavigation.ts
 export type DoctorStackParamList = {
-  DoctorDashboard: undefined;       
-  DoctorTabs: { screen?: keyof DoctorTabParamList } | undefined;
+  Home: undefined;
+  Patients: undefined;
+  Chat: undefined;
+  Profile: undefined;
 };
 
 export type DoctorTabParamList = {
-  Home: undefined;           
-  Patients: undefined;       
-  Chat: undefined;           
-  Profile: undefined;        
+  HomeTab: undefined;
+  PatientsTab: undefined;
+  Chat: undefined;
+  ProfileTab: undefined;
 };
