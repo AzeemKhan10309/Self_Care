@@ -29,6 +29,25 @@ const DoctorDashboard: React.FC = () => {
   const upcomingAppointments = [
     {
       id: "1",
+      name: "Dr. Sarah Khan",
+      specialty: "Cardiologist",
+      date: "12 Dec",
+      time: "3:00 PM",
+      avatar: "https://randomuser.me/api/portraits/women/44.jpg",
+    },
+    {
+      id: "2",
+      name: "Dr. Sarah Khan",
+      specialty: "Cardiologist",
+      date: "12 Dec",
+      time: "3:00 PM",
+      avatar: "https://randomuser.me/api/portraits/women/44.jpg",
+    },
+  ];
+
+  const pendingRequests = [
+    {
+      id: "1",
       name: "Azeem Khan",
       issue: "Fatty Liver",
       date: "5 Oct",

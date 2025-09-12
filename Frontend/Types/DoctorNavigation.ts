@@ -9,7 +9,13 @@ export type DoctorStackParamList = {
 export type DoctorTabParamList = {
   HomeTab: undefined;
   PatientsTab: undefined;
-  DoctorProfileTab: undefined;
   ChatTab: undefined;
+  ProfileTab: undefined;
 
 };
+export type PatientsStackParamList = {
+  MyPatients: undefined;
+  PatientProfile: { patient: any };
+  ChatScreen: undefined;
+  InboxScreen: { userId: string };
+  CallScreen: { userId: string }; };
