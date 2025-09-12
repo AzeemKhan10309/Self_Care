@@ -7,6 +7,7 @@ const Stack = createNativeStackNavigator();
 const PatientsStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="DoctorProfileScreen" component={DoctorProfile} />
+    
   </Stack.Navigator>
 );
 
