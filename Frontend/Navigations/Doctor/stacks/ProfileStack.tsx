@@ -1,14 +1,14 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React from "react";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import DoctorProfile from "../../../Screens/DoctorScreens/DoctorProfile/DoctorProfile";
 
-const ProfileStack = () => {
-  return (
-    <View>
-      <Text>ProfileStack</Text>
-    </View>
-  )
-}
+const Stack = createNativeStackNavigator();
 
-export default ProfileStack
+const PatientsStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="DoctorProfileScreen" component={DoctorProfile} />
+    
+  </Stack.Navigator>
+);
 
-const styles = StyleSheet.create({})
+export default PatientsStack;
