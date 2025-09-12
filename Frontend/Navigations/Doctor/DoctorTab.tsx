@@ -1,10 +1,13 @@
 import React from "react";
-import { createBottomTabNavigator, BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import {
+  createBottomTabNavigator,
+  BottomTabBarProps,
+} from "@react-navigation/bottom-tabs";
 
 import HomeStack from "./stacks/HomeStack";
 import PatientsStack from "./stacks/PatientsStack";
 import ProfileStack from "../User/stacks/ProfileStack";
-import ChatStack   from  "./stacks/ChatStack"; 
+import ChatStack from "./stacks/ChatStack";
 import BottomTab from "../../Components/BottomNavbar/BottomNavbar";
 import { doctorTabs } from "../../src/Constants/DocConfig";
 
@@ -17,6 +20,16 @@ export default function DoctorTabs() {
       screenOptions={{ headerShown: false }}
       tabBar={(props: BottomTabBarProps) => {
         const activeRouteName = props.state.routeNames[props.state.index];
+        const currentRoute = props.state.routes[props.state.index]?.state as
+          | { index: number; routeNames?: string[] }
+          | undefined;
+
+        const nestedRouteName =
+          currentRoute?.routeNames?.[currentRoute.index ?? 0];
+
+        if (nestedRouteName === "InboxScreen") {
+          return null;
+        }
 
         return (
           <BottomTab
@@ -36,8 +49,7 @@ export default function DoctorTabs() {
       <Tab.Screen name="HomeTab" component={HomeStack} />
       <Tab.Screen name="PatientsTab" component={PatientsStack} />
       <Tab.Screen name="ProfileTab" component={ProfileStack} />
-       <Tab.Screen name="ChatTab" component={ChatStack} />
-
+      <Tab.Screen name="ChatTab" component={ChatStack} />
     </Tab.Navigator>
   );
 }

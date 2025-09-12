@@ -10,8 +10,13 @@ import {
   Dimensions,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { PatientsStackParamList } from "../../../Types/DoctorNavigation"; // adjust path
 
 const { width, height } = Dimensions.get("window");
+
+type NavProp = NativeStackNavigationProp<PatientsStackParamList, "MyPatients">;
 
 const patients = [
   {
@@ -42,6 +47,7 @@ const patients = [
 
 export default function MyPatientsScreen() {
   const [patientList, setPatientList] = useState(patients);
+  const navigation = useNavigation<NavProp>();
 
   const toggleFavorite = (id: string) => {
     const updated = patientList.map((p) =>
@@ -51,8 +57,15 @@ export default function MyPatientsScreen() {
   };
 
   const renderItem = ({ item }: any) => (
-    <View style={styles.card}>
-      <Image source={item.avatar} style={styles.avatar} resizeMode="cover" />
+    <TouchableOpacity
+      style={styles.card}
+onPress={() => navigation.navigate("PatientProfile", { patient: item })}
+    >
+      <Image
+        source={item.avatar ? { uri: item.avatar } : require("../../../assets/Doctor.png")}
+        style={styles.avatar}
+        resizeMode="cover"
+      />
       <View style={styles.info}>
         <Text style={styles.name}>{item.name}</Text>
         <Text style={styles.issue}>{item.issue}</Text>
@@ -75,7 +88,7 @@ export default function MyPatientsScreen() {
           color="#2e63e7"
         />
       </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -88,25 +101,19 @@ export default function MyPatientsScreen() {
         contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}
       />
-
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
+  container: { flex: 1, backgroundColor: "#fff" },
   title: {
     fontSize: width * 0.05,
     fontWeight: "600",
     marginTop: height * 0.02,
     alignSelf: "center",
   },
-  list: {
-    padding: width * 0.04,
-  },
+  list: { padding: width * 0.04 },
   card: {
     flexDirection: "row",
     backgroundColor: "#f8f9ff",
@@ -115,6 +122,7 @@ const styles = StyleSheet.create({
     marginBottom: height * 0.02,
     alignItems: "center",
     elevation: 2,
+    justifyContent: "space-between",
   },
   avatar: {
     width: width * 0.15,
@@ -122,30 +130,10 @@ const styles = StyleSheet.create({
     borderRadius: width * 0.075,
     marginRight: width * 0.04,
   },
-  info: {
-    flex: 1,
-  },
-  name: {
-    fontSize: width * 0.045,
-    fontWeight: "600",
-  },
-  issue: {
-    fontSize: width * 0.04,
-    color: "#8a8a8a",
-  },
-  row: {
-    flexDirection: "row",
-    marginTop: height * 0.007,
-    alignItems: "center",
-  },
-  date: {
-    marginLeft: 4,
-    marginRight: 12,
-    fontSize: width * 0.035,
-    color: "#555",
-  },
-  icon: {
-    marginLeft: 4,
-  },
-  
+  info: { flex: 1 },
+  name: { fontSize: width * 0.045, fontWeight: "600" },
+  issue: { fontSize: width * 0.04, color: "#8a8a8a" },
+  row: { flexDirection: "row", marginTop: height * 0.007, alignItems: "center" },
+  date: { marginLeft: 4, marginRight: 12, fontSize: width * 0.035, color: "#555" },
+  icon: { marginLeft: 4 },
 });
