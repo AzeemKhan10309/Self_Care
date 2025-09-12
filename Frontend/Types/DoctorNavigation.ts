@@ -3,6 +3,7 @@ export type DoctorStackParamList = {
   Patients: undefined;
   Chat: undefined;
   Profile: undefined;
+  
 };
 
 export type DoctorTabParamList = {
@@ -10,4 +11,5 @@ export type DoctorTabParamList = {
   PatientsTab: undefined;
   DoctorProfileTab: undefined;
   ChatTab: undefined;
+
 };
