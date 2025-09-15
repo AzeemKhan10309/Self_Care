@@ -1,0 +1,65 @@
+name: Expo Cloud Build
+
+# Trigger on push or pull request to master/main
+on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Use macOS if you want iOS builds on macOS runners
+
+    defaults:
+      run:
+        working-directory: Frontend  # Point to your Expo project folder
+
+    steps:
+      # 1. Checkout the repo
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+
+      # 3. Install expo-cli globally
+      - name: Install expo-cli
+        run: npm install -g expo-cli
+
+      # 4. Install project dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # 5. Install EAS CLI globally
+      - name: Install EAS CLI
+        run: npm install -g eas-cli
+
+      # 6. Authenticate with Expo using a token
+      - name: Login to Expo
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: eas login --token $EXPO_TOKEN
+
+      # 7. Build Android
+      - name: Build Android
+        run: eas build --platform android --non-interactive --profile production
+
+      # 8. Build iOS (optional, runs only on macOS runners)
+      - name: Build iOS
+        if: runner.os == 'macOS'
+        run: eas build --platform ios --non-interactive --profile production
+
+      # 9. (Optional) Upload APK/IPA as GitHub artifacts
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: mobile-build
+          path: |
+            **/*.apk
+            **/*.aab
+            **/*.ipa
