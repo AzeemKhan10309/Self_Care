@@ -25,34 +25,34 @@ jobs:
         with:
           node-version: 22
 
-      # 3. Install expo-cli
-      - name: Install expo-cli
-        run: npm install -g expo-cli
-
-      # 4. Install dependencies
+      # 3. Install dependencies
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
-      # 5. Install EAS CLI
+      # 4. Install EAS CLI
       - name: Install EAS CLI
         run: npm install -g eas-cli
 
-      # 6. Authenticate with Expo using token
-      - name: Authenticate with Expo
+      # 5. Verify authentication
+      - name: Verify Expo login
+        run: eas whoami
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-        run: eas whoami
 
-      # 7. Build Android
+      # 6. Build Android
       - name: Build Android
         run: eas build --platform android --non-interactive --profile production
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
-      # 8. (Optional) Build iOS if macOS runner is used
+      # 7. Build iOS (only on macOS)
       - name: Build iOS
         if: runner.os == 'macOS'
         run: eas build --platform ios --non-interactive --profile production
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
-      # 9. Upload APK/IPA artifacts
+      # 8. Upload build artifacts
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
