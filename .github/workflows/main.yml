@@ -38,11 +38,10 @@ jobs:
         run: npm install -g eas-cli
 
       # 6. Authenticate with Expo using token
-- name: Authenticate with Expo
-  env:
-    EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-  run: eas whoami
-
+      - name: Authenticate with Expo
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: eas whoami
 
       # 7. Build Android
       - name: Build Android
