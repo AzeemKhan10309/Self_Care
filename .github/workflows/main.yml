@@ -38,17 +38,16 @@ jobs:
         run: npm install -g eas-cli
 
       # 6. Authenticate with Expo using token
-- name: Authenticate with Expo
-  env:
-    EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-  run: eas whoami
-
+      - name: Authenticate with Expo
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: eas whoami
 
       # 7. Build Android
       - name: Build Android
         run: eas build --platform android --non-interactive --profile production
 
-      # 8. (Optional) Build iOS if macOS runner is used
+      # 8. Build iOS (only on macOS runners)
       - name: Build iOS
         if: runner.os == 'macOS'
         run: eas build --platform ios --non-interactive --profile production
